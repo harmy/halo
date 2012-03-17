@@ -1,6 +1,8 @@
 package
 {
 	import flash.display.Sprite;
+	import flash.display3D.Context3DRenderMode;	
+	import game.GameWorld;
 	
 	/**
 	 * 游戏入口
@@ -17,7 +19,7 @@ package
 		 * */
 		private function init():void
 		{
-			addChild(new Main);				
+			addChild(new GameWorld(Context3DRenderMode.AUTO, 60));
 		}
 	}
 }
