@@ -1,6 +1,7 @@
 package game
 {
-	import de.nulldesign.nd2d.display.World2D;	
+	import de.nulldesign.nd2d.display.World2D;
+	
 	import flash.geom.Rectangle;
 	
 	/**
@@ -8,23 +9,23 @@ package game
 	 * */
 	public final class GameWorld extends World2D
 	{
-		private static var _instance:GameWorld;
+		private static var sInstance:GameWorld;
 		
 		public function GameWorld(renderMode:String, frameRate:uint=60, bounds:Rectangle=null, stageID:uint=0)
 		{			
 			super(renderMode, frameRate, bounds, stageID);
 			
-			if(_instance != null)
+			if(sInstance != null)
 			{
 				throw new Error("this class should be instantiated only one time");
 			}
 			
-			_instance = this;
+			sInstance = this;
 		}
 		
 		public static function instance():World2D
 		{
-			return _instance;
+			return sInstance;
 		}
 	}
 }
