@@ -1,6 +1,5 @@
 package com.cokecode.halo.magic
 {
-	import flash.sampler.NewObjectSample;
 	import flash.utils.Dictionary;
 
 	/**
@@ -19,6 +18,16 @@ package com.cokecode.halo.magic
 			}
 			
 			sInstance = this;
+		}
+		
+		public function addConfig(id:uint, cf:MagicConfig):void
+		{
+			mConfigMgr[id] = cf;
+		}
+		
+		public function getConfig(id:uint):MagicConfig
+		{
+			return mConfigMgr[id];
 		}
 	}
 }

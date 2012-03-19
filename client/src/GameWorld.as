@@ -26,6 +26,10 @@ package
 		public function GameWorld()
 		{			
 			super(Context3DRenderMode.AUTO, 60);
+			setActiveScene( new GameScene() );
+			
+			// 添加性能分析图
+			addChild(mStats);
 			
 			if(sInstance != null)
 			{
@@ -33,12 +37,6 @@ package
 			}
 			
 			sInstance = this;
-			
-			setActiveScene( new GameScene() );
-
-			
-			// 添加性能分析图
-			addChild(mStats);
 		}
 		
 		public static function instance():World2D

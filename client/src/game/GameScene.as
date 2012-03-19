@@ -7,7 +7,7 @@ package game
 	import de.nulldesign.nd2d.display.Scene2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
 	
-	import com.cokecode.halo.magic.*;
+	import game.magic.MagicTest;
 	
 	public class GameScene extends Scene2D
 	{
@@ -16,14 +16,14 @@ package game
 		public function GameScene()
 		{
 			super();
-			MagicMgr.instance().parent(this);
-			MagicMgr.instance().init();
+			MagicTest.instance().init();
 			
 			GameAssets.initGameRes();
 			
 			// 创建测试地图
 			mMap = new Map();
 			addChild(mMap);
+			MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
 			for (var i:uint=0; i<200 * 1; ++i) {
@@ -45,7 +45,7 @@ package game
 		
 		protected override function step(elapsed:Number):void
 		{	
-			MagicMgr.instance().update(elapsed);
+			MagicTest.instance().update(elapsed);
 		}
 	}
 }
