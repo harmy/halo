@@ -1,6 +1,7 @@
 package com.cokecode.halo.terrain
 {
 	import com.cokecode.halo.data.CoreConst;
+	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.*;
 	import com.cokecode.halo.terrain.tmx.TMX;
@@ -79,14 +80,14 @@ package com.cokecode.halo.terrain
 			addLayer(layer);
 			
 			//创建人物前魔法层
-			addLayer(new MagicLayer("magic_before", 0, 0));
+			addLayer(new MagicLayer(MagicConst.STR_LAYER_BEFOR, 0, 0));
 			
 			// 创建排序层
 			layer = new SortLayer("sort",24,32);
 			addLayer(layer);
 			
 			//创建人物后魔法层
-			addLayer(new MagicLayer("magic_after", 0, 0));
+			addLayer(new MagicLayer(MagicConst.STR_LAYER_AFTER, 0, 0));
 			
 			// 创建阻挡层
 			layer = new BlockLayer("block",24,32);
