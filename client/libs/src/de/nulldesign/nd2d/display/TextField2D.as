@@ -31,7 +31,8 @@
 package de.nulldesign.nd2d.display {
 
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
-
+	import de.nulldesign.nd2d.materials.texture.TextureOption;
+	
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.text.AntiAliasType;

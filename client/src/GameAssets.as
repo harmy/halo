@@ -4,6 +4,7 @@ package
 	import de.nulldesign.nd2d.display.Sprite2DBatch;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.materials.texture.TextureAtlas;
+	import de.nulldesign.nd2d.materials.texture.TextureOption;
 	
 	import flash.display.Bitmap;
 
@@ -81,6 +82,7 @@ package
 				var xmlData:XML = sprXmls[i];
 				
 				var tex2d:Texture2D = Texture2D.textureFromBitmapData(bmp.bitmapData, true);
+				tex2d.textureOptions = TextureOption.QUALITY_LOW;
 				var texAtlas:TextureAtlas = new TextureAtlas(tex2d.bitmapWidth, tex2d.bitmapHeight, xmlData, TextureAtlas.XML_FORMAT_COCOS2D, 8);
 				
 				var key:Array = [];
@@ -99,9 +101,11 @@ package
 			
 		}
 		
-		static public function createChar():Sprite2D
+		static public function createChar(texIndex:uint = 0xFFFFFFFF):Sprite2D
 		{
 			var index:uint = Math.random() * 6;
+			if (texIndex != 0xFFFFFFFF)
+				index = texIndex;
 			
 			var tex:Texture2D = vecTex2d[index];
 			var texAtlas:TextureAtlas = vecTexAtlas[index];

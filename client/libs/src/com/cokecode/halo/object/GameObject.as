@@ -1,9 +1,12 @@
 package com.cokecode.halo.object
 {
 	import com.cokecode.halo.controller.Controller;
+	import com.cokecode.halo.data.CoreConst;
+	import com.cokecode.halo.display.TextField;
 	
+	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
-	import de.nulldesign.nd2d.display.TextField2D;
+	import de.nulldesign.nd2d.materials.texture.TextureOption;
 	
 
 	/**
@@ -34,7 +37,7 @@ package com.cokecode.halo.object
 		/**
 		 * 显示的名字
 		 */
-		protected var mTFName:TextField2D = new TextField2D;
+		protected var mTFName:TextField = new TextField;
 		
 		/**
 		 * 高度
@@ -45,12 +48,10 @@ package com.cokecode.halo.object
 		
 		public function GameObject()
 		{
-			mTFName.x = -mTFName.width / 2 - mTFName.textWidth / 2;
+			mTFName.text = "我的名字";
 			mTFName.y = -90;
 			mTFName.textColor = 0xFFFFFF;
-			//mTFName.filter = [CoreConst.GLOW_FILTER1];
-			mTFName.text = "我的名字";
-
+			mTFName.filter = [CoreConst.GLOW_FILTER1];
 
 			addChild(mTFName);
 		}
@@ -98,12 +99,12 @@ package com.cokecode.halo.object
 			
 		}
 		
-//		/**
-//		 * 判断物体是否在摄像机的可是范围内
-//		 */
-//		public function inViewport(camera:Camera):Boolean
-//		{
-//			return false;
-//		}
+		/**
+		 * 判断物体是否在摄像机的可是范围内
+		 */
+		public function isInViewport(camera:Camera2D):Boolean
+		{
+			return false;
+		}
 	}
 }

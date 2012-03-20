@@ -1,5 +1,7 @@
 package com.cokecode.halo.terrain.layers
 {
+	import com.cokecode.halo.object.GameObject;
+	
 	import de.nulldesign.nd2d.display.Node2D;
 	
 	import flash.utils.Dictionary;
@@ -57,59 +59,50 @@ package com.cokecode.halo.terrain.layers
 			return mLayerHeight;
 		}
 		
-//		override public function removeChildAt(index:int, dispose:Boolean=false):void
-//		{
-//			var child:DisplayObject = getChildAt(index);
-//			if (child == null) return;
-//			
-//			delete mChildrenClip[child];
-//			
-//			super.removeChildAt(index, dispose);
-//		}
+		override public function removeChildAt(idx:uint):void
+		{
+			var child:Node2D = getChildAt(idx);
+			if (child == null) return;
+			
+			// 先删除裁剪掉的对象
+			delete mChildrenClip[child];
+			
+			// 再删除容器内的对象
+			super.removeChildAt(idx);
+		}
 		
 		/**
 		 * 对象进行裁剪
 		 */
 		public function clip():void
 		{
-//			// 处理裁剪掉的对象
-//			var child:GameObject;
-//			for each(child in mChildrenClip) {
-//				if ( child.inViewport(camera) ) {
-//					super.addChild(child);
-//					delete mChildrenClip[child];
-//				}
-//			}
-//			
-//			// 处理容器内的对象
-//			for (var i:uint=0; i<numChildren; ++i) {
-//				child = this.getChildAt(i) as GameObject;
-//				if (child == null) continue;
-//				 if ( !child.inViewport(camera) ) {
-//					 mChildrenClip[child] = child;
-//					 super.removeChildAt(i);
-//				 }
-//			}
+			var child:GameObject;
 			
-			//trace("对象数： " + numChildren);
+			// 处理裁剪掉的对象
+			for each(child in mChildrenClip) {
+				if ( child.isInViewport(camera) ) {
+					super.addChild(child);
+					delete mChildrenClip[child];
+				}
+			}
+			
+			// 处理容器内的对象
+			for (var i:uint=0; i<numChildren; ++i) {
+				child = this.getChildAt(i) as GameObject;
+				if (child == null) continue;
+				if ( !child.isInViewport(camera) ) {
+					mChildrenClip[child] = child;
+					super.removeChildAt(i);
+				}
+			}
+			
+			//if (numChildren) trace("对象数： " + numChildren);
 		}
 		
-		/**
-		 * 根据摄像机更新位置
-		 */
-		public function updateCamera():void
+		override protected function step(elapsed:Number):void 
 		{
-			//this.x = -camera.x;
-			//this.y = -camera.y;
-			
 			// 根据相机位置，进行裁剪
-			//clip();
-		}
-		
-		public function update(elapse:uint):void
-		{
-			// 再进行排序
-			// 有的层不一定需要排序，所以留给子类处理
+			clip();
 		}
 		
 		/**

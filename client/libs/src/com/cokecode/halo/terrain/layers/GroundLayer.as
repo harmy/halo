@@ -2,6 +2,7 @@ package com.cokecode.halo.terrain.layers
 {
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import de.nulldesign.nd2d.materials.texture.TextureOption;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -36,6 +37,7 @@ package com.cokecode.halo.terrain.layers
 					var ptDest:Point = new Point(0, 0);
 					tileBmp.copyPixels(mapBmp.bitmapData, rectSrc, ptDest, null, null, true);
 					var tex:Texture2D = Texture2D.textureFromBitmapData(tileBmp);
+					tex.textureOptions = TextureOption.QUALITY_LOW;
 					var spr:Sprite2D = new Sprite2D(tex);
 					spr.x = x;
 					spr.y = y;
