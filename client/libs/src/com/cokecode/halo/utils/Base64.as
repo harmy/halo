@@ -3,7 +3,7 @@
  * Copyright (c) 2010 by Thomas Jahn
  * This content is released under the MIT License.
  ******************************************************************************/
-package core.utils
+package com.cokecode.halo.utils
 {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;

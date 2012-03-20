@@ -31,16 +31,20 @@ package game
 			
 			// 创建测试地图
 			mMap = new Map();
+			mMap.load("Z:/res/maps/1.tmx");
 			addChild(mMap);
 			
-			//MagicTest.instance().parent(mMap.getLayer("magic_after"));
+			MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
-			for (var i:uint=0; i<1000 * 1; ++i) {
+			for (var i:uint=0; i<1 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				char.charView = GameAssets.createChar();
-				char.x = int(Math.random() * 1280 * 2);
-				char.y = int(Math.random() * 700 * 2);
+				char.x = int(Math.random() * 40);
+				char.y = int(Math.random() * 44);
+				
+				char.x = char.x * 64;
+				char.y = char.y * 32;
 				
 				//char.x = char.y = 0;
 				
@@ -71,7 +75,6 @@ package game
 					
 					char.charView.tint = 0x00FF00;
 					mTargetNode = mHero = char;
-					//mTargetNode = char;
 				}
 				
 				layer.addChild( char );
@@ -86,15 +89,16 @@ package game
 		
 		public function onKeyDown(evt:KeyboardEvent):void
 		{
-			var STEP:Number = 5;
+			var STEPX:Number = 64;
+			var STEPY:Number = 32;
 			if (evt.keyCode == Keyboard.LEFT) {
-				if (mHero) mHero.x -= STEP;
+				if (mHero) mHero.x -= STEPX;
 			} else if (evt.keyCode == Keyboard.RIGHT) {
-				if (mHero) mHero.x += STEP;
+				if (mHero) mHero.x += STEPX;
 			} else if (evt.keyCode == Keyboard.UP) {
-				if (mHero) mHero.y -= STEP;
+				if (mHero) mHero.y -= STEPY;
 			} else if (evt.keyCode == Keyboard.DOWN) {
-				if (mHero) mHero.y += STEP;
+				if (mHero) mHero.y += STEPY;
 			} else if (evt.keyCode == Keyboard.SPACE) {
 				//camera.shake(Camera.SHAKE_Y, 6, 700, 100);
 				if (mTargetNode == null) mTargetNode = mHero;
@@ -103,10 +107,10 @@ package game
 			
 //			var right:uint = mMap.mapWidth - mHero.width;
 //			var bottom:uint = mMap.mapHeight - mHero.height;
-//			if (mHero.x < 0) mHero.x = 0;
-//			if (mHero.y < 0) mHero.y = 0;
-//			if (mHero.x > right) mHero.x = right;
-//			if (mHero.y > bottom) mHero.y = bottom;
+			if (mHero.x < 0) mHero.x = 0;
+			if (mHero.y < 0) mHero.y = 0;
+			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
+			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
 		}
 		
 		override protected function step(elapsed:Number):void 
@@ -121,7 +125,7 @@ package game
 				
 				// 限制在地图之内
 				var right:uint = mMap.mapWidth - camera.sceneWidth;
-				var bottom:uint = mMap.mapHeight - camera.sceneHeight;
+				var bottom:uint = mMap.mapHeight - camera.sceneHeight - 32;
 				if (camera.x < 0) camera.x = 0;
 				if (camera.y < 0) camera.y = 0;
 				if (camera.x > right) camera.x = right;
@@ -130,10 +134,10 @@ package game
 			
 			MagicTest.instance().update(elapsed);
 			
-//			trace("------------- begin -----------");
-//			trace("角色位置：" + mHero.x + "," + mHero.y);
-//			trace("相机位置：" + camera.x + "," + camera.y);
-//			trace("------------- end -----------");
+			trace("------------- begin -----------");
+			trace("角色位置：" + mHero.x + "," + mHero.y);
+			trace("相机位置：" + camera.x + "," + camera.y);
+			trace("------------- end -----------");
 		}
 	}
 }

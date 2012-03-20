@@ -30,7 +30,7 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package core.utils
+package com.cokecode.halo.utils
 {
 	
 	import flash.utils.ByteArray;	

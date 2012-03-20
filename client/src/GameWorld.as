@@ -1,7 +1,9 @@
 package 
 {
+
+	import com.sociodox.theminer.TheMiner;
 	import com.cokecode.halo.ui.Console;
-	
+
 	import de.nulldesign.nd2d.display.World2D;
 	
 	import flash.display.Scene;
@@ -35,7 +37,12 @@ package
 			addChild(mStats);
 			//mStats.visible =false;
 			
+			// 添加性能分析工具
+			var miner:TheMiner = new TheMiner;
+			//addChild(miner);
+
 			addChild(mConsole);
+
 			
 			if(sInstance != null)
 			{

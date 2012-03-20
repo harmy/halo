@@ -1,6 +1,8 @@
 package com.cokecode.halo.terrain.layers
 {
 	import com.cokecode.halo.object.GameObject;
+	import com.cokecode.halo.terrain.tmx.TMX;
+	import com.cokecode.halo.terrain.tmx.TMXLayer;
 	import com.cokecode.halo.object.IClip;
 	
 	import de.nulldesign.nd2d.display.Node2D;
@@ -17,15 +19,18 @@ package com.cokecode.halo.terrain.layers
 		 */
 		protected var mLayerName:String;
 		
-		/**
-		 * 层的宽度(格子数)
-		 */
-		protected var mLayerWidth:uint;
+		protected var mTMX:TMX;
+		protected var mTMXLayer:TMXLayer;
 		
-		/**
-		 * 层的高度(格子数)
-		 */
-		protected var mLayerHeight:uint;
+//		/**
+//		 * 层的宽度(格子数)
+//		 */
+//		protected var mLayerWidth:uint;
+//		
+//		/**
+//		 * 层的高度(格子数)
+//		 */
+//		protected var mLayerHeight:uint;
 		
 		/**
 		 * 该层包含的属性键值对
@@ -41,8 +46,14 @@ package com.cokecode.halo.terrain.layers
 		public function Layer(name:String, width:uint, height:uint)
 		{
 			mLayerName = name;
-			mLayerWidth = width;
-			mLayerHeight = height;
+//			mLayerWidth = width;
+//			mLayerHeight = height;
+		}
+		
+		public function setTMXData(tmx:TMX, tmxLayer:TMXLayer):void
+		{
+			mTMX = tmx;
+			mTMXLayer = tmxLayer;
 		}
 		
 		public function get layerName():String
@@ -50,14 +61,20 @@ package com.cokecode.halo.terrain.layers
 			return mLayerName;
 		}
 		
-		public function get layerWidth():uint
-		{
-			return mLayerWidth;
-		}
+//		public function get layerWidth():uint
+//		{
+//			return mLayerWidth;
+//		}
+//		
+//		public function get layerHeight():uint
+//		{
+//			return mLayerHeight;
+//		}
 		
-		public function get layerHeight():uint
+		public function clear():void
 		{
-			return mLayerHeight;
+			removeAllChildren();
+			mChildrenClip = new Dictionary;
 		}
 		
 		override public function removeChildAt(idx:uint):void

@@ -1,28 +1,62 @@
 package com.cokecode.halo.terrain
 {
 	import com.cokecode.halo.object.GameObject;
+	import com.cokecode.halo.resmgr.ResMgr;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.materials.texture.TextureOption;
+	
+	import flash.display.Bitmap;
+	import flash.utils.getTimer;
+	
+	import net.manaca.loaderqueue.LoaderQueueEvent;
 
 	/**
 	 * 地表的一个格子
 	 */
 	public class Tile extends GameObject
 	{
+		// 精灵
 		protected var mSprite:Sprite2D;
 		
-		public function Tile(textureObject:Texture2D = null)
+		// 最后一次被引用的时间
+		protected var mLastRefTime:uint;
+		
+		public function Tile(url:String)
 		{
-			// 地表禁用纹理过滤
-			textureObject.textureOptions = TextureOption.QUALITY_LOW;
+			ResMgr.loadByLoader(url, onComplete);
+		}
+		
+		public function get lastRefTime():uint
+		{
+			return mLastRefTime;
+		}
+
+		public function set lastRefTime(value:uint):void
+		{
+			mLastRefTime = value;
+		}
+		
+		public function updateRefTime():void
+		{
+			mLastRefTime = getTimer();
+		}
+
+		public function onComplete(evt:LoaderQueueEvent):void
+		{
+			// 从bitmap中创建贴图
+			var bmp:Bitmap = evt.target.context as Bitmap;
+			var tex:Texture2D = Texture2D.textureFromBitmapData(bmp.bitmapData);
+			tex.textureOptions = TextureOption.QUALITY_LOW;
 			
-			mSprite = new Sprite2D(textureObject);
+			// 创建精灵
+			mSprite = new Sprite2D(tex);
 			mSprite.pivot.x = -mSprite.width * 0.5;
-			mSprite.pivot.y = -mSprite.height * 0.5;
+			mSprite.pivot.y = mSprite.height * 0.5;
 			
+			// 加入显示
 			addChild(mSprite);
 		}
 		
