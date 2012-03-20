@@ -92,9 +92,6 @@ package game.magic
 			sp.scaleX = 2;
 			sp.scaleY = 2;
 			sp.blendMode = BlendModePresets.ADD_NO_PREMULTIPLIED_ALPHA;
-			
-//			var 
-//			0_00003
 		}		
 		
 		public function update(elapsed:Number):void
