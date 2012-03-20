@@ -5,16 +5,9 @@ package com.cokecode.halo.magic
 	 * */
 	public class MagicFly extends MagicBase
 	{
-		private var mTargetX:uint				= 0;		//目标x
-		private var mTargetY:uint				= 0;		//目标y
-		private var mTargetID:uint				= 0;		//目标id
-		
-		public function MagicFly(targetID:uint, targetX:uint, targetY:uint)
+		public function MagicFly()
 		{
-			super();
-			mTargetID = targetID;
-			mTargetX = targetX;
-			mTargetY = targetY;
+			
 		}
 		
 		protected override function isEnd():Boolean
