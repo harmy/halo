@@ -11,6 +11,8 @@ package game
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import game.magic.MagicTest;
+
 	
 	public class GameScene extends Scene2D
 	{
@@ -21,6 +23,7 @@ package game
 		public function GameScene()
 		{
 			super();
+			MagicTest.instance().init();
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
@@ -29,6 +32,7 @@ package game
 			// 创建测试地图
 			mMap = new Map();
 			addChild(mMap);
+			MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
 			for (var i:uint=0; i<1000 * 1; ++i) {
@@ -121,9 +125,13 @@ package game
 				if (camera.y > bottom) camera.y = bottom;
 			}
 			
+			MagicTest.instance().update(elapsed);
 			
 			//trace("相机位置：" + camera.x + "," + camera.y);
 		}
-		
 	}
 }
+
+
+
+
