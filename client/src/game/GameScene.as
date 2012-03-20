@@ -32,14 +32,17 @@ package game
 			// 创建测试地图
 			mMap = new Map();
 			addChild(mMap);
-			MagicTest.instance().parent(mMap.getLayer("magic_after"));
+			
+			//MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
 			for (var i:uint=0; i<1000 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
-				char.charView = GameAssets.createChar(0);
+				char.charView = GameAssets.createChar();
 				char.x = int(Math.random() * 1280 * 2);
 				char.y = int(Math.random() * 700 * 2);
+				
+				//char.x = char.y = 0;
 				
 				var layer:SortLayer = mMap.getLayer("sort") as SortLayer;
 				
@@ -83,7 +86,7 @@ package game
 		
 		public function onKeyDown(evt:KeyboardEvent):void
 		{
-			var STEP:Number = 20;
+			var STEP:Number = 5;
 			if (evt.keyCode == Keyboard.LEFT) {
 				if (mHero) mHero.x -= STEP;
 			} else if (evt.keyCode == Keyboard.RIGHT) {
@@ -127,7 +130,10 @@ package game
 			
 			MagicTest.instance().update(elapsed);
 			
-			//trace("相机位置：" + camera.x + "," + camera.y);
+//			trace("------------- begin -----------");
+//			trace("角色位置：" + mHero.x + "," + mHero.y);
+//			trace("相机位置：" + camera.x + "," + camera.y);
+//			trace("------------- end -----------");
 		}
 	}
 }

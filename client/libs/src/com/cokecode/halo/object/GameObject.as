@@ -48,12 +48,17 @@ package com.cokecode.halo.object
 		
 		public function GameObject()
 		{
-			mTFName.text = "我的名字";
 			mTFName.y = -90;
 			mTFName.textColor = 0xFFFFFF;
 			mTFName.filter = [CoreConst.GLOW_FILTER1];
-
+		}
+		
+		public function setNameText(name:String):void
+		{
+			removeChild(mTFName);
 			addChild(mTFName);
+			
+			mTFName.text = name;
 		}
 		
 		

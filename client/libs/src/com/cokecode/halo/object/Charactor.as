@@ -18,6 +18,8 @@ package com.cokecode.halo.object
 			mLooks = looks;
 			
 			mId = count++;
+			
+			setNameText("我是玩家");
 		}
 		
 		public function set charView(value:Sprite2D):void
@@ -45,16 +47,31 @@ package com.cokecode.halo.object
 		
 		override public function isInViewport(camera:Camera2D):Boolean
 		{
-			if (x + width < camera.x)
+//			if (x + width < camera.x)
+//				return false;
+//			
+//			if (y + width < camera.y)
+//				return false;
+//			
+//			if ((x - height) > (camera.x + camera.sceneWidth))
+//				return false;
+//			
+//			if ((y - height) > (camera.y + camera.sceneHeight))
+//				return false;
+			
+			var halfW:Number = width * 0.5;
+			var halfH:Number = height * 0.5;
+			
+			if (x + halfW < camera.x)	// 图片移出相机左边
 				return false;
 			
-			if (y + width < camera.y)
+			if (y + halfH < camera.y)	// 图片移出相机上边
 				return false;
 			
-			if ((x - height) > (camera.x + camera.sceneWidth))
+			if (x - halfW > camera.x + camera.sceneWidth)	// 图片移出相机右边
 				return false;
 			
-			if ((y - height) > (camera.y + camera.sceneHeight))
+			if (y - halfH > camera.y + camera.sceneHeight)	// 图片移出相机下边
 				return false;
 			
 			return true;
