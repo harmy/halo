@@ -1,4 +1,4 @@
-package core.utils
+package com.cokecode.halo.utils
 {
 	import flash.net.SharedObject;
 

@@ -3,6 +3,8 @@ package com.cokecode.halo.terrain
 	import com.cokecode.halo.data.CoreConst;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.*;
+	import com.cokecode.halo.terrain.tmx.TMX;
+	import com.cokecode.halo.terrain.tmx.TMXLayer;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	
@@ -23,11 +25,10 @@ package com.cokecode.halo.terrain
 		 */
 		static public var TileHeight:uint = 32;
 		
-		
 		/**
-		 * 存放地图的路径
+		 * 存放解析出来的地图数据
 		 */
-		private var mMapPath:String;
+		private var mTmx:TMX;
 		
 		private var mLayers:Vector.<Layer> = new Vector.<Layer>();
 		private var mLayerDic:Dictionary = new Dictionary;	// Layer
@@ -54,16 +55,13 @@ package com.cokecode.halo.terrain
 		}
 		
 		/**
-		 * 设置地图文件的存放路径
+		 * 清理所有的层
 		 */
-		public function setMapPath(path:String):void
-		{
-			mMapPath = path;
-		}
-		
 		private function cleanLayers():void
 		{
-			
+			for (var i:uint=0; i<mLayers.length; ++i) {
+				mLayers[i].clear();
+			}
 		}
 		
 		private function initLayers():void
@@ -103,8 +101,7 @@ package com.cokecode.halo.terrain
 		
 		public function load(url:String):void
 		{
-			var mapUrl:String = mMapPath + "/" + url;
-			ResMgr.loadByURLLoader(mapUrl, onComplete, CoreConst.PRIORITY_MAP);
+			ResMgr.loadByURLLoader(url, onComplete, CoreConst.PRIORITY_MAP);
 			
 			// 测试代码
 			mWidth = 7680;
@@ -113,15 +110,26 @@ package com.cokecode.halo.terrain
 		
 		private function onComplete(event:LoaderQueueEvent):void
 		{
-			cleanLayers();//清理之前的层数据
+			// cleanLayers();//清理之前的层数据
+			
+			// 读取tmx地图文件
+			mTmx = new TMX( new XML(event.target.data),  "Z:/res/maps/1/" );
+			mWidth = mTmx.width * mTmx.tileWidth;
+			mHeight = mTmx.height * mTmx.tileHeight;
+			
+			// 设置地图层的数据
+			var layer:Layer;
+			var tmxLayer:TMXLayer;
+			for (var i:uint=0; i<mTmx.layersArray.length; ++i) {
+				tmxLayer = mTmx.layersArray[i];
+				layer = getLayer(tmxLayer.name);
+				if (layer != null) {
+					layer.setTMXData(mTmx, tmxLayer);
+				} else {
+					trace("不存在的层: " + tmxLayer.name);
+				}
+			}
 		}
-		
-//		public function update(elapse:uint):void
-//		{
-//			for (var i:uint=0; i<mLayers.length; ++i) {
-//				mLayers[i].update(elapse);
-//			}			
-//		}
 		
 		public function addLayer(layer:Layer):void
 		{

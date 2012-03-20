@@ -1,5 +1,7 @@
 package 
 {
+	import com.sociodox.theminer.TheMiner;
+	
 	import de.nulldesign.nd2d.display.World2D;
 	
 	import flash.display.Scene;
@@ -31,6 +33,10 @@ package
 			// 添加性能分析图
 			addChild(mStats);
 			//mStats.visible =false;
+			
+			// 添加性能分析工具
+			var miner:TheMiner = new TheMiner;
+			//addChild(miner);
 			
 			if(sInstance != null)
 			{
