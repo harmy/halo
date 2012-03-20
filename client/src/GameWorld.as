@@ -1,5 +1,7 @@
 package 
 {
+	import com.cokecode.halo.ui.Console;
+	
 	import de.nulldesign.nd2d.display.World2D;
 	
 	import flash.display.Scene;
@@ -21,6 +23,7 @@ package
 		private static var sInstance:GameWorld;
 		
 		protected var mStats:Stats = new Stats();
+		public var mConsole:Console = new Console;
 	
 		
 		public function GameWorld()
@@ -31,6 +34,8 @@ package
 			// 添加性能分析图
 			addChild(mStats);
 			//mStats.visible =false;
+			
+			addChild(mConsole);
 			
 			if(sInstance != null)
 			{

@@ -1,5 +1,8 @@
 package game.magic
 {
+	import com.cokecode.halo.magic.MagicMgr;
+	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Scene2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
@@ -60,17 +63,13 @@ package game.magic
 		
 		public function init():void
 		{
-		}
-		
-		public function addMagic():void
-		{
-			
+			MagicMgr.instance().addMagic(8, 3,3,3,3,3,3,3);
 		}
 		
 		public function test_magic():void
 		{
 			var atlasTex_Jiguang:Texture2D = Texture2D.textureFromBitmapData(new jiguang_png().bitmapData);
-			var atlas_Jiguang:TextureAtlas = new TextureAtlas(atlasTex_Jiguang.bitmapWidth, atlasTex_Jiguang.bitmapHeight, 
+			var atlas_Jiguang:AnimationAtlas = new AnimationAtlas(atlasTex_Jiguang.bitmapWidth, atlasTex_Jiguang.bitmapHeight, 
 				new XML(new jiguang_plist()), TextureAtlas.XML_FORMAT_COCOS2D, 5, false);
 			var sp:Sprite2D = new Sprite2D(atlasTex_Jiguang);
 			sp.setSpriteSheet(atlas_Jiguang);

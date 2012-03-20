@@ -1,5 +1,7 @@
 package
 {
+	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.display.Sprite2DBatch;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -57,7 +59,7 @@ package
 		private static var sprXmls:Array = [];
 		
 		private static var vecTex2d:Vector.<Texture2D> = new Vector.<Texture2D>();
-		private static var vecTexAtlas:Vector.<TextureAtlas> = new Vector.<TextureAtlas>();
+		private static var vecTexAtlas:Vector.<AnimationAtlas> = new Vector.<AnimationAtlas>();
 		private static var vecSpr2d:Vector.<Sprite2D> = new Vector.<Sprite2D>();
 		
 		static public function initGameRes():void
@@ -83,7 +85,8 @@ package
 				
 				var tex2d:Texture2D = Texture2D.textureFromBitmapData(bmp.bitmapData, true);
 				tex2d.textureOptions = TextureOption.QUALITY_LOW;
-				var texAtlas:TextureAtlas = new TextureAtlas(tex2d.bitmapWidth, tex2d.bitmapHeight, xmlData, TextureAtlas.XML_FORMAT_COCOS2D, 8);
+				var texAtlas:AnimationAtlas = new AnimationAtlas(tex2d.bitmapWidth, tex2d.bitmapHeight, xmlData, 
+					TextureAtlas.XML_FORMAT_COCOS2D, 8);
 				
 				var key:Array = [];
 				for (var k:int = 0; k < 6; k++) key.push("attack_0000" + k + ".png");
@@ -108,7 +111,7 @@ package
 				index = texIndex;
 			
 			var tex:Texture2D = vecTex2d[index];
-			var texAtlas:TextureAtlas = vecTexAtlas[index];
+			var texAtlas:AnimationAtlas = vecTexAtlas[index];
 			
 			var charSpr:Sprite2D = new Sprite2D(tex);
 			charSpr.setSpriteSheet(texAtlas);

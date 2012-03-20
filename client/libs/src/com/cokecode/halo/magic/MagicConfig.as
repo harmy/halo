@@ -19,8 +19,8 @@ package com.cokecode.halo.magic
 		public var mOption:uint				= 0;		//其他选项
 		
 		public var mChild:MagicConfig						//子节点
-		public var mSibling:MagicConfig						//弟兄节点
-		public var mParent:MagicConfig;						//父节点
+		public var mSibling:MagicConfig					//弟兄节点
+		public var mParent:MagicConfig;					//父节点
 		
 		public function MagicConfig()
 		{

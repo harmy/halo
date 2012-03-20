@@ -1,6 +1,7 @@
 package com.cokecode.halo.terrain.layers
 {
 	import com.cokecode.halo.object.GameObject;
+	import com.cokecode.halo.object.IClip;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	
@@ -76,12 +77,12 @@ package com.cokecode.halo.terrain.layers
 		 */
 		public function clip():void
 		{
-			var child:GameObject;
+			var child:IClip;
 			
 			// 处理裁剪掉的对象
 			for each(child in mChildrenClip) {
 				if ( child.isInViewport(camera) ) {
-					super.addChild(child);
+					super.addChild(child as Node2D);
 					delete mChildrenClip[child];
 				}
 			}

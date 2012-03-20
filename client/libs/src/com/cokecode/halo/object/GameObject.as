@@ -12,7 +12,7 @@ package com.cokecode.halo.object
 	/**
 	 * 游戏对象： 玩家、NPC、怪物、宠物、等等
 	 */
-	public class GameObject extends Node2D
+	public class GameObject extends Node2D implements IClip
 	{
 		/**
 		 * 唯一ID

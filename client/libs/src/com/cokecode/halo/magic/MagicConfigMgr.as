@@ -24,6 +24,11 @@ package com.cokecode.halo.magic
 		
 		public static function instance():MagicConfigMgr
 		{
+			if(sInstance == null)
+			{
+				sInstance = new MagicConfigMgr;
+			}
+			
 			return sInstance;
 		}
 		
@@ -31,9 +36,9 @@ package com.cokecode.halo.magic
 		{
 			var arr:Array = new Array;
 			var cf1:MagicConfig = new MagicConfig;
-			cf1.mRootID = 1;
+			cf1.mRootID = 123;
 			cf1.mAniSpeed = 100;
-			cf1.mBlend = BlendModePresets.ADD_NO_PREMULTIPLIED_ALPHA;
+			cf1.mBlend = 2;
 			cf1.mDuration = 30000;
 			cf1.mEndType = MagicConst.END_TYPE_DURATION;
 			cf1.mFlySpeed = 0;
