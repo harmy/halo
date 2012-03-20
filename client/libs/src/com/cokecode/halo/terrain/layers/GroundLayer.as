@@ -1,7 +1,10 @@
 package com.cokecode.halo.terrain.layers
 {
+	import com.cokecode.halo.terrain.Tile;
+	
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import de.nulldesign.nd2d.materials.texture.TextureOption;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -35,21 +38,21 @@ package com.cokecode.halo.terrain.layers
 					rectSrc.height = GROUND_TILE_HEIGHT;
 					var ptDest:Point = new Point(0, 0);
 					tileBmp.copyPixels(mapBmp.bitmapData, rectSrc, ptDest, null, null, true);
+					
 					var tex:Texture2D = Texture2D.textureFromBitmapData(tileBmp);
-					var spr:Sprite2D = new Sprite2D(tex);
-					spr.x = x;
-					spr.y = y;
-					this.addChild(spr);					
+					var tile:Tile = new Tile(tex);
+					
+					tile.x = x;
+					tile.y = y;
+					
+					this.addChild(tile);	
 				}	
 			}
-			
-			//flatten();
-			
 		}
 		
-		override public function clip():void
-		{
-		}
+//		override public function clip():void
+//		{
+//		}
 		
 	}
 }

@@ -30,6 +30,7 @@ package
 			
 			// 添加性能分析图
 			addChild(mStats);
+			//mStats.visible =false;
 			
 			if(sInstance != null)
 			{

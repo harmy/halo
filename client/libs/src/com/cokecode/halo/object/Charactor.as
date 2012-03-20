@@ -1,5 +1,6 @@
 package com.cokecode.halo.object
 {
+	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
 	
 	import flash.filters.GlowFilter;
@@ -17,6 +18,8 @@ package com.cokecode.halo.object
 			mLooks = looks;
 			
 			mId = count++;
+			
+			setNameText("我是玩家");
 		}
 		
 		public function set charView(value:Sprite2D):void
@@ -31,46 +34,49 @@ package com.cokecode.halo.object
 			return mView;
 		}
 		
-//		override public function get width():Number
-//		{
-//			return mView.frameWidth;
-//		}
-//		
-//		override public function get height():Number
-//		{
-//			return mView.frameHeight;
-//		}
-		
-		/*
-		override public function inViewport(camera:Camera):Boolean
+		override public function get width():Number
 		{
-//			if (camera.x > x + 128)
+			return mView.width;
+		}
+		
+		override public function get height():Number
+		{
+			return mView.height;
+		}
+		
+		
+		override public function isInViewport(camera:Camera2D):Boolean
+		{
+//			if (x + width < camera.x)
 //				return false;
 //			
-//			if (camera.y > y + 128)
+//			if (y + width < camera.y)
 //				return false;
 //			
-//			if (camera.right < (x - 128))
+//			if ((x - height) > (camera.x + camera.sceneWidth))
 //				return false;
 //			
-//			if (camera.bottom < (y - 128))
+//			if ((y - height) > (camera.y + camera.sceneHeight))
 //				return false;
 			
-			if (camera.x > x + width/2)
+			var halfW:Number = width * 0.5;
+			var halfH:Number = height * 0.5;
+			
+			if (x + halfW < camera.x)	// 图片移出相机左边
 				return false;
 			
-			if (camera.y > y + height)
+			if (y + halfH < camera.y)	// 图片移出相机上边
 				return false;
 			
-			if (camera.right < (x - width/2))
+			if (x - halfW > camera.x + camera.sceneWidth)	// 图片移出相机右边
 				return false;
 			
-			if (camera.bottom < (y - height))
+			if (y - halfH > camera.y + camera.sceneHeight)	// 图片移出相机下边
 				return false;
 			
 			return true;
 		}
-		*/
+		
 		
 		/**
 		 * 更新内部逻辑

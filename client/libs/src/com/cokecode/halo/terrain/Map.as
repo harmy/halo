@@ -107,8 +107,8 @@ package com.cokecode.halo.terrain
 			ResMgr.loadByURLLoader(mapUrl, onComplete, CoreConst.PRIORITY_MAP);
 			
 			// 测试代码
-			mWidth = 8064;
-			mHeight = 4480;			
+			mWidth = 7680;
+			mHeight = 4096;			
 		}
 		
 		private function onComplete(event:LoaderQueueEvent):void
@@ -139,6 +139,8 @@ package com.cokecode.halo.terrain
 //			for (var i:uint=0; i<mLayers.length; ++i) {
 //				mLayers[i].updateCamera(camera);
 //			}
+			
+			
 		}
 		
 		
