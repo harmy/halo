@@ -36,7 +36,8 @@ package game
 			
 			// 创建测试地图
 			mMap = new Map();
-			mMap.load("Z:/res/maps/1.tmx");
+			mMap.setMapPath("Z:/res/maps/");
+			mMap.load("1.tmx");
 			addChild(mMap);
 			
 			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
@@ -81,6 +82,7 @@ package game
 //					layer.addChild( char2 );
 					
 					char.charView.tint = 0x00FF00;
+					//char.alpha = 0.3;
 					mTargetNode = mHero = char;
 				}
 				
@@ -89,6 +91,16 @@ package game
 			
 		}
 		
+		public function get map():Map
+		{
+			return mMap;
+		}
+
+		public function set map(value:Map):void
+		{
+			mMap = value;
+		}
+
 		public function onAddToStage(evt:Event):void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);

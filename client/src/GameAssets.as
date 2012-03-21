@@ -120,6 +120,9 @@ package
 			charSpr.setSpriteSheet(texAtlas);
 			charSpr.spriteSheet.playAnimation('attack');
 			
+			charSpr.pivot.x = -32;
+			charSpr.pivot.y = -16;
+			
 			return charSpr;
 		}
 		

@@ -1,9 +1,10 @@
 package 
 {
 
-	import com.sociodox.theminer.TheMiner;
+	import com.cokecode.halo.terrain.layers.Layer;
 	import com.cokecode.halo.ui.Console;
-
+	import com.sociodox.theminer.TheMiner;
+	
 	import de.nulldesign.nd2d.display.World2D;
 	
 	import flash.display.Scene;
@@ -12,6 +13,8 @@ package
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
+	
+	import flashx.textLayout.tlf_internal;
 	
 	import game.GameScene;
 	
@@ -42,6 +45,8 @@ package
 			//addChild(miner);
 
 			addChild(mConsole);
+			//mConsole.showConsole();
+			mConsole.addCommand("block", blockCommand);
 
 			
 			if(sInstance != null)
@@ -50,6 +55,13 @@ package
 			}
 			
 			sInstance = this;
+		}
+		
+		public function blockCommand(objectName:String, paramName:String, paramValue:String):void
+		{
+			var gamescene:GameScene = scene as GameScene;
+			var layer:Layer = gamescene.map.getLayer("block");
+			if (layer) layer.visible = !layer.visible;
 		}
 		
 		public static function instance():World2D

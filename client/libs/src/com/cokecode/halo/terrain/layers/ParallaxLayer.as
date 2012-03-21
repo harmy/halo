@@ -15,10 +15,10 @@ package com.cokecode.halo.terrain.layers
 	 */
 	public class ParallaxLayer extends Layer
 	{
-		private var mImageName:String;		// 贴图名称
-		private var mSpeedX:Number;		// X轴移动速度
-		private var mSpeedY:Number;		// Y轴移动速度
-		private var mSprite:Sprite2D;
+		protected var mImageName:String;	// 贴图名称
+		protected var mSpeedX:Number;		// X轴移动速度
+		protected var mSpeedY:Number;		// Y轴移动速度
+		protected var mSprite:Sprite2D;
 		
 		public function ParallaxLayer(name:String, width:uint, height:uint)
 		{
@@ -38,7 +38,7 @@ package com.cokecode.halo.terrain.layers
 			mImageName = prop["image"];
 			mSpeedX = prop["speedx"];
 			mSpeedY = prop["speedy"];
-			var url:String = mTMX.makeParallaxPath( mImageName );
+			var url:String = mTMX.getParallaxImgSrc( mImageName );
 			ResMgr.loadByLoader( url, onCompleteCB );
 		}
 		
@@ -79,7 +79,7 @@ package com.cokecode.halo.terrain.layers
 			mSprite.material.uvOffsetX = matX; //camera.x * xScal / 20000;
 			mSprite.material.uvOffsetY = matY; //camera.y * yScal / 20000;
 			
-			trace("matX: " + matX);
+			//trace("matX: " + matX);
 		}
 		
 		override protected function step(elapsed:Number):void 
