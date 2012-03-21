@@ -125,7 +125,7 @@ package game
 				
 				// 限制在地图之内
 				var right:uint = mMap.mapWidth - camera.sceneWidth;
-				var bottom:uint = mMap.mapHeight - camera.sceneHeight - 32;
+				var bottom:uint = mMap.mapHeight - camera.sceneHeight;
 				if (camera.x < 0) camera.x = 0;
 				if (camera.y < 0) camera.y = 0;
 				if (camera.x > right) camera.x = right;
@@ -134,10 +134,10 @@ package game
 			
 			MagicTest.instance().update(elapsed);
 			
-			trace("------------- begin -----------");
-			trace("角色位置：" + mHero.x + "," + mHero.y);
-			trace("相机位置：" + camera.x + "," + camera.y);
-			trace("------------- end -----------");
+//			trace("------------- begin -----------");
+//			trace("角色位置：" + mHero.x + "," + mHero.y);
+//			trace("相机位置：" + camera.x + "," + camera.y);
+//			trace("------------- end -----------");
 		}
 	}
 }

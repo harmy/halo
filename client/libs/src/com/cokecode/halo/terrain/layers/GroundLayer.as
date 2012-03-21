@@ -11,12 +11,16 @@ package com.cokecode.halo.terrain.layers
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+	
+	import flashx.textLayout.elements.BreakElement;
 
 	/**
 	 * 地表层
 	 */
 	public class GroundLayer extends Layer
 	{
+		static public const LOAD_RANGE_CONST:uint = 1;	// 加载范围的系数
+		
 		protected var mTileDic:Dictionary = new Dictionary;	// tile
 		
 		public function GroundLayer(name:String, width:uint, height:uint)
@@ -42,13 +46,17 @@ package com.cokecode.halo.terrain.layers
 			lastCameraPt.x = camera.x;
 			lastCameraPt.y = camera.y;
 			
+			var tile:Tile;
 			var key:String;
 			var nGrid:uint = 0;
 			
-			worldRect.x = int( (camera.x - camera.sceneWidth)  / mTMX.tileWidth );
-			worldRect.y = int( (camera.y - camera.sceneHeight) / mTMX.tileHeight );
-			worldRect.right = int( (camera.x + camera.sceneWidth * 2) / mTMX.tileWidth );
-			worldRect.bottom = int( (camera.y + camera.sceneHeight * 2) / mTMX.tileHeight );
+			var viewSizeX:uint = camera.sceneWidth * LOAD_RANGE_CONST;
+			var viewSizeY:uint = camera.sceneHeight * LOAD_RANGE_CONST;
+			
+			worldRect.x = int( (camera.x - viewSizeX)  / mTMX.tileWidth );
+			worldRect.y = int( (camera.y - viewSizeY) / mTMX.tileHeight );
+			worldRect.right = int( (camera.x + viewSizeX + camera.sceneWidth) / mTMX.tileWidth );
+			worldRect.bottom = int( (camera.y + viewSizeY + camera.sceneHeight) / mTMX.tileHeight );
 			if (worldRect.x < 0) worldRect.x = 0;
 			if (worldRect.y < 0) worldRect.y = 0;
 			if (worldRect.x > mTMX.width) worldRect.x = mTMX.width;
@@ -64,17 +72,22 @@ package com.cokecode.halo.terrain.layers
 					key = nx + "," + ny;
 					
 					// 已经加载，直接跳过
-					if ( mTileDic[key] != null ) continue;
+					tile = mTileDic[key];
+					if ( tile != null ) {
+						// 更新运用
+						tile.updateRefTime();
+						continue;
+					}
 					
 					// 创建地表
 					var url:String = mTMX.makeImgPath(nGrid);
-					var tile:Tile = new Tile(url);
+					tile = new Tile(url);
 					tile.x = nx * mTMX.tileWidth;
 					tile.y = ny * mTMX.tileHeight;
 					addChild(tile);
 					
 					mTileDic[key] = tile;
-					trace("x: " + nx + "," + ny + "," + nGrid);
+					//trace("x: " + nx + "," + ny + "," + nGrid);
 				}
 			}
 		}
@@ -82,12 +95,31 @@ package com.cokecode.halo.terrain.layers
 		// 删除屏幕外的地表贴图
 		protected function deleteTexture():void
 		{
-			// TODO
+			var tile:Tile;
+			for (var key:String in mTileDic) {
+				tile = mTileDic[key];
+				if ( !tile.isInViewport(camera) ) {
+					if (tile.canDispose()) {
+						// 不在屏幕内
+						tile.dispose();
+						removeChild(tile);
+						delete mTileDic[key];
+						//trace("删除屏幕外的贴图");
+						break;	// 一次只删除一个贴图
+					}
+				} else {
+					// 更新引用
+					tile.updateRefTime();
+				}
+			}
 		}
 		
 		// 处理地图元素加载和释放
 		override protected function step(elapsed:Number):void 
 		{
+			// 进行裁剪
+			super.step(elapsed);
+			
 			// 删除屏幕之外的贴图
 			deleteTexture();
 			

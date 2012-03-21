@@ -77,8 +77,15 @@ package com.cokecode.halo.terrain.layers
 			mChildrenClip = new Dictionary;
 		}
 		
-		override public function removeChildAt(idx:uint):void
-		{
+		override public function removeChild(child:Node2D):void {
+			
+			// 先删除裁剪掉的对象
+			delete mChildrenClip[child];
+			
+			super.removeChild(child);
+		}
+		
+		override public function removeChildAt(idx:uint):void {
 			var child:Node2D = getChildAt(idx);
 			if (child == null) return;
 			
@@ -88,6 +95,7 @@ package com.cokecode.halo.terrain.layers
 			// 再删除容器内的对象
 			super.removeChildAt(idx);
 		}
+
 		
 		/**
 		 * 对象进行裁剪
@@ -106,7 +114,7 @@ package com.cokecode.halo.terrain.layers
 			
 			// 处理容器内的对象
 			for (var i:uint=0; i<numChildren; ++i) {
-				child = this.getChildAt(i) as GameObject;
+				child = this.getChildAt(i) as IClip;
 				if (child == null) continue;
 				if ( !child.isInViewport(camera) ) {
 					mChildrenClip[child] = child;
