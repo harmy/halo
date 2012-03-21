@@ -36,7 +36,7 @@ package com.cokecode.halo.terrain.layers
 		}
 		
 		// 预加载屏幕内的地表贴图
-		private var lastCameraPt:Point = new Point(-1000, -1000);
+		private var lastCameraPt:Point = new Point(-1000, -1000);	// -1000 初始值为的是loadTexture必定执行一次
 		private var worldRect:Rectangle = new Rectangle;
 		protected function loadTexture():void
 		{

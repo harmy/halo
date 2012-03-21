@@ -44,11 +44,11 @@ package game
 			MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
-			for (var i:uint=0; i<150 * 1; ++i) {
+			for (var i:uint=0; i<200 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				char.charView = GameAssets.createChar();
-				char.x = int(Math.random() * 10); //int(Math.random() * 40);
-				char.y = int(Math.random() * 10); //int(Math.random() * 44);
+				char.x = int(Math.random() * 40);
+				char.y = int(Math.random() * 44);
 				
 				char.x = char.x * 64;
 				char.y = char.y * 32;
