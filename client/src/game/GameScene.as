@@ -2,6 +2,8 @@ package game
 {
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.Map;
+	import com.cokecode.halo.terrain.layers.Layer;
+	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
 	
 	import de.nulldesign.nd2d.display.Node2D;
@@ -11,6 +13,7 @@ package game
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	
 	import game.magic.MagicTest;
 
 	
@@ -19,6 +22,8 @@ package game
 		protected var mHero:Charactor;
 		protected var mTargetNode:Node2D;
 		protected var mMap:Map;
+		
+		protected var mParLayer:ParallaxLayer;
 		
 		public function GameScene()
 		{
@@ -34,14 +39,16 @@ package game
 			mMap.load("Z:/res/maps/1.tmx");
 			addChild(mMap);
 			
+			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
+			
 			MagicTest.instance().parent(mMap.getLayer("magic_after"));
 			
 			// 创建测试角色			
-			for (var i:uint=0; i<1 * 1; ++i) {
+			for (var i:uint=0; i<150 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				char.charView = GameAssets.createChar();
-				char.x = int(Math.random() * 40);
-				char.y = int(Math.random() * 44);
+				char.x = int(Math.random() * 10); //int(Math.random() * 40);
+				char.y = int(Math.random() * 10); //int(Math.random() * 44);
 				
 				char.x = char.x * 64;
 				char.y = char.y * 32;
@@ -113,7 +120,7 @@ package game
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
 		}
 		
-		override protected function step(elapsed:Number):void 
+		override protected function step(elapsed:Number):void
 		{
 			if(mTargetNode) {
 				var tempX:uint = camera.sceneWidth * 0.5;
@@ -131,6 +138,9 @@ package game
 				if (camera.x > right) camera.x = right;
 				if (camera.y > bottom) camera.y = bottom;
 			}
+			
+			// 因为优先更新子节点，后更新场景，所以会出现相机更新延迟(后期再优化)
+			mParLayer.update(elapsed);
 			
 			MagicTest.instance().update(elapsed);
 			

@@ -1,9 +1,9 @@
 package com.cokecode.halo.terrain.layers
 {
 	import com.cokecode.halo.object.GameObject;
+	import com.cokecode.halo.object.IClip;
 	import com.cokecode.halo.terrain.tmx.TMX;
 	import com.cokecode.halo.terrain.tmx.TMXLayer;
-	import com.cokecode.halo.object.IClip;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	
@@ -56,6 +56,11 @@ package com.cokecode.halo.terrain.layers
 			mTMXLayer = tmxLayer;
 		}
 		
+		public function initData():void
+		{
+			//TODO
+		}
+		
 		public function get layerName():String
 		{
 			return mLayerName;
@@ -73,6 +78,7 @@ package com.cokecode.halo.terrain.layers
 		
 		public function clear():void
 		{
+			dispose();
 			removeAllChildren();
 			mChildrenClip = new Dictionary;
 		}
@@ -129,6 +135,11 @@ package com.cokecode.halo.terrain.layers
 		{
 			// 根据相机位置，进行裁剪
 			clip();
+		}
+		
+		public function update(elapsed:Number):void
+		{
+			
 		}
 		
 		/**

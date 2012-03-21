@@ -89,7 +89,10 @@ package
 					TextureAtlas.XML_FORMAT_COCOS2D, 8);
 				
 				var key:Array = [];
-				for (var k:int = 0; k < 6; k++) key.push("attack_0000" + k + ".png");
+				for (var k:int = 0; k < 6; k++) {
+					//key.push("attack_0000" + k + ".png");
+					key.push(k);
+				}
 				texAtlas.addAnimation('attack', key, true);
 				
 				var spr2d:Sprite2D = new Sprite2D(tex2d);

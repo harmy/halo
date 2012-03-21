@@ -126,6 +126,7 @@ package com.cokecode.halo.terrain
 				layer = getLayer(tmxLayer.name);
 				if (layer != null) {
 					layer.setTMXData(mTmx, tmxLayer);
+					layer.initData();
 				} else {
 					trace("不存在的层: " + tmxLayer.name);
 				}

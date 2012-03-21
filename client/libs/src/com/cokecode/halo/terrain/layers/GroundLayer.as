@@ -29,9 +29,14 @@ package com.cokecode.halo.terrain.layers
 			super(name, width, height);
 		}
 		
+		override public function clear():void
+		{
+			super.clear();
+			mTileDic = new Dictionary;
+		}
 		
 		// 预加载屏幕内的地表贴图
-		private var lastCameraPt:Point = new Point;
+		private var lastCameraPt:Point = new Point(-1000, -1000);
 		private var worldRect:Rectangle = new Rectangle;
 		protected function loadTexture():void
 		{
