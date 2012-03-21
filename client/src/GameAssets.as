@@ -121,7 +121,7 @@ package
 			charSpr.spriteSheet.playAnimation('attack');
 			
 			charSpr.pivot.x = -32;
-			charSpr.pivot.y = -16;
+			charSpr.pivot.y = 16;
 			
 			return charSpr;
 		}

@@ -130,6 +130,22 @@ package game
 			if (mHero.y < 0) mHero.y = 0;
 			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
+			
+			var cellX:uint = mHero.x / Map.sTileWidth;
+			var cellY:uint = mHero.y / Map.sTileHeight;
+			if ( mMap.getBlock(cellX, cellY) == 1 ) {
+				// 阻挡信息
+				mHero.charView.tint = 0xFF0000;
+				mHero.charView.alpha = 1;
+			} else if ( mMap.getBlock(cellX, cellY) == 2 ) {
+				// 透明信息
+				mHero.charView.tint = 0xFFFFFF;
+				mHero.charView.alpha = 0.5;
+			} else {
+				// 可走信息
+				mHero.charView.tint = 0x00FF00;
+				mHero.charView.alpha = 1;
+			}
 		}
 		
 		override protected function step(elapsed:Number):void

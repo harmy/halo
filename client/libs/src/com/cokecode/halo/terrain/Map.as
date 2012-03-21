@@ -108,6 +108,13 @@ package com.cokecode.halo.terrain
 			mMapPath = path;
 		}
 		
+		public function getBlock(x:int, y:int):int
+		{
+			var layer:Layer = getLayer("block");
+			if (layer == null) return 0;
+			return layer.getBlock(x, y);
+		}
+		
 		public function load(url:String):void
 		{
 			var s1:int = url.lastIndexOf("/") + 1;
@@ -121,6 +128,8 @@ package com.cokecode.halo.terrain
 			mWidth = 7680;
 			mHeight = 4096;			
 		}
+		
+		
 		
 		private function onComplete(event:LoaderQueueEvent):void
 		{
