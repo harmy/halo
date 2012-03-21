@@ -16,13 +16,20 @@ package com.cokecode.halo.magic
 	 * 魔法基类
 	 * */
 	public class MagicBase extends Node2D implements IClip
-	{
-		private var mCurDir:uint				= 0;		//当前方向	
+	{		
 		private var mID:uint					= 0;		//标识id
-		private var mStartTime:uint			= 0;		//魔法开始时间
-		protected var mConfig:MagicConfig;
+		private var mStartTime:uint			= 0;		//魔法开始时间		
+		protected var mCurDir:uint				= 0;		//当前方向		
+		protected var mSrcID:uint				= 0;		//释放者id
+		protected var mSrcX:uint				= 0;		//释放点x
+		protected var mSrcY:uint				= 0;		//释放点y
+		protected var mTargetX:uint			= 0;		//目标x
+		protected var mTargetY:uint			= 0;		//目标y
+		protected var mTargetID:uint			= 0;		//目标id				
 		protected var mSprite:Sprite2D;
 		protected var mStart:Boolean			= false;	//魔法是否已开始
+		protected var mLayer:Layer;
+		public var mConfig:MagicConfig;
 		
 		public function MagicBase()
 		{
@@ -47,31 +54,52 @@ package com.cokecode.halo.magic
 			mID = id;
 		}
 		
-		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):void
+		public function setParam(dir:uint, srcID:uint, srcX:uint, srcY:uint, 
+								 targetID:uint, targetX:uint, targetY:uint):void
+		{
+			mCurDir = dir;
+			mSrcID = srcID;
+			mSrcX = srcX;
+			mSrcY = srcY;
+			mTargetID = targetID;
+			mTargetX = targetX;
+			mTargetY = targetY;			
+		}
+		
+		//清理分配的资源
+		public override function dispose():void
+		{
+			mLayer.removeChild(this);
+			removeChild(mSprite);
+			mSprite = null;
+			MagicMgr.instance().delMagic(id);			
+		}
+		
+		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):MagicConfig
 		{
 			mSprite = new Sprite2D(atlasTex);
 			mSprite.setSpriteSheet(atlas);
 			addChild(mSprite);
 			layer.addChild(this);
+			mLayer = layer;
 			mStart = true;
-			mStartTime = getTimer();			
-		}		
-		
-		public function get dir():uint
-		{
-			return mCurDir;
-		}
-		
-		public function set dir(dir:uint):void
-		{
-			mCurDir = dir;
+			mStartTime = getTimer();
+			
+			return mConfig.mSibling;
 		}
 		
 		protected override function step(elapsed:Number):void
 		{
 			if(isEnd())
 			{
-				//魔法已结束
+				//魔法已结束, 检查子节点				
+				if(mConfig.mChild != null)
+				{
+					MagicMgr.instance().doMagic(mConfig.mChild, mCurDir, mSrcID, mSrcX, mSrcY, mTargetID, mTargetX, mTargetY);
+				}
+				
+				dispose();
+				
 				return;
 			}
 			

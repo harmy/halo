@@ -1,5 +1,7 @@
 package com.cokecode.halo.magic
 {
+	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	
 	import flash.utils.Dictionary;
 
 	/**
@@ -9,6 +11,7 @@ package com.cokecode.halo.magic
 	{
 		private static var sInstance:MagicMgr;
 		private var mMagicDict:Dictionary;
+		private var mCurAllocID:uint = 0;
 		
 		public function MagicMgr()
 		{
@@ -30,9 +33,50 @@ package com.cokecode.halo.magic
 			return sInstance;
 		}
 		
+		public function allocID():uint
+		{
+			return ++mCurAllocID;
+		}
+		
 		public function loadConfig(path:String):void
 		{
 			MagicConfigMgr.instance().loadConfig(path);
+		}
+		
+		public function delMagic(id:uint):void
+		{
+			mMagicDict[id] = null;
+		}
+		
+		public function doMagic(config:MagicConfig, dir:uint, srcID:uint, srcX:uint, srcY:uint, 
+								targetID:uint, targetX:uint, targetY:uint):void
+		{
+			var magic:MagicBase;
+			
+			if(config.mType == MagicConst.TYPE_SELF)
+			{
+				magic = new MagicSelf;
+			}	
+			else if(config.mType == MagicConst.TYPE_FLY)
+			{
+				magic = new MagicFly;
+			}
+			else
+			{
+				magic = new MagicDest;
+			}
+			
+			magic.id = allocID();
+			magic.mConfig = config;
+			mMagicDict[magic.id] = magic;
+			magic.setParam(dir, srcID, srcX, srcY, targetID, targetX, targetY);
+			var nextConfig:MagicConfig = magic.init(null, null, null);
+			
+			//如果弟兄节点存在，递归
+			if(nextConfig != null)
+			{
+				doMagic(nextConfig, dir, srcID, srcX, srcY, targetID, targetX, targetY);
+			}
 		}
 		
 		//触发一个新魔法
@@ -47,24 +91,7 @@ package com.cokecode.halo.magic
 			}
 			
 			var config:MagicConfig = cfArr[0];
-			var magic:MagicBase;
-			
-			if(config.mType == MagicConst.TYPE_SELF)
-			{
-				magic = new MagicSelf(srcID, srcX, srcY);
-			}	
-			else if(config.mType == MagicConst.TYPE_FLY)
-			{
-				magic = new MagicFly(targetID, targetX, targetY);
-			}
-			else
-			{
-				magic = new MagicDest(targetID, targetX, targetY);
-			}
-			
-			magic.id = 2;
-			magic.dir = dir;
-			mMagicDict[magic.id] = magic;
+			doMagic(config, dir, srcID, srcX, srcY, targetID, targetX, targetY);
 		}
 	}
 }
