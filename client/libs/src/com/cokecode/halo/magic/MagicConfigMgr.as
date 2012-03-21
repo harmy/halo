@@ -7,7 +7,7 @@ package com.cokecode.halo.magic
 	/**
 	 * 魔法配置管理
 	 * */
-	public final class MagicConfigMgr
+	internal final class MagicConfigMgr
 	{
 		private var mConfigMgr:Dictionary = new Dictionary;
 		private static var sInstance:MagicConfigMgr;
@@ -35,22 +35,49 @@ package com.cokecode.halo.magic
 		internal function loadConfig(path:String):void
 		{
 			var arr:Array = new Array;
+			
+			//释放
 			var cf1:MagicConfig = new MagicConfig;
-			cf1.mRootID = 123;
-			cf1.mAniSpeed = 100;
-			cf1.mBlend = 2;
-			cf1.mDuration = 30000;
-			cf1.mEndType = MagicConst.END_TYPE_DURATION;
-			cf1.mFlySpeed = 0;
-			cf1.mLayer = MagicConst.LAYER_BEFORE_PLAYER;
-			cf1.mOffx = 50;
-			cf1.mOffy = 60;
-			cf1.mOption = MagicConst.OPT_FOLLOW_TARGET;
-			cf1.mScale = 2;
+			cf1.mRootID = 1;
+			cf1.mTexDirCount = 1;
+			cf1.mTexID = 1;
+			cf1.mScale = 1;
+			cf1.mTexDirCount = 1;
+			cf1.mLayer = MagicConst.LAYER_AFTER_PLAYER;
 			cf1.mType = MagicConst.TYPE_SELF;
+			cf1.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
+			cf1.mAniSpeed = 500;
 			arr.push(cf1);
-			addConfig(cf1.mRootID, arr);
-		}
+			
+			//飞行
+			var cf2:MagicConfig = new MagicConfig;
+			cf2.mRootID = 1;
+			cf2.mTexDirCount = 8;
+			cf2.mTexID = 2;
+			cf2.mScale = 1;
+			cf2.mLayer = MagicConst.LAYER_AFTER_PLAYER;
+			cf2.mType = MagicConst.TYPE_FLY;
+			cf2.mEndType = MagicConst.END_TYPE_MANUAL;
+			cf2.mFlySpeed = 60;
+			cf1.mAniSpeed = 500;
+			arr.push(cf2);
+			
+			//爆炸
+			var cf3:MagicConfig = new MagicConfig;
+			cf3.mRootID = 1;
+			cf3.mTexDirCount = 1;
+			cf3.mTexID = 1;
+			cf3.mScale = 1;
+			cf1.mAniSpeed = 500;
+			cf3.mLayer = MagicConst.LAYER_AFTER_PLAYER;
+			cf3.mType = MagicConst.TYPE_DESTINATION;
+			cf3.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
+			arr.push(cf3);
+			
+			cf1.mChild = cf2;
+			cf2.mChild = cf3;
+			addConfig(1, arr);
+		}		
 		
 		private function addConfig(id:uint, arr:Array):void
 		{

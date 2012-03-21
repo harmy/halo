@@ -1,5 +1,7 @@
 package game
 {
+	import com.cokecode.halo.magic.MagicConst;
+	import com.cokecode.halo.magic.MagicMgr;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.terrain.layers.Layer;
@@ -28,7 +30,7 @@ package game
 		public function GameScene()
 		{
 			super();
-			MagicTest.instance().init();
+			
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
@@ -40,8 +42,8 @@ package game
 			addChild(mMap);
 			
 			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
-			
-			MagicTest.instance().parent(mMap.getLayer("magic_after"));
+			MagicMgr.instance().magicLayer = mMap.getLayer(MagicConst.STR_LAYER_AFTER);
+		
 			
 			// 创建测试角色			
 			for (var i:uint=0; i<200 * 1; ++i) {
@@ -87,6 +89,7 @@ package game
 				layer.addChild( char );
 			}
 			
+			MagicTest.instance().init();			
 		}
 		
 		public function onAddToStage(evt:Event):void
@@ -118,6 +121,8 @@ package game
 			if (mHero.y < 0) mHero.y = 0;
 			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
+			
+			MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);
 		}
 		
 		override protected function step(elapsed:Number):void
@@ -141,8 +146,6 @@ package game
 			
 			// 因为优先更新子节点，后更新场景，所以会出现相机更新延迟(后期再优化)
 			mParLayer.update(elapsed);
-			
-			MagicTest.instance().update(elapsed);
 			
 //			trace("------------- begin -----------");
 //			trace("角色位置：" + mHero.x + "," + mHero.y);

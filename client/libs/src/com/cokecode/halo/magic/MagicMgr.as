@@ -1,6 +1,7 @@
 package com.cokecode.halo.magic
 {
 	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	import com.cokecode.halo.terrain.layers.Layer;
 	
 	import flash.utils.Dictionary;
 
@@ -10,8 +11,11 @@ package com.cokecode.halo.magic
 	public final class MagicMgr
 	{
 		private static var sInstance:MagicMgr;
-		private var mMagicDict:Dictionary;
-		private var mCurAllocID:uint = 0;
+		private var mMagicDict:Dictionary		= new Dictionary;
+		private var mCurAllocID:uint 			= 0;
+		public var mAtlasDic:Dictionary 		= new Dictionary;
+		public var mTexDic:Dictionary 			= new Dictionary;
+		public var magicLayer:Layer;
 		
 		public function MagicMgr()
 		{
@@ -43,13 +47,23 @@ package com.cokecode.halo.magic
 			MagicConfigMgr.instance().loadConfig(path);
 		}
 		
-		public function delMagic(id:uint):void
+		internal function erase(id:uint):void
 		{
 			mMagicDict[id] = null;
 		}
 		
-		public function doMagic(config:MagicConfig, dir:uint, srcID:uint, srcX:uint, srcY:uint, 
-								targetID:uint, targetX:uint, targetY:uint):void
+		public function delMagic(id:uint):void
+		{
+			var elem:MagicBase = mMagicDict[id];
+			
+			if(elem != null)
+			{
+				elem.clean();				
+			}
+		}
+		
+		internal function doMagic(config:MagicConfig, dir:uint, srcID:String, srcX:uint, srcY:uint, 
+								targetID:String, targetX:uint, targetY:uint):void
 		{
 			var magic:MagicBase;
 			
@@ -70,7 +84,7 @@ package com.cokecode.halo.magic
 			magic.mConfig = config;
 			mMagicDict[magic.id] = magic;
 			magic.setParam(dir, srcID, srcX, srcY, targetID, targetX, targetY);
-			var nextConfig:MagicConfig = magic.init(null, null, null);
+			var nextConfig:MagicConfig = magic.init(mAtlasDic[config.mTexID], mTexDic[config.mTexID], magicLayer);
 			
 			//如果弟兄节点存在，递归
 			if(nextConfig != null)
@@ -80,12 +94,12 @@ package com.cokecode.halo.magic
 		}
 		
 		//触发一个新魔法
-		public function addMagic(id:uint, dir:uint, srcID:uint, srcX:uint, srcY:uint, 
-								 targetID:uint, targetX:uint, targetY:uint):void
+		public function addMagic(id:uint, dir:uint, srcID:String, srcX:uint, srcY:uint, 
+								 targetID:String, targetX:uint, targetY:uint):void
 		{
 			var cfArr:Array = MagicConfigMgr.instance().getConfig(id);
 			
-			if(cfArr == null || cfArr.length() == 0)
+			if(cfArr == null || cfArr.length == 0)
 			{
 				return;
 			}

@@ -8,13 +8,27 @@ package com.cokecode.halo.magic
 	public class MagicSelf extends MagicBase
 	{
 		public function MagicSelf()
-		{
-			
+		{			
 		}
 		
-		protected override function isEnd():Boolean
+		protected override function doInit():void
 		{
-			return false;
+			super.doInit();
+			x = mSrcX + mConfig.mOffx;
+			y = mSrcY + mConfig.mOffy;
+		}	
+		
+		protected override function update(elapsed:Number):void
+		{	
+			if((mConfig.mOption & MagicConst.OPT_FOLLOW_TARGET) == 0)
+			{
+				return;
+			}		
+			
+			x = mSrcX + mConfig.mOffx;
+			y = mSrcY + mConfig.mOffy;
 		}
 	}
 }
+
+
