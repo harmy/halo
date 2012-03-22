@@ -30,21 +30,15 @@ package game
 		public function GameScene()
 		{
 			super();
-			
-			
-			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
-			
+			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);			
 			GameAssets.initGameRes();
 			
 			// 创建测试地图
 			mMap = new Map();
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
-			addChild(mMap);
-			
+			addChild(mMap);			
 			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
-			MagicMgr.instance().magicLayer = mMap.getLayer(MagicConst.STR_LAYER_AFTER);
-		
 			
 			// 创建测试角色			
 			for (var i:uint=0; i<200 * 1; ++i) {
@@ -91,7 +85,11 @@ package game
 				layer.addChild( char );
 			}
 			
-			MagicTest.instance().init();			
+			MagicTest.instance().init();	
+			
+			//注册到魔法管理器
+			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
+				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
 		}
 		
 		public function get map():Map
@@ -126,7 +124,25 @@ package game
 				if (mTargetNode == null) mTargetNode = mHero;
 				else mTargetNode = null;
 			} else if(evt.keyCode == Keyboard.NUMBER_1) {
-				MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);	
+				MagicMgr.instance().addMagic(1, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_2) {
+				MagicMgr.instance().addMagic(2, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_3) {
+				MagicMgr.instance().addMagic(3, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_4) {
+				MagicMgr.instance().addMagic(4, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_5) {
+				MagicMgr.instance().addMagic(5, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_6) {
+				MagicMgr.instance().addMagic(6, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_7) {
+				MagicMgr.instance().addMagic(7, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_8) {
+				MagicMgr.instance().addMagic(8, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_9) {
+				MagicMgr.instance().addMagic(9, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_0) {
+				MagicMgr.instance().addMagic(0, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
 			}
 			
 //			var right:uint = mMap.mapWidth - mHero.width;

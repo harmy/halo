@@ -14,7 +14,6 @@ package com.cokecode.halo.magic
 		
 		protected override function doInit():void
 		{
-			super.doInit();
 			x = mSrcX + mConfig.mOffx;
 			y = mSrcY + mConfig.mOffy;
 		}	
@@ -26,8 +25,8 @@ package com.cokecode.halo.magic
 				return;
 			}		
 			
-			x = mSrcX + mConfig.mOffx;
-			y = mSrcY + mConfig.mOffy;
+			x = MagicMgr.instance().mSelf.x + mConfig.mOffx;
+			y = MagicMgr.instance().mSelf.y + mConfig.mOffy;
 		}
 	}
 }

@@ -12,7 +12,6 @@ package com.cokecode.halo.magic
 		
 		protected override function doInit():void
 		{
-			super.doInit();
 			x = mTargetX + mConfig.mOffx;
 			y = mTargetY + mConfig.mOffy;
 		}

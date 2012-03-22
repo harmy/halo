@@ -2,6 +2,8 @@ package com.cokecode.halo.magic
 {
 	import com.cokecode.halo.object.GameObject;
 	
+	import de.nulldesign.nd2d.geom.Face;
+	
 	import flash.geom.Point;
 	
 	/**
@@ -21,7 +23,6 @@ package com.cokecode.halo.magic
 		
 		protected override function doInit():void
 		{
-			super.doInit();
 			x = mSrcX + mConfig.mOffx;
 			y = mSrcY + mConfig.mOffy;
 		}
@@ -60,10 +61,10 @@ package com.cokecode.halo.magic
 					return false;
 				}
 				
-				return Math.abs(x - targetObjX) < MagicConst.DIS_TOLERANCE && Math.abs(y - targetObjY) < MagicConst.DIS_TOLERANCE;
+				return Math.abs(x - targetObjX) <= MagicConst.DIS_TOLERANCE && Math.abs(y - targetObjY) <= MagicConst.DIS_TOLERANCE;
 			}			
 			
-			return Math.abs(x - targetObjX) < MagicConst.DIS_TOLERANCE && Math.abs(y - targetObjY) < MagicConst.DIS_TOLERANCE;
+			return Math.abs(x - targetObjX) <= MagicConst.DIS_TOLERANCE && Math.abs(y - targetObjY) <= MagicConst.DIS_TOLERANCE;
 		}
 		
 		private function getDisSign(srcX:Number, srcY:Number, destX:Number, destY:Number):Point
@@ -126,7 +127,7 @@ package com.cokecode.halo.magic
 				
 				lastAngle = Math.atan2(targetObjY - y, targetObjX - x);
 				lastTargetX = targetObjX;
-				lastTargetY = targetObjY;				
+				lastTargetY = targetObjY;
 			} 	
 			else
 			{

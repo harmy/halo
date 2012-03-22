@@ -1,6 +1,8 @@
 package com.cokecode.halo.magic
 {
+	import com.bit101.components.Label;
 	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.layers.Layer;
 	
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -20,7 +22,9 @@ package com.cokecode.halo.magic
 		private var mCurAllocID:uint 			= 0;
 		public var mAtlasDic:Dictionary 		= new Dictionary;
 		public var mAtlasTexDic:Dictionary 	= new Dictionary;
-		public var magicLayer:Layer;
+		private var mLayer_before:Layer;
+		private var mLayer_after:Layer;
+		internal var mSelf:Charactor;
 		
 		public function MagicMgr()
 		{
@@ -40,6 +44,13 @@ package com.cokecode.halo.magic
 			}
 			
 			return sInstance;
+		}
+		
+		public function register(layer1:Layer, layer2:Layer, obj:Charactor):void
+		{
+			mLayer_before = layer1;
+			mLayer_after = layer2;
+			mSelf = obj;
 		}
 		
 		public function allocID():uint
@@ -105,6 +116,17 @@ package com.cokecode.halo.magic
 			magic.mConfig = config;
 			mMagicDict[magic.id] = magic;
 			magic.setParam(dir, srcID, srcX, srcY, targetID, targetX, targetY);
+			var magicLayer:Layer;
+			
+			if(config.mLayer == MagicConst.LAYER_BEFORE_PLAYER)
+			{
+				magicLayer = mLayer_before;				
+			}
+			else
+			{
+				magicLayer = mLayer_after;
+			}
+			
 			var nextConfig:MagicConfig = magic.init(getAtlas(config.mTexID), getAtlasTex(config.mTexID), magicLayer);
 			
 			//如果弟兄节点存在，递归

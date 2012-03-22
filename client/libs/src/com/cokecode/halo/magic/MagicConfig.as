@@ -10,7 +10,7 @@ package com.cokecode.halo.magic
 		public var mEndType:uint				= 0;		//参考MagicConst
 		public var mOffx:int					= 0;		//x偏移
 		public var mOffy:int					= 0;		//y偏移
-		public var mScale:uint					= 0;		//放大倍数
+		public var mScale:uint					= 1;		//放大倍数
 		public var mBlend:uint					= 0;		//混合方式
 		public var mDuration:uint				= 0;		//持续时间
 		public var mSound:uint					= 0;		//声音
@@ -20,7 +20,6 @@ package com.cokecode.halo.magic
 		
 		public var mChild:MagicConfig						//子节点
 		public var mSibling:MagicConfig					//弟兄节点
-		public var mParent:MagicConfig;					//父节点
 		
 		public function MagicConfig()
 		{
