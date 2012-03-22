@@ -40,13 +40,13 @@ package com.cokecode.halo.magic
 			var cf1:MagicConfig = new MagicConfig;
 			cf1.mRootID = 1;
 			cf1.mTexDirCount = 1;
-			cf1.mTexID = 1;
+			cf1.mTexID = 4;
 			cf1.mScale = 1;
-			cf1.mTexDirCount = 1;
+			cf1.mTexDirCount = 8;
 			cf1.mLayer = MagicConst.LAYER_AFTER_PLAYER;
 			cf1.mType = MagicConst.TYPE_SELF;
 			cf1.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
-			cf1.mAniSpeed = 500;
+			cf1.mAniSpeed = 200;
 			arr.push(cf1);
 			
 			//飞行
@@ -58,8 +58,8 @@ package com.cokecode.halo.magic
 			cf2.mLayer = MagicConst.LAYER_AFTER_PLAYER;
 			cf2.mType = MagicConst.TYPE_FLY;
 			cf2.mEndType = MagicConst.END_TYPE_MANUAL;
-			cf2.mFlySpeed = 60;
-			cf1.mAniSpeed = 500;
+			cf2.mFlySpeed = 150;
+			cf2.mAniSpeed = 500;
 			arr.push(cf2);
 			
 			//爆炸
@@ -69,13 +69,13 @@ package com.cokecode.halo.magic
 			cf3.mTexID = 3;
 			cf3.mScale = 1;
 			cf3.mBlend = MagicConst.BLEND_ADD;
-			cf1.mAniSpeed = 500;
+			cf3.mAniSpeed = 200;
 			cf3.mLayer = MagicConst.LAYER_AFTER_PLAYER;
 			cf3.mType = MagicConst.TYPE_DESTINATION;
 			cf3.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
 			arr.push(cf3);
 			
-			cf1.mChild = cf2;
+//			cf1.mChild = cf2;
 			cf2.mChild = cf3;
 			addConfig(1, arr);
 		}		
