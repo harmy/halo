@@ -13,8 +13,7 @@ package
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
-	
-	import flashx.textLayout.tlf_internal;
+
 	
 	import game.GameScene;
 	

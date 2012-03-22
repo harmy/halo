@@ -125,6 +125,8 @@ package game
 				//camera.shake(Camera.SHAKE_Y, 6, 700, 100);
 				if (mTargetNode == null) mTargetNode = mHero;
 				else mTargetNode = null;
+			} else if(evt.keyCode == Keyboard.NUMBER_1) {
+				MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);	
 			}
 			
 //			var right:uint = mMap.mapWidth - mHero.width;
@@ -133,8 +135,6 @@ package game
 			if (mHero.y < 0) mHero.y = 0;
 			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
-			
-			MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);
 			
 			var cellX:uint = mHero.x / Map.sTileWidth;
 			var cellY:uint = mHero.y / Map.sTileHeight;

@@ -36,6 +36,7 @@
 //			mTbeDict.dispose();
 //		}
 		
+		// name - exp. human, monster, npc, pet
 		public function getModel(name:String):Model
 		{
 			var model:Model;
@@ -47,7 +48,7 @@
 			return mModelDict[name];
 		}
 	
-		
+		// name - exp. stand, run, attack
 		public function getAnim(name:String,onLoadFinishCB:Function = null):Animation
 		{
 			if (name == null) return null;
@@ -61,8 +62,9 @@
 				return mAnimDict[name];
 			}
 			
-			if(onLoadFinishCB!=null)
+			if(onLoadFinishCB!=null) {
 				onLoadFinishCB(new Event(Event.COMPLETE));
+			}
 				
 			return mAnimDict[name];
 		}
