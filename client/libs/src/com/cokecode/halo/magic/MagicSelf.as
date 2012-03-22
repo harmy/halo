@@ -5,10 +5,11 @@ package com.cokecode.halo.magic
 	/**
 	 * 自身类魔法
 	 * */
-	public class MagicSelf extends MagicBase
+	internal class MagicSelf extends MagicBase
 	{
 		public function MagicSelf()
 		{			
+			super();
 		}
 		
 		protected override function doInit():void

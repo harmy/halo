@@ -17,7 +17,7 @@ package com.cokecode.halo.magic
 	/**
 	 * 魔法基类
 	 * */
-	public class MagicBase extends Node2D implements IClip
+	internal class MagicBase extends Node2D implements IClip
 	{		
 		protected var mID:uint					= 0;		//标识id
 		protected var mStartTime:uint			= 0;		//魔法开始时间		
@@ -54,11 +54,6 @@ package com.cokecode.halo.magic
 			}
 			
 			return false;
-		}
-		
-		protected function isBuffMagic():Boolean
-		{
-			return mConfig.mBuff > 0;
 		}
 		
 		public function set id(id:uint):void
@@ -151,7 +146,7 @@ package com.cokecode.halo.magic
 				mSprite.spriteSheet.addAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, frameArr, true);				
 			}
 			
-			mSprite.spriteSheet.playAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir);
+			mSprite.spriteSheet.playAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, 0, true);
 		}
 		
 		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):MagicConfig

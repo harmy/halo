@@ -1,14 +1,12 @@
 package com.cokecode.halo.magic
 {
-	import flash.utils.getTimer;
-
-	/**
-	 * 目标类魔法
-	 * */
-	internal class MagicDest extends MagicBase
-	{		
-		public function MagicDest()
-		{	
+	internal class MagicMouse extends MagicBase
+	{
+		/**
+		 * 鼠标阵法类效果
+		 * */
+		public function MagicMouse()
+		{
 			super();
 		}
 		
@@ -21,15 +19,16 @@ package com.cokecode.halo.magic
 		
 		protected override function update(elapsed:Number):void
 		{			
+			var mouseX:uint;
+			var mouseY:uint;
+			
 			if((mConfig.mOption & MagicConst.OPT_FOLLOW_TARGET) == 0)
 			{
 				return;
 			}
 			
-			x = mTargetX + mConfig.mOffx;
-			y = mTargetY + mConfig.mOffy;			
+			x = mouseX + mConfig.mOffx;
+			y = mouseY + mConfig.mOffy;			
 		}
 	}
 }
-
-

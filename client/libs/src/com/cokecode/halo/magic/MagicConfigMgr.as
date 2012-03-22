@@ -66,8 +66,9 @@ package com.cokecode.halo.magic
 			var cf3:MagicConfig = new MagicConfig;
 			cf3.mRootID = 1;
 			cf3.mTexDirCount = 1;
-			cf3.mTexID = 1;
+			cf3.mTexID = 3;
 			cf3.mScale = 1;
+			cf3.mBlend = MagicConst.BLEND_ADD;
 			cf1.mAniSpeed = 500;
 			cf3.mLayer = MagicConst.LAYER_AFTER_PLAYER;
 			cf3.mType = MagicConst.TYPE_DESTINATION;

@@ -13,6 +13,7 @@ package com.cokecode.halo.magic
 		public static const TYPE_SELF:uint					= 1;				//自身魔法
 		public static const TYPE_FLY:uint						= 2;				//飞行魔法
 		public static const TYPE_DESTINATION:uint				= 3;				//目标魔法
+		public static const TYPE_MOUSE:uint					= 4;				//鼠标阵法效果
 		
 		//魔法结束方式
 		public static const END_TYPE_ANIMATION_OVER:uint		= 1;				//动画播放完

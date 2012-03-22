@@ -7,7 +7,7 @@ package com.cokecode.halo.magic
 	/**
 	 * 飞行类魔法
 	 * */
-	public class MagicFly extends MagicBase
+	internal class MagicFly extends MagicBase
 	{
 		private var lastAngle:Number		= 0;			//表示失去目标时的飞行角度
 		private var lastTargetX:Number		= 0;
@@ -15,7 +15,8 @@ package com.cokecode.halo.magic
 		private var lastSign:Point			= new Point;
 		
 		public function MagicFly()
-		{			
+		{		
+			super();
 		}
 		
 		protected override function doInit():void

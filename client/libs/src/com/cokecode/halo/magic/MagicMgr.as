@@ -75,9 +75,13 @@ package com.cokecode.halo.magic
 			{
 				magic = new MagicFly;
 			}
-			else
+			else if(config.mType == MagicConst.TYPE_DESTINATION)
 			{
 				magic = new MagicDest;
+			}
+			else
+			{
+				magic = new MagicMouse;
 			}
 			
 			magic.id = allocID();
