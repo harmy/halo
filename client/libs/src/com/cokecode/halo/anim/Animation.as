@@ -30,7 +30,7 @@
 		}
 		
 		//LoadXml
-		private function loadXml(Root:String,fn:String):void
+		protected function loadXml(Root:String,fn:String):void
 		{
 			mFullPath = Root + fn + ".xml";
 			ResMgr.loadByURLLoader(mFullPath, onLoadXmlFinish);
@@ -57,7 +57,7 @@
 //		}
 		
 		//private function onLoadXmlFinish(evt:Event):void
-		private function onLoadXmlFinish(event:LoaderQueueEvent):void
+		protected function onLoadXmlFinish(event:LoaderQueueEvent):void
 		{
 			var xmldata:XML = new XML(event.target.data);
 			var texLayerList:XMLList = xmldata.Texture.Layer;

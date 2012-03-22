@@ -21,7 +21,7 @@
 			ResMgr.loadByURLLoader(url, onComplete);
 		}
 		
-		private function onComplete(event:LoaderQueueEvent):void
+		protected function onComplete(event:LoaderQueueEvent):void
 		{
 			mLayers.length = 0;
 	

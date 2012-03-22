@@ -3,12 +3,12 @@
 	/*
 		动画播放
 	*/
-	import Client.Define.GameDefine;
-	
-	import Lib.Texture.TbeFrameInfo;
-	import Lib.Texture.TbeImageDict;
-	import Lib.Texture.TbeImageLoader;
-	import Lib.Texture.TexInstance;
+//	import Client.Define.GameDefine;
+//	
+//	import Lib.Texture.TbeFrameInfo;
+//	import Lib.Texture.TbeImageDict;
+//	import Lib.Texture.TbeImageLoader;
+//	import Lib.Texture.TexInstance;
 	
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -23,115 +23,110 @@
 		public static var FLANIMFPS:Number = 50;
 
 		
-		protected var m_vModel:Model;			//模型
-		protected var m_vAnim:Animation;		//动画
+		protected var mModel:Model;			//模型
+		protected var mAnim:Animation;			//动画
 		
-		protected var m_iCurFrame:int;		//当前
-		protected var m_iCurFrameDelay:int;	//当前延迟
-		protected var m_iCurDir:int;			//当前方向
-		protected var m_AnDelayFrame:Number;		//当前延迟
+		protected var mCurFrame:int;			//当前帧
+		//protected var mCurFrameDelay:int;		//当前延迟
+		protected var mCurDir:int;				//当前方向
+		protected var mAnDelayFrame:Number;	//当前延迟
 		
-		protected var m_LayerTex:Array;
-		protected var m_bReload:Boolean;
-		protected var m_texDict:TbeImageDict;
-		
-		
+		protected var mLayerTex:Array;
+		protected var mIsReload:Boolean;
+		//protected var mTexDict:TbeImageDict;
 		
 		
-		protected var m_bPlaying:Boolean;			//播放
 		
-		//public var m_nItemNo:Array = [1,1,1,1,1,0,0,0,0];
-		public var m_nItemNo:Array = [-1,-1,-1,-1,-1,0,0,0,0];
 		
-		protected var m_AnimCB:Function;		//动画回调函数
+		protected var mIsPlaying:Boolean;			//播放
+		
+		//public var mItemNo:Array = [1,1,1,1,1,0,0,0,0];
+		public var mItemNo:Array = [-1,-1,-1,-1,-1,0,0,0,0];
+		
+		protected var mAnimCB:Function;		//动画回调函数
 		// function(int)
 		
 		
-		protected var m_BoundBox:Rectangle=new Rectangle;
+		protected var mBoundBox:Rectangle=new Rectangle;
 		
 		public static var ENTER_FRAME:int = 0x1;
 		public static var END_REACHED:int = 0x2;
 		
-		protected var SrcRc:Rectangle = new Rectangle;
-		protected var Drc:Point= new Point;
+		protected var mSrcRc:Rectangle = new Rectangle;
+		protected var mDrc:Point= new Point;
 		
 		/**
 		 * 绘制特效相关
 		 */
-		private var m_effectColor:ColorTransform;
+		private var mEffectColor:ColorTransform;
 		
 		/**
 		 * 换色区绘制优化
 		 */
-		private var m_matrix:Matrix = new Matrix;
-		private var m_clpRc:Rectangle = new Rectangle;
+		private var mMatrix:Matrix = new Matrix;
+		private var mClipRc:Rectangle = new Rectangle;
 		
 		/**
 		 * 冲撞动作的残影数量 
 		 */
-		private static var collideNum:int = 2;
-		private static var offPos:Point = new Point;
+		private static var mCollideNum:int = 2;
+		private static var mOffPos:Point = new Point;
 			
-		public function AnmPlayer(itexDict:TbeImageDict)
+		public function AnmPlayer(/*itexDict:TbeImageDict*/)
 		{
-			m_iCurDir = 0;
-			m_iCurFrame = 0;		//当前
-			m_iCurFrameDelay = 0;	//当前延迟
-			m_iCurDir = 0;			//当前方向
-			m_AnDelayFrame = 0;		//当前延迟
+			mCurDir = 0;
+			mCurFrame = 0;		//当前
+			//mCurFrameDelay = 0;	//当前延迟
+			mCurDir = 0;			//当前方向
+			mAnDelayFrame = 0;		//当前延迟
 			
-			m_bReload = false;
-			m_LayerTex = [];
+			mIsReload = false;
+			mLayerTex = [];
 			
-			m_texDict = itexDict;
+			//mTexDict = itexDict;
 			
-			m_bPlaying = false;		//停止
-			m_AnimCB = null;
-			
-			// 中毒+隐身效果
-//			m_effectColor.alphaOffset = -100;
-//			m_effectColor.redOffset = -255;
-//			m_effectColor.blueOffset = -255;
+			mIsPlaying = false;		//停止
+			mAnimCB = null;
 		}
 		
 		public function setRenderEffect(colorTrans:ColorTransform):void
 		{
-			m_effectColor = colorTrans;
+			mEffectColor = colorTrans;
 		}
 		
 		public function SetCallBack(cbFunc:Function):void
 		{
-			m_AnimCB = cbFunc;
+			mAnimCB = cbFunc;
 		}
 		
 		public function Stop():void
 		{
-			m_bPlaying = false;
+			mIsPlaying = false;
 		}
 		public function SetAnimation(iAnim:Animation):void
 		{
-			m_vAnim = iAnim;
-			m_bPlaying = true;
+			mAnim = iAnim;
+			mIsPlaying = true;
 		}
 		
 		public function SetModel(iModel:Model):void
 		{
-			m_vModel=iModel;
+			mModel=iModel;
 		}
 		
 		public function SetDir(nDir:int):void
 		{
-			m_iCurDir = nDir;
+			mCurDir = nDir;
 		}
 		
 		public function GetDir():int
 		{
-			return m_iCurDir;
+			return mCurDir;
 		}
 		
 		public function GetBoundBox():Rectangle
 		{
-			return m_BoundBox;
+			return mBoundBox;
 		}
 		
 		public function SetCurFrame(iFrame:int,iLimit:int):int
@@ -142,56 +137,56 @@
 			if(iFrame<0)
 				iFrame = 0;
 				
-			m_iCurFrame = iFrame;
+			mCurFrame = iFrame;
 			
 
-			return m_iCurFrame;
+			return mCurFrame;
 		}
 		
 		public function ResetTime():void
 		{
-			m_AnDelayFrame =0;
-			m_iCurFrame = -1;
+			mAnDelayFrame =0;
+			mCurFrame = -1;
 			
 		}
 		
 		public function GetMaxFrameTime():int
 		{
-			return m_vAnim.MaxFrameTime;
+			return mAnim.MaxFrameTime;
 		}
 		
 		public function AddDeltaTime(deltaTime:Number):void
 		{
-			if(m_vAnim==null)
+			if(mAnim==null)
 				return;
 				
-			if(m_vAnim.IsLoad==false)
+			if(mAnim.IsLoad==false)
 				return;
 				
-			if(m_bPlaying==false)
+			if(mIsPlaying==false)
 				return;
 				
 			var fDeltaTime:Number = deltaTime * AnmPlayer.FLANIMFPS;
 			
-			if(m_AnDelayFrame<=0)
+			if(mAnDelayFrame<=0)
 			{
-				var m_AnCurFrame:int = m_iCurFrame;
-				var nMaxFrame:int = m_vAnim.vSeqFrame[m_iCurDir].length;
+				var m_AnCurFrame:int = mCurFrame;
+				var nMaxFrame:int = mAnim.vSeqFrame[mCurDir].length;
 				
-//				while (m_iCurFrame < nMaxFrame) {
-//					if (!IsEmptyFrame(m_iCurDir, m_iCurFrame+1)) {
+//				while (mCurFrame < nMaxFrame) {
+//					if (!IsEmptyFrame(mCurDir, mCurFrame+1)) {
 //						break;
 //					} 
 //					
-//					m_iCurFrame++;
+//					mCurFrame++;
 //					// 如果下一帧是空帧，就直接跳过
 //				}
 					
 				if(m_AnCurFrame>=nMaxFrame-1)
 				{
-					if(m_AnimCB!=null)
+					if(mAnimCB!=null)
 					{
-						m_AnimCB(END_REACHED);
+						mAnimCB(END_REACHED);
 					}
 
 					m_AnCurFrame = -1;
@@ -200,66 +195,66 @@
 				
 				SetCurFrame(m_AnCurFrame+1 , nMaxFrame);
 				
-				if(m_vAnim.vSeqFrame==null)
+				if(mAnim.vSeqFrame==null)
 					return;
 					
-				var pSeqFrame:AniSeqFrame = m_vAnim.vSeqFrame[m_iCurDir][m_iCurFrame];
+				var pSeqFrame:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
 				
 				if(pSeqFrame)
 				{
-					m_AnDelayFrame = pSeqFrame.iDelayFrame + 1;
+					mAnDelayFrame = pSeqFrame.iDelayFrame + 1;
 				}
 				else
 				{
-					m_AnDelayFrame =0;
+					mAnDelayFrame =0;
 				}
 			}
 			else
 			{
-				m_AnDelayFrame -=fDeltaTime;
+				mAnDelayFrame -=fDeltaTime;
 			}
 		}
 		
 		public function GetFrameCount():int
 		{
-			if(m_vAnim==null)
+			if(mAnim==null)
 				return 0;
 				
-			if(m_vAnim.IsLoad==false)
+			if(mAnim.IsLoad==false)
 				return 0;
 				
-			if(m_iCurDir<0)
+			if(mCurDir<0)
 				return 0;
 				
-			return m_vAnim.vSeqFrame[m_iCurDir].length;
+			return mAnim.vSeqFrame[mCurDir].length;
 		}
 		
 		public function GetCurFrame():int
 		{
-			return m_iCurFrame;
+			return mCurFrame;
 		}
 		
 		public function Update(deltaTime:Number):void
 		{
 			AddDeltaTime(deltaTime);
 			
-			if(m_bReload == false)
+			if(mIsReload == false)
 			{
 				
 				var bLoadAnim:Boolean = false;
 				var bLoadModel:Boolean = false;
 			
-				if(m_vAnim)
+				if(mAnim)
 				{
-					if(m_vAnim.IsLoad==true)
+					if(mAnim.IsLoad==true)
 					{
 						bLoadAnim =true;
 					}
 				}
 			
-				if(m_vModel)
+				if(mModel)
 				{
-					if(m_vModel.IsLoad==true)
+					if(mModel.IsLoad==true)
 					{
 						bLoadModel = true;
 					}	
@@ -293,75 +288,75 @@
 	
 		public function PreloadAllTexture():void
 		{
-			//var pImageName:String = GenerateTexName(m_vModel.vLayers[i].iLayer, m_nItemNo[i] ,m_vAnim.vTexId[i]);
-			//m_texDict.LoadImage( m_vModel.Name+"/texcom/"+pImageName );
+			//var pImageName:String = GenerateTexName(mModel.vLayers[i].iLayer, mItemNo[i] ,mAnim.vTexId[i]);
+			//mTexDict.LoadImage( mModel.Name+"/texcom/"+pImageName );
 		}
 		
 		public function ReloadTexture():void
 		{
-			m_LayerTex =null;
-			if(m_vModel==null)
+			mLayerTex =null;
+			if(mModel==null)
 				return;
 				
-			if(m_vModel.IsLoad==false)
+			if(mModel.IsLoad==false)
 				return;
 			
-			if(m_vAnim==null)
+			if(mAnim==null)
 				return;
 				
-			m_LayerTex = [];
-			var forlen:int = m_vModel.vLayers.length;
+			mLayerTex = [];
+			var forlen:int = mModel.vLayers.length;
 			for(var i:int = 0 ; i < forlen; i++)
 			{
-				if(m_vAnim.vTexId==null)
+				if(mAnim.vTexId==null)
 					return;
 				
-				if (m_vModel.vLayers[i].iLayer != 0 && m_nItemNo[i] == 0)
+				if (mModel.vLayers[i].iLayer != 0 && mItemNo[i] == 0)
 					continue;
 
-				var pImageName:String = GenerateTexName(m_vModel.vLayers[i].iLayer, m_nItemNo[i] ,m_vAnim.vTexId[i]);
-				m_LayerTex[i] = m_texDict.LoadImage( m_vModel.Name+"/texcom/"+pImageName );
+				var pImageName:String = GenerateTexName(mModel.vLayers[i].iLayer, mItemNo[i] ,mAnim.vTexId[i]);
+				mLayerTex[i] = mTexDict.LoadImage( mModel.Name+"/texcom/"+pImageName );
 			}
 			
-			m_bReload = true;
+			mIsReload = true;
 		}
 		
 		public function GetLayerImage(nLayer:int):TbeImageLoader
 		{
-			return nLayer < m_LayerTex.length?m_LayerTex[nLayer]:null;
+			return nLayer < mLayerTex.length?mLayerTex[nLayer]:null;
 		}
 		
 		private function InitAnim():Boolean{
-			if(m_vAnim==null)
+			if(mAnim==null)
 				return false;
 			
-			if(m_vAnim.IsLoad==false)
+			if(mAnim.IsLoad==false)
 				return false;
 			
-			if (this.m_iCurDir == -1){
-				this.m_iCurDir = 4;
+			if (this.mCurDir == -1){
+				this.mCurDir = 4;
 			}
 			
-			if (this.m_iCurDir > this.m_vAnim.vSeqFrame.length){
-				this.m_iCurDir = 0;
+			if (this.mCurDir > this.mAnim.vSeqFrame.length){
+				this.mCurDir = 0;
 			}
 			
-			if (this.m_vAnim.vSeqFrame[this.m_iCurDir].length == 0){
+			if (this.mAnim.vSeqFrame[this.mCurDir].length == 0){
 				return false;
 			}
 			
-			if (this.m_iCurFrame >= this.m_vAnim.vSeqFrame[this.m_iCurDir].length){
-				this.m_iCurFrame = (this.m_vAnim.vSeqFrame[this.m_iCurDir].length - 1);
+			if (this.mCurFrame >= this.mAnim.vSeqFrame[this.mCurDir].length){
+				this.mCurFrame = (this.mAnim.vSeqFrame[this.mCurDir].length - 1);
 			}
 			
-			if (this.m_iCurFrame < 0){
-				this.m_iCurFrame = 0;
+			if (this.mCurFrame < 0){
+				this.mCurFrame = 0;
 			}
 			
-			m_BoundBox.x=0xffff;
-			m_BoundBox.y=0xffff;
-			m_BoundBox.width=0;
-			m_BoundBox.height=0;
+			mBoundBox.x=0xffff;
+			mBoundBox.y=0xffff;
+			mBoundBox.width=0;
+			mBoundBox.height=0;
 			
 			return true;
 		}
@@ -370,8 +365,8 @@
 			if(!InitAnim())
 				return;
 			
-			m_iCurFrame = m_vAnim.vSeqFrame[m_iCurDir].length - 2;
-			var vFramePartList:AniSeqFrame = m_vAnim.vSeqFrame[m_iCurDir][m_iCurFrame];
+			mCurFrame = mAnim.vSeqFrame[mCurDir].length - 2;
+			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
 			if(vFramePartList==null)
 			{
 				Render(target, cx, cy);
@@ -380,7 +375,7 @@
 			
 			var genBoundBox:Boolean = true;
 			var alpha:Array = [1, 0.8, 0.5];
-			for(var i:int=0; i<=collideNum; i++)
+			for(var i:int=0; i<=mCollideNum; i++)
 			{
 				RenderChar(target, cx, cy, vFramePartList, genBoundBox, alpha[i]);
 				if(genBoundBox)
@@ -388,8 +383,8 @@
 					genBoundBox = false;
 					GetCollideOffsetPos();
 				}
-				cx += offPos.x + i*3;
-				cy += offPos.y + i*2;
+				cx += mOffPos.x + i*3;
+				cy += mOffPos.y + i*2;
 			}
 			
 		}
@@ -400,54 +395,54 @@
 		 * 
 		 */		
 		private function GetCollideOffsetPos():void{
-			switch(m_iCurDir)
+			switch(mCurDir)
 			{
 				case 0:
 				{
-					offPos.x = 0;
-					offPos.y = m_BoundBox.height - 10;
+					mOffPos.x = 0;
+					mOffPos.y = mBoundBox.height - 10;
 					break;
 				}
 				case 1:
 				{
-					offPos.x = -m_BoundBox.width;
-					offPos.y = m_BoundBox.height / 2;
+					mOffPos.x = -mBoundBox.width;
+					mOffPos.y = mBoundBox.height / 2;
 					break;
 				}
 				case 2:
 				{
-					offPos.x = -m_BoundBox.width - 10;
-					offPos.y = 0;
+					mOffPos.x = -mBoundBox.width - 10;
+					mOffPos.y = 0;
 					break;
 				}
 				case 3:
 				{
-					offPos.x = -m_BoundBox.width + 10;
-					offPos.y = -m_BoundBox.height / 2;
+					mOffPos.x = -mBoundBox.width + 10;
+					mOffPos.y = -mBoundBox.height / 2;
 					break;
 				}
 				case 4:
 				{
-					offPos.x = 0;
-					offPos.y = -m_BoundBox.height / 2 - 15;
+					mOffPos.x = 0;
+					mOffPos.y = -mBoundBox.height / 2 - 15;
 					break;
 				}
 				case 5:
 				{
-					offPos.x = m_BoundBox.width;
-					offPos.y = -m_BoundBox.height / 2 - 15;
+					mOffPos.x = mBoundBox.width;
+					mOffPos.y = -mBoundBox.height / 2 - 15;
 					break;
 				}
 				case 6:
 				{
-					offPos.x = m_BoundBox.width;
-					offPos.y = 0;
+					mOffPos.x = mBoundBox.width;
+					mOffPos.y = 0;
 					break;
 				}
 				case 7:
 				{
-					offPos.x = m_BoundBox.width - 10;
-					offPos.y = m_BoundBox.height / 2;
+					mOffPos.x = mBoundBox.width - 10;
+					mOffPos.y = mBoundBox.height / 2;
 					break;
 				}
 			}
@@ -469,30 +464,30 @@
 					continue;
 				
 				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = m_vModel.vLayers[vFramePartList.iLayer[i]];
+				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
 				if(info==null)
 					continue;
 				
-				SrcRc.x = info.x;
-				SrcRc.y = info.y;
-				SrcRc.width = info.width;
-				SrcRc.height = info.height;
+				mSrcRc.x = info.x;
+				mSrcRc.y = info.y;
+				mSrcRc.width = info.width;
+				mSrcRc.height = info.height;
 				
-				Drc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
-				Drc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
+				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
+				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
 				
 				var layNo:int = Lay.iLayer;
 				if(pSurface.Img.GetBitmapData()) {
 					var colorTrans:ColorTransform;
 					var colorTransTemp:ColorTransform = new ColorTransform;
 					if(layNo == 3) continue;
-					m_matrix.identity();
-					m_matrix.tx = (-(SrcRc.x) + Drc.x);
-					m_matrix.ty = (-(SrcRc.y) + Drc.y);
-					m_clpRc.x = Drc.x;
-					m_clpRc.y = Drc.y;
-					m_clpRc.width = SrcRc.width;
-					m_clpRc.height = SrcRc.height;
+					mMatrix.identity();
+					mMatrix.tx = (-(mSrcRc.x) + mDrc.x);
+					mMatrix.ty = (-(mSrcRc.y) + mDrc.y);
+					mClipRc.x = mDrc.x;
+					mClipRc.y = mDrc.y;
+					mClipRc.width = mSrcRc.width;
+					mClipRc.height = mSrcRc.height;
 					if (layNo == 1 || layNo == 2) {
 						// 头发和衣服设置颜色调制
 						if (layNo == 1) {
@@ -507,22 +502,22 @@
 					} 
 					var alphaOffset:Number = 255 - alphaValue;	// 设置透明度偏移值
 					colorTransTemp.alphaOffset = -alphaOffset;
-					if (m_effectColor != null) {
+					if (mEffectColor != null) {
 						// 使用特效绘制
-						colorTransTemp.redOffset = m_effectColor.redOffset;
-						colorTransTemp.greenOffset = m_effectColor.greenOffset;
-						colorTransTemp.blueOffset = m_effectColor.blueOffset;
-						colorTransTemp.alphaOffset = m_effectColor.alphaOffset - alphaOffset;
+						colorTransTemp.redOffset = mEffectColor.redOffset;
+						colorTransTemp.greenOffset = mEffectColor.greenOffset;
+						colorTransTemp.blueOffset = mEffectColor.blueOffset;
+						colorTransTemp.alphaOffset = mEffectColor.alphaOffset - alphaOffset;
 					}
-					target.draw(pSurface.Img.GetBitmapData(), m_matrix, colorTransTemp, BlendMode.NORMAL, m_clpRc, false);
+					target.draw(pSurface.Img.GetBitmapData(), mMatrix, colorTransTemp, BlendMode.NORMAL, mClipRc, false);
 				}
 				
 				if(genBoundBox)
 				{
-					m_BoundBox.x 		= Math.min(m_BoundBox.x,Drc.x);
-					m_BoundBox.y 		= Math.min(m_BoundBox.y,Drc.y);	
-					m_BoundBox.right	= Math.max(m_BoundBox.right,Drc.x+SrcRc.width);
-					m_BoundBox.bottom	= Math.max(m_BoundBox.bottom,Drc.y+SrcRc.height);
+					mBoundBox.x 		= Math.min(mBoundBox.x,mDrc.x);
+					mBoundBox.y 		= Math.min(mBoundBox.y,mDrc.y);	
+					mBoundBox.right	= Math.max(mBoundBox.right,mDrc.x+mSrcRc.width);
+					mBoundBox.bottom	= Math.max(mBoundBox.bottom,mDrc.y+mSrcRc.height);
 				}
 			}
 		}
@@ -549,7 +544,7 @@
 				return true;
 			
 			var isEmpty:Boolean = true;			
-			var vFramePartList:AniSeqFrame = m_vAnim.vSeqFrame[dir][frame];
+			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[dir][frame];
 			if (vFramePartList == null) return true;
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -563,7 +558,7 @@
 					continue;
 				
 				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = m_vModel.vLayers[vFramePartList.iLayer[i]];
+				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
 				
 				if(info==null)
 					continue;
@@ -583,7 +578,7 @@
 			if(!InitAnim())
 				return;
 		
-			var vFramePartList:AniSeqFrame = m_vAnim.vSeqFrame[m_iCurDir][m_iCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
 
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -597,29 +592,29 @@
 					continue;
 		
 				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = m_vModel.vLayers[vFramePartList.iLayer[i]];
+				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
 				
 				if(info==null)
 					continue;
 				
-				SrcRc.x = info.x;
-				SrcRc.y = info.y;
-				SrcRc.width = info.width;
-				SrcRc.height = info.height;
+				mSrcRc.x = info.x;
+				mSrcRc.y = info.y;
+				mSrcRc.width = info.width;
+				mSrcRc.height = info.height;
 				
-				Drc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
-				Drc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
+				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
+				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
 
 				var layNo:int = Lay.iLayer;
 				
 				if(pSurface.Img && pSurface.Img.GetBitmapData()) {
-					m_matrix.identity();
-					m_matrix.tx = (-(SrcRc.x) + Drc.x);
-					m_matrix.ty = (-(SrcRc.y) + Drc.y);
-					m_clpRc.x = Drc.x;
-					m_clpRc.y = Drc.y;
-					m_clpRc.width = SrcRc.width;
-					m_clpRc.height = SrcRc.height;
+					mMatrix.identity();
+					mMatrix.tx = (-(mSrcRc.x) + mDrc.x);
+					mMatrix.ty = (-(mSrcRc.y) + mDrc.y);
+					mClipRc.x = mDrc.x;
+					mClipRc.y = mDrc.y;
+					mClipRc.width = mSrcRc.width;
+					mClipRc.height = mSrcRc.height;
 					var useDraw:Boolean = false;
 					var colorTrans:ColorTransform;
 					// 初始化数据
@@ -643,26 +638,26 @@
 						colorTransTemp.blueMultiplier = colorTrans.blueMultiplier; 
 						useDraw = true;
 					}
-					if (m_effectColor != null) {
+					if (mEffectColor != null) {
 						// 使用特效绘制
-						colorTransTemp.redOffset = m_effectColor.redOffset;
-						colorTransTemp.greenOffset = m_effectColor.greenOffset;
-						colorTransTemp.blueOffset = m_effectColor.blueOffset;
-						colorTransTemp.alphaOffset = m_effectColor.alphaOffset;
+						colorTransTemp.redOffset = mEffectColor.redOffset;
+						colorTransTemp.greenOffset = mEffectColor.greenOffset;
+						colorTransTemp.blueOffset = mEffectColor.blueOffset;
+						colorTransTemp.alphaOffset = mEffectColor.alphaOffset;
 						useDraw = true;
 					}
 					
 					if (useDraw) {
-						target.draw(pSurface.Img.GetBitmapData(), m_matrix, colorTransTemp, BlendMode.NORMAL, m_clpRc, false);	
+						target.draw(pSurface.Img.GetBitmapData(), mMatrix, colorTransTemp, BlendMode.NORMAL, mClipRc, false);	
 					} else {
-						target.copyPixels(pSurface.Img.GetBitmapData(), SrcRc, Drc, null, null, true);
+						target.copyPixels(pSurface.Img.GetBitmapData(), mSrcRc, mDrc, null, null, true);
 					}
 				}
 				
-				m_BoundBox.x 		= Math.min(m_BoundBox.x,Drc.x);
-				m_BoundBox.y 		= Math.min(m_BoundBox.y,Drc.y);	
-				m_BoundBox.right	= Math.max(m_BoundBox.right,Drc.x+SrcRc.width);
-				m_BoundBox.bottom	= Math.max(m_BoundBox.bottom,Drc.y+SrcRc.height);
+				mBoundBox.x 		= Math.min(mBoundBox.x,mDrc.x);
+				mBoundBox.y 		= Math.min(mBoundBox.y,mDrc.y);	
+				mBoundBox.right	= Math.max(mBoundBox.right,mDrc.x+mSrcRc.width);
+				mBoundBox.bottom	= Math.max(mBoundBox.bottom,mDrc.y+mSrcRc.height);
 			}
 		}
 		
@@ -683,9 +678,9 @@
 
 		public function MouseIntersect2(rx:int,ry:int,cx:int,cy:int):Boolean
 		{
-			if (m_vAnim.vSeqFrame == null) return false;
+			if (mAnim.vSeqFrame == null) return false;
 			
-			var vFramePartList:AniSeqFrame = m_vAnim.vSeqFrame[m_iCurDir][m_iCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
 			if(vFramePartList==null)
 				return false;
 			
@@ -701,25 +696,25 @@
 					continue;
 				
 				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = m_vModel.vLayers[vFramePartList.iLayer[i]];
+				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
 				
 				if(info==null)
 					continue;
 				
-				SrcRc.x = info.x;
-				SrcRc.y = info.y;
-				SrcRc.width = info.width;
-				SrcRc.height = info.height;
+				mSrcRc.x = info.x;
+				mSrcRc.y = info.y;
+				mSrcRc.width = info.width;
+				mSrcRc.height = info.height;
 				
-				Drc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
-				Drc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
+				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
+				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
 				
 				var layNo:int = Lay.iLayer;
 				
 				var bmd:BitmapData =pSurface.Img.GetBitmapData();
 				if(bmd ==null) continue;
-				var tu:int = rx - Drc.x + SrcRc.x;
-				var tv:int = ry - Drc.y + SrcRc.y;
+				var tu:int = rx - mDrc.x + mSrcRc.x;
+				var tv:int = ry - mDrc.y + mSrcRc.y;
 				var pixelValue:uint = bmd.getPixel32(tu,tv);
 				var alphaValue:uint = pixelValue >> 24 & 0xFF;
 				
@@ -732,19 +727,19 @@
 		
 		public function MouseIntersect(rx:int,ry:int):Boolean
 		{
-			if(m_vAnim==null)
+			if(mAnim==null)
 				return false;
 				
-			if(m_vAnim.IsLoad==false)
+			if(mAnim.IsLoad==false)
 				return false;
 			
-			if(m_iCurDir==-1)
-				m_iCurDir=4;
+			if(mCurDir==-1)
+				mCurDir=4;
 			
-			if(m_iCurFrame >= m_vAnim.vSeqFrame[m_iCurDir].length || m_iCurFrame < 0)
+			if(mCurFrame >= mAnim.vSeqFrame[mCurDir].length || mCurFrame < 0)
 				return false;
 
-			var vFramePartList:AniSeqFrame = m_vAnim.vSeqFrame[m_iCurDir][m_iCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
 
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -758,31 +753,31 @@
 					continue;
 		
 				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = m_vModel.vLayers[vFramePartList.iLayer[i]];
+				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
 				
 				if(info==null)
 					continue;
 					
-				SrcRc.x = info.x;
-				SrcRc.y = info.y;
-				SrcRc.width = info.width;
-				SrcRc.height = info.height;
+				mSrcRc.x = info.x;
+				mSrcRc.y = info.y;
+				mSrcRc.width = info.width;
+				mSrcRc.height = info.height;
 
-				Drc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + info.iOffsetX;
-				Drc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + info.iOffsetY;
+				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + info.iOffsetX;
+				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + info.iOffsetY;
 
 				var bmd:BitmapData =pSurface.Img.GetBitmapData();
 				
 				if(bmd ==null)
 					continue;
 				
-				var tu:int = rx - Drc.x + SrcRc.x;
-				var tv:int = ry - Drc.y + SrcRc.y;
+				var tu:int = rx - mDrc.x + mSrcRc.x;
+				var tv:int = ry - mDrc.y + mSrcRc.y;
 				
-				if(SrcRc.width < rx)
+				if(mSrcRc.width < rx)
 					continue;
 				
-				if(SrcRc.height < ry)
+				if(mSrcRc.height < ry)
 					continue;
 				
 				var pixelValue:uint = bmd.getPixel32(tu,tv);

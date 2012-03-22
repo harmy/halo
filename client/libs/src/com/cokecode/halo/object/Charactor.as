@@ -1,5 +1,7 @@
 package com.cokecode.halo.object
 {
+	import com.cokecode.halo.anim.AnmPlayer;
+	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
 	
@@ -9,8 +11,9 @@ package com.cokecode.halo.object
 	{
 		static private var count:uint = 1;
 		
-		protected var mLooks:CharLooks;
-		protected var mView:Sprite2D;
+		//protected var mAnmPlayer:AnmPlayer;	// 角色动画播放
+		protected var mLooks:CharLooks;		// 外观数据
+		protected var mView:Sprite2D;			// 以后要去掉
 		
 		
 		public function Charactor(looks:CharLooks)
@@ -83,7 +86,8 @@ package com.cokecode.halo.object
 		 */
 		override protected function step(elapsed:Number):void {
 			super.step(elapsed);
-			
+		
+			//if (mAnmPlayer) mAnmPlayer.Update();
 		}
 	}
 }
