@@ -38,7 +38,8 @@ package game
 			
 			// 创建测试地图
 			mMap = new Map();
-			mMap.load("Z:/res/maps/1.tmx");
+			mMap.setMapPath("Z:/res/maps/");
+			mMap.load("1.tmx");
 			addChild(mMap);
 			
 			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
@@ -83,6 +84,7 @@ package game
 //					layer.addChild( char2 );
 					
 					char.charView.tint = 0x00FF00;
+					//char.alpha = 0.3;
 					mTargetNode = mHero = char;
 				}
 				
@@ -92,6 +94,16 @@ package game
 			MagicTest.instance().init();			
 		}
 		
+		public function get map():Map
+		{
+			return mMap;
+		}
+
+		public function set map(value:Map):void
+		{
+			mMap = value;
+		}
+
 		public function onAddToStage(evt:Event):void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -123,6 +135,22 @@ package game
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
 			
 			MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);
+			
+			var cellX:uint = mHero.x / Map.sTileWidth;
+			var cellY:uint = mHero.y / Map.sTileHeight;
+			if ( mMap.getBlock(cellX, cellY) == 1 ) {
+				// 阻挡信息
+				mHero.charView.tint = 0xFF0000;
+				mHero.charView.alpha = 1;
+			} else if ( mMap.getBlock(cellX, cellY) == 2 ) {
+				// 透明信息
+				mHero.charView.tint = 0xFFFFFF;
+				mHero.charView.alpha = 0.5;
+			} else {
+				// 可走信息
+				mHero.charView.tint = 0x00FF00;
+				mHero.charView.alpha = 1;
+			}
 		}
 		
 		override protected function step(elapsed:Number):void

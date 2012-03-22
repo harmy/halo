@@ -48,6 +48,8 @@ package com.cokecode.halo.object
 		
 		public function GameObject()
 		{
+			mTFName.pivot.x = -32;
+			mTFName.pivot.y = 16;
 			mTFName.y = -90;
 			mTFName.textColor = 0xFFFFFF;
 			mTFName.filter = [CoreConst.GLOW_FILTER1];

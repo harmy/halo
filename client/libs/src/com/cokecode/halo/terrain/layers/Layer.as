@@ -61,6 +61,17 @@ package com.cokecode.halo.terrain.layers
 			//TODO
 		}
 		
+		// 获得阻挡信息
+		public function getBlock(x:int, y:int):int
+		{
+			if (mTMX == null || mTMXLayer == null) return 0;
+			
+			var block:int = mTMXLayer.getCell(x, y);
+			if (block == 0) return 0;
+			
+			return mTMX.getImgFrame(block) + 1;
+		}
+		
 		public function get layerName():String
 		{
 			return mLayerName;

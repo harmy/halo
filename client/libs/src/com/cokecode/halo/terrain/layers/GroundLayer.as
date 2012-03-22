@@ -1,6 +1,5 @@
 package com.cokecode.halo.terrain.layers
 {
-	import com.cokecode.halo.terrain.Tile;
 	
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -13,6 +12,7 @@ package com.cokecode.halo.terrain.layers
 	import flash.utils.Dictionary;
 	
 	import flashx.textLayout.elements.BreakElement;
+	import com.cokecode.halo.terrain.Tile;
 
 	/**
 	 * 地表层
@@ -21,7 +21,11 @@ package com.cokecode.halo.terrain.layers
 	{
 		static public const LOAD_RANGE_CONST:uint = 1;	// 加载范围的系数
 		
+		private var mLastCameraPt:Point = new Point(-1000, -1000);	// -1000 初始值为的是loadTexture必定执行一次
+		private var mWorldRect:Rectangle = new Rectangle;
+		
 		protected var mTileDic:Dictionary = new Dictionary;	// tile
+		
 		
 		public function GroundLayer(name:String, width:uint, height:uint)
 		{
@@ -36,20 +40,18 @@ package com.cokecode.halo.terrain.layers
 		}
 		
 		// 预加载屏幕内的地表贴图
-		private var lastCameraPt:Point = new Point(-1000, -1000);	// -1000 初始值为的是loadTexture必定执行一次
-		private var worldRect:Rectangle = new Rectangle;
 		protected function loadTexture():void
 		{
 			if (mTMX == null) return;
 			
-			if ( Math.abs(lastCameraPt.x - camera.x) < mTMX.tileWidth &&  
-				Math.abs(lastCameraPt.y - camera.y) < mTMX.tileHeight) {
+			if ( Math.abs(mLastCameraPt.x - camera.x) < mTMX.tileWidth &&  
+				Math.abs(mLastCameraPt.y - camera.y) < mTMX.tileHeight) {
 				// 变化不超过1个格子，不处理
 				return;
 			}
 			
-			lastCameraPt.x = camera.x;
-			lastCameraPt.y = camera.y;
+			mLastCameraPt.x = camera.x;
+			mLastCameraPt.y = camera.y;
 			
 			var tile:Tile;
 			var key:String;
@@ -58,17 +60,17 @@ package com.cokecode.halo.terrain.layers
 			var viewSizeX:uint = camera.sceneWidth * LOAD_RANGE_CONST;
 			var viewSizeY:uint = camera.sceneHeight * LOAD_RANGE_CONST;
 			
-			worldRect.x = int( (camera.x - viewSizeX)  / mTMX.tileWidth );
-			worldRect.y = int( (camera.y - viewSizeY) / mTMX.tileHeight );
-			worldRect.right = int( (camera.x + viewSizeX + camera.sceneWidth) / mTMX.tileWidth );
-			worldRect.bottom = int( (camera.y + viewSizeY + camera.sceneHeight) / mTMX.tileHeight );
-			if (worldRect.x < 0) worldRect.x = 0;
-			if (worldRect.y < 0) worldRect.y = 0;
-			if (worldRect.x > mTMX.width) worldRect.x = mTMX.width;
-			if (worldRect.y > mTMX.height) worldRect.y = mTMX.height;
+			mWorldRect.x = int( (camera.x - viewSizeX)  / mTMX.tileWidth );
+			mWorldRect.y = int( (camera.y - viewSizeY) / mTMX.tileHeight );
+			mWorldRect.right = int( (camera.x + viewSizeX + camera.sceneWidth) / mTMX.tileWidth );
+			mWorldRect.bottom = int( (camera.y + viewSizeY + camera.sceneHeight) / mTMX.tileHeight );
+			if (mWorldRect.x < 0) mWorldRect.x = 0;
+			if (mWorldRect.y < 0) mWorldRect.y = 0;
+			if (mWorldRect.x > mTMX.width) mWorldRect.x = mTMX.width;
+			if (mWorldRect.y > mTMX.height) mWorldRect.y = mTMX.height;
 			
-			for (var ny:uint=worldRect.top; ny<worldRect.bottom; ++ny) {
-				for (var nx:uint=worldRect.left; nx<worldRect.right; ++nx) {
+			for (var ny:uint=mWorldRect.top; ny<mWorldRect.bottom; ++ny) {
+				for (var nx:uint=mWorldRect.left; nx<mWorldRect.right; ++nx) {
 					nGrid = mTMXLayer.getCell(nx, ny);
 					
 					// 没有贴图直接跳过
@@ -85,7 +87,7 @@ package com.cokecode.halo.terrain.layers
 					}
 					
 					// 创建地表
-					var url:String = mTMX.makeImgPath(nGrid);
+					var url:String = mTMX.getGroundImgSrc(nGrid);
 					tile = new Tile(url);
 					tile.x = nx * mTMX.tileWidth;
 					tile.y = ny * mTMX.tileHeight;

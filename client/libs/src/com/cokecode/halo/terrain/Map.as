@@ -19,12 +19,12 @@ package com.cokecode.halo.terrain
 		/**
 		 * 地图单个格子的宽(像素)
 		 */
-		static public var TileWidth:uint = 64;
+		static public var sTileWidth:uint = 64;
 		
 		/**
 		 * 地图单个格子的高(像素)
 		 */
-		static public var TileHeight:uint = 32;
+		static public var sTileHeight:uint = 32;
 		
 		/**
 		 * 存放解析出来的地图数据
@@ -33,6 +33,9 @@ package com.cokecode.halo.terrain
 		
 		private var mLayers:Vector.<Layer> = new Vector.<Layer>();
 		private var mLayerDic:Dictionary = new Dictionary;	// Layer
+		
+		private var mMapPath:String;
+		private var mMapId:uint;	// 地图ID
 		
 		/**
 		 * 地图的跟节点
@@ -79,6 +82,10 @@ package com.cokecode.halo.terrain
 			layer = new GroundLayer("ground",24,32);
 			addLayer(layer);
 			
+			// 创建阻挡层
+			layer = new BlockLayer("block",24,32);
+			addLayer(layer);
+			
 			//创建人物前魔法层
 			addLayer(new MagicLayer(MagicConst.STR_LAYER_BEFOR, 0, 0));
 			
@@ -89,10 +96,6 @@ package com.cokecode.halo.terrain
 			//创建人物后魔法层
 			addLayer(new MagicLayer(MagicConst.STR_LAYER_AFTER, 0, 0));
 			
-			// 创建阻挡层
-			layer = new BlockLayer("block",24,32);
-			addLayer(layer);
-			
 			// 创建天空层
 			layer = new SkyLayer("sky",24,32);
 			addLayer(layer);
@@ -100,21 +103,42 @@ package com.cokecode.halo.terrain
 			// ------------------------------------			
 		}
 		
+		public function setMapPath(path:String):void
+		{
+			mMapPath = path;
+		}
+		
+		public function getBlock(x:int, y:int):int
+		{
+			var layer:Layer = getLayer("block");
+			if (layer == null) return 0;
+			return layer.getBlock(x, y);
+		}
+		
 		public function load(url:String):void
 		{
-			ResMgr.loadByURLLoader(url, onComplete, CoreConst.PRIORITY_MAP);
+			var s1:int = url.lastIndexOf("/") + 1;
+			var s2:int = url.lastIndexOf(".");
+			var sid:String = url.substr(s1, s2 - s1); 
+			mMapId = uint(sid);
+			
+			ResMgr.loadByURLLoader(mMapPath + url, onComplete, CoreConst.PRIORITY_MAP);
 			
 			// 测试代码
 			mWidth = 7680;
 			mHeight = 4096;			
 		}
 		
+		
+		
 		private function onComplete(event:LoaderQueueEvent):void
 		{
 			// cleanLayers();//清理之前的层数据
 			
 			// 读取tmx地图文件
-			mTmx = new TMX( new XML(event.target.data),  "Z:/res/maps/1/" );
+			mTmx = new TMX( new XML(event.target.data),  mMapPath, mMapId );
+			sTileWidth = mTmx.tileWidth;
+			sTileHeight = mTmx.tileHeight;
 			mWidth = mTmx.width * mTmx.tileWidth;
 			mHeight = mTmx.height * mTmx.tileHeight;
 			

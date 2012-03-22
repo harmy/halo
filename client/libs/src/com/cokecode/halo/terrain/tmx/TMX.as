@@ -35,12 +35,14 @@ package com.cokecode.halo.terrain.tmx
 		public var uniqueTilesets:Vector.<TMXTileset>; // unique tilesets
 		public var data:XML; // raw TMX data
 		// prefix for the image urls based on where the tmx map is loaded from
+		private var mMapId:uint;
 		private var imgsURL:String;
 		private var maxGid:int = 0; // used for settting up indexing for tilesets
-		public function TMX(data:*, imgsURL:String) 
+		public function TMX(data:*, imgsURL:String, mapId:uint) 
 		{
 			this.data = XML(data);
 			this.imgsURL = imgsURL;
+			this.mMapId = mapId;
 			// read root
 			orientation = String(data.@orientation);
 			if (orientation == "") orientation = "isometric";
@@ -55,14 +57,15 @@ package com.cokecode.halo.terrain.tmx
 			parseTilesets();
 		}
 		
-		public function makeParallaxPath(name:String):String
+		public function getParallaxImgSrc(name:String):String
 		{
 			return imgsURL + name + ".jpg";
 		}
 		
 		// 通过gid生成图片路径(裁剪后的图片路径)
-		public function makeImgPath(gid:int):String {
-			return imgsURL + gid + ".jpg";
+		public function getGroundImgSrc(gid:int):String
+		{
+			return imgsURL + mMapId + "/" + gid + ".jpg";
 		}
 		
 		public function getImgSrc(gid:int):String {
