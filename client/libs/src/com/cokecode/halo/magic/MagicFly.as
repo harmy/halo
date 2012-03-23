@@ -29,8 +29,8 @@ package com.cokecode.halo.magic
 		
 		private function isInValidRange():Boolean
 		{			
-			var cameraCenterX:int = camera.x + camera.sceneWidth;
-			var cameraCenterY:int = camera.y + camera.sceneHeight;
+			var cameraCenterX:int = camera.x + camera.sceneWidth / 2;
+			var cameraCenterY:int = camera.y + camera.sceneHeight / 2;
 			
 			return Math.abs(cameraCenterX - x) < MagicConst.VALID_RANGE && 
 				Math.abs(cameraCenterY - y) < MagicConst.VALID_RANGE;

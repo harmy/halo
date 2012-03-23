@@ -28,7 +28,7 @@ package com.cokecode.halo.magic
 		public static const STR_LAYER_AFTER:String			= "magic_after";	//人物后魔法层名称
 		public static const STR_ANIMATION_NAME:String			= "magic_dir_";	//魔法动画前缀名称
 		
-		public static const VALID_RANGE:uint					= 1200;				//离相机中心点多少像素合法
+		public static const VALID_RANGE:uint					= 1500;				//离相机中心点多少像素合法
 		public static const DIS_TOLERANCE:uint				= 10;				//判断距离公差，像素
 		public static const BLEND_ADD:uint					= 1;				//混合方式为加法
 		public static const BLEND_MODULATE:uint				= 2;				//混合方式为乘法
