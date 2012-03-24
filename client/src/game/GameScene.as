@@ -37,10 +37,7 @@ package game
 		public function GameScene()
 		{
 			super();
-			
-			
-			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
-			
+			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);			
 			GameAssets.initGameRes();
 			
 			AnimMgr.sInstance.init("Z:/res/charactor/");
@@ -49,11 +46,8 @@ package game
 			mMap = new Map();
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
-			addChild(mMap);
-			
+			addChild(mMap);			
 			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
-			MagicMgr.instance().magicLayer = mMap.getLayer(MagicConst.STR_LAYER_AFTER);
-		
 			
 			// 创建测试角色
 			var uid:uint = 0;
@@ -119,10 +113,11 @@ package game
 				
 			}
 			
-			MagicTest.instance().init();		
+			MagicTest.instance().init();	
 			
-			var actSetting:ActionParam = new ActionParam;
-		
+			//注册到魔法管理器
+			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
+				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
 		}
 		
 		public function get map():Map
@@ -170,15 +165,32 @@ package game
 				if (mTargetNode == null) mTargetNode = mHero;
 				else mTargetNode = null;
 			} else if(evt.keyCode == Keyboard.NUMBER_1) {
-				// 释放魔法
-				MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);	
+				MagicMgr.instance().addMagic(1, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
 			} else if(evt.keyCode == Keyboard.NUMBER_2) {
+				MagicMgr.instance().addMagic(2, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_3) {
+				MagicMgr.instance().addMagic(3, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_4) {
+				MagicMgr.instance().addMagic(4, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_5) {
+				MagicMgr.instance().addMagic(5, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_6) {
+				MagicMgr.instance().addMagic(6, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_7) {
+				MagicMgr.instance().addMagic(7, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_8) {
+				MagicMgr.instance().addMagic(8, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_9) {
+				MagicMgr.instance().addMagic(9, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.NUMBER_0) {
+				MagicMgr.instance().addMagic(0, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
+			} else if(evt.keyCode == Keyboard.Q) {
 				// 切换主角方向
 				if (mHero) {
 					mHero.dir++;
 					if (mHero.dir >= 8) mHero.dir = 0;
 				}
-			} else if(evt.keyCode == Keyboard.NUMBER_3) {
+			} else if(evt.keyCode == Keyboard.W) {
 				// 切换主角到跑步动作
 				var anim:Animation = AnimMgr.sInstance.getAnim("human", "run", null);
 				mHero.getAnmPlayer().setAnimation(anim);

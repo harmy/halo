@@ -100,13 +100,24 @@ package com.cokecode.halo.magic
 		}
 		
 		protected function doInit():void
+		{			
+		}
+		
+		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):MagicConfig
 		{
+			atlasTex.textureOptions = TextureOption.QUALITY_LOW;
+			atlas.setFPS(1000/mConfig.mAniSpeed);
+			mSprite = new Sprite2D(atlasTex);
+			mSprite.setSpriteSheet(atlas);
+			addChild(mSprite);
+			mLayer = layer;
+			layer.addChild(this);		
 			scaleX = mConfig.mScale;
 			scaleY = mConfig.mScale;
 			
 			if(mConfig.mBlend == MagicConst.BLEND_ADD)
 			{
-				blendMode = BlendModePresets.ADD_NO_PREMULTIPLIED_ALPHA;				
+				mSprite.blendMode = BlendModePresets.ADD_NO_PREMULTIPLIED_ALPHA;				
 			}
 			else if(mConfig.mBlend == MagicConst.BLEND_MODULATE)
 			{
@@ -146,18 +157,8 @@ package com.cokecode.halo.magic
 				mSprite.spriteSheet.addAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, frameArr, true);				
 			}
 			
-			mSprite.spriteSheet.playAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, 0, true);
-		}
-		
-		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):MagicConfig
-		{
-			atlasTex.textureOptions = TextureOption.QUALITY_LOW;
-			atlas.setFPS(1000/mConfig.mAniSpeed);
-			mSprite = new Sprite2D(atlasTex);
-			mSprite.setSpriteSheet(atlas);
-			addChild(mSprite);
-			mLayer = layer;
-			layer.addChild(this);			
+			mSprite.spriteSheet.playAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir);
+			
 			doInit();
 			
 			return mConfig.mSibling;

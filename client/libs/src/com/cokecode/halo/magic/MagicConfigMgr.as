@@ -1,8 +1,18 @@
 package com.cokecode.halo.magic
 {
+	import com.cokecode.halo.terrain.layers.Layer;
+	import com.sociodox.theminer.Options;
+	
 	import de.nulldesign.nd2d.materials.BlendModePresets;
 	
+	import flash.display.BlendMode;
+	import flash.events.Event;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
+	
+	import org.osmf.elements.DurationElement;
+	import org.osmf.layout.ScaleMode;
 
 	/**
 	 * 魔法配置管理
@@ -32,52 +42,84 @@ package com.cokecode.halo.magic
 			return sInstance;
 		}
 		
+		private function parseXml(evt:Event):void
+		{
+			var xml:XML = new XML(evt.target.data);
+			var texDic:Dictionary = new Dictionary;
+			var id:uint = 0;
+			
+			for each(var texUnit:XML in xml.texture.unit)
+			{
+				id = texUnit.@id;
+				var dir:uint = texUnit.@dir;
+				texDic[id] = dir;
+			}
+			
+			for each(var magic:XML in xml.magic)
+			{
+				id = magic.@id;
+				var arr:Array = new Array;
+				var haveChild:Boolean = false;
+				var haveSibling:Boolean = false;
+				
+				for each(var node:XML in magic.node)
+				{
+					var cf:MagicConfig = new MagicConfig;
+					cf.mRootID = id;
+					cf.mTexID = node.@tex;
+					cf.mTexDirCount = texDic[cf.mTexID];
+					cf.mLayer = node.@layer;
+					cf.mType = node.@type;
+					cf.mEndType = node.@end;
+					cf.mOffx = node.@offx;
+					cf.mOffy = node.@offy;
+					cf.mScale = node.@scale;
+					cf.mBlend = node.@blend;
+					cf.mDuration = node.@dur;
+					cf.mSound = node.@sound;
+					cf.mAniSpeed = node.@speed;
+					cf.mFlySpeed = node.@flyspeed;
+					cf.mOption = node.@opt;	
+					
+					if(haveSibling)
+					{
+						if(arr.length != 0)
+						{
+							(arr[arr.length - 1] as MagicConfig).mSibling = cf;
+						}						
+					}
+					else if(haveChild)
+					{
+						if(arr.length != 0)
+						{
+							(arr[arr.length - 1] as MagicConfig).mChild = cf;
+						}						
+					}
+					
+					if(node.@sibling > 0)
+					{
+						haveSibling = true;
+					}
+					else if(node.@child > 0)
+					{
+						haveChild = true;
+					}
+					
+					arr.push(cf);
+				}
+				
+				if(arr.length != 0)
+				{
+					addConfig(id, arr);
+				}
+			}
+		}
+		
 		internal function loadConfig(path:String):void
 		{
-			var arr:Array = new Array;
-			
-			//释放
-			var cf1:MagicConfig = new MagicConfig;
-			cf1.mRootID = 1;
-			cf1.mTexDirCount = 1;
-			cf1.mTexID = 1;
-			cf1.mScale = 1;
-			cf1.mTexDirCount = 1;
-			cf1.mLayer = MagicConst.LAYER_AFTER_PLAYER;
-			cf1.mType = MagicConst.TYPE_SELF;
-			cf1.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
-			cf1.mAniSpeed = 500;
-			arr.push(cf1);
-			
-			//飞行
-			var cf2:MagicConfig = new MagicConfig;
-			cf2.mRootID = 1;
-			cf2.mTexDirCount = 8;
-			cf2.mTexID = 2;
-			cf2.mScale = 1;
-			cf2.mLayer = MagicConst.LAYER_AFTER_PLAYER;
-			cf2.mType = MagicConst.TYPE_FLY;
-			cf2.mEndType = MagicConst.END_TYPE_MANUAL;
-			cf2.mFlySpeed = 60;
-			cf1.mAniSpeed = 500;
-			arr.push(cf2);
-			
-			//爆炸
-			var cf3:MagicConfig = new MagicConfig;
-			cf3.mRootID = 1;
-			cf3.mTexDirCount = 1;
-			cf3.mTexID = 3;
-			cf3.mScale = 1;
-			cf3.mBlend = MagicConst.BLEND_ADD;
-			cf1.mAniSpeed = 500;
-			cf3.mLayer = MagicConst.LAYER_AFTER_PLAYER;
-			cf3.mType = MagicConst.TYPE_DESTINATION;
-			cf3.mEndType = MagicConst.END_TYPE_ANIMATION_OVER;
-			arr.push(cf3);
-			
-			cf1.mChild = cf2;
-			cf2.mChild = cf3;
-			addConfig(1, arr);
+			var url:URLRequest = new URLRequest(path);
+			var urlLoader:URLLoader = new URLLoader(url);
+			urlLoader.addEventListener(Event.COMPLETE, parseXml);
 		}		
 		
 		private function addConfig(id:uint, arr:Array):void

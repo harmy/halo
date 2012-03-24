@@ -1,5 +1,6 @@
 package com.cokecode.halo.materials.texture
 {	
+	import de.nulldesign.nd2d.materials.texture.ASpriteSheetBase;
 	import de.nulldesign.nd2d.materials.texture.TextureAtlas;
 
 	public class AnimationAtlas extends TextureAtlas
