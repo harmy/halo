@@ -48,6 +48,11 @@ package com.cokecode.halo.object
 			return mCharDic[strID];
 		}
 		
+		public function getCharByStr(str:String):Charactor
+		{
+			return mCharDic[str];
+		}
+		
 		/**
 		 * 主角对象
 		 */

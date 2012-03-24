@@ -37,6 +37,11 @@ package com.cokecode.halo.object
 			return mAnmPlayer;
 		}
 		
+		public function getStr():String
+		{
+			return mLooks.mType.toString() + mId.toString();
+		}
+		
 		public function get charView():Node2D
 		{
 			return mAnmPlayer;
