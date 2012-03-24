@@ -10,52 +10,54 @@
 	// 
 	public class AnimMgr 
 	{	
-		private var mAniPath:String;
-		private var mModelPath:String;
-		private var mModelDict:Dictionary;		//专门管理模型(Model)
-		private var mAnimDict:Dictionary;		//专门管理动画(Animation)
-		//private var mTbeDict:TbeImageDict;		//贴图
+		private var mRootPath:String = "";					// 动画资源的根目录
+		private var mModelDict:Dictionary;				//专门管理模型(Model)
+		private var mAnimDict:Dictionary;				//专门管理动画(Animation)
+		private var mAniLoaderDict:AniAtlasLoaderDict;	//贴图和切分信息
 		
-		public function AnimMgr(aniPath:String, modelPath:String)
+		static public var sInstance:AnimMgr = new AnimMgr;
+		
+		public function AnimMgr()
 		{
-			mAniPath = aniPath;
-			mModelPath = modelPath;
+			
+		}
+		
+		public function init(rootPath:String):void
+		{
+			mRootPath = rootPath;
 			
 			mModelDict = new Dictionary;
 			mAnimDict = new Dictionary;		//专门管理动画
-			//mTbeDict  = new TbeImageDict(LibSetting.CHAR_PATH);
+			
+			mAniLoaderDict = new AniAtlasLoaderDict(mRootPath);
 		}
 		
-//		public function GetTbeMgr():TbeImageDict
-//		{
-//			return mTbeDict;
-//		}
-//		
-//		public function dispose():void
-//		{
-//			mTbeDict.dispose();
-//		}
+		public function getAtlasTexMgr():AniAtlasLoaderDict
+		{
+			return mAniLoaderDict;
+		}
 		
 		// name - exp. human, monster, npc, pet
 		public function getModel(name:String):Model
 		{
 			var model:Model;
 			if (mModelDict[name] == null) {
-				var url:String = mModelPath + name + ".xml";
-				mModelDict[name] = new Model( name, url );
+				var url:String = mRootPath + name + ".xml";
+				mModelDict[name] = new Model(url, name);
 			}
 			
 			return mModelDict[name];
 		}
 	
 		// name - exp. stand, run, attack
-		public function getAnim(name:String,onLoadFinishCB:Function = null):Animation
+		public function getAnim(model:String, name:String,onLoadFinishCB:Function = null):Animation
 		{
 			if (name == null) return null;
 			
 			name = name.toLocaleLowerCase();
 			if(	mAnimDict[name]==null ) {
-				mAnimDict[name] = new Animation(mAniPath, name);
+				var url:String = mRootPath + model + "/animation/" + name + ".xml";
+				mAnimDict[name] = new Animation(url, name);
 				if (onLoadFinishCB != null) {
 					mAnimDict[name].addEventListener(Event.COMPLETE,onLoadFinishCB);
 				}

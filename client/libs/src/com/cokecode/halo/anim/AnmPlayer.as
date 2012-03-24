@@ -10,6 +10,13 @@
 //	import Lib.Texture.TbeImageLoader;
 //	import Lib.Texture.TexInstance;
 	
+	import com.cokecode.halo.data.CoreConst;
+	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	
+	import de.nulldesign.nd2d.display.Node2D;
+	import de.nulldesign.nd2d.display.Sprite2D;
+	import de.nulldesign.nd2d.materials.texture.ASpriteSheetBase;
+	
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
 	import flash.geom.ColorTransform;
@@ -18,61 +25,46 @@
 	import flash.geom.Rectangle;
 
 	
-	public class AnmPlayer
+	public class AnmPlayer extends Node2D
 	{
 		public static var FLANIMFPS:Number = 50;
+		public static var ENTER_FRAME:int = 0x1;
+		public static var END_REACHED:int = 0x2;
 
+		protected var mLayerAtlas:Array;		// 每一层的贴图 (AniAtlasLoader)
+		protected var mLayerSprite:Array;		// Sprite2D
 		
 		protected var mModel:Model;			//模型
 		protected var mAnim:Animation;			//动画
-		
 		protected var mCurFrame:int;			//当前帧
 		//protected var mCurFrameDelay:int;		//当前延迟
 		protected var mCurDir:int;				//当前方向
 		protected var mAnDelayFrame:Number;	//当前延迟
 		
-		protected var mLayerTex:Array;
 		protected var mIsReload:Boolean;
 		//protected var mTexDict:TbeImageDict;
-		
-		
-		
-		
 		protected var mIsPlaying:Boolean;			//播放
-		
-		//public var mItemNo:Array = [1,1,1,1,1,0,0,0,0];
-		public var mItemNo:Array = [-1,-1,-1,-1,-1,0,0,0,0];
-		
+		public var mItemNo:Array = [303,0,0,104,0,0,0,0,0];
+		//public var mItemNo:Array = [-1,-1,-1,-1,-1,0,0,0,0];
 		protected var mAnimCB:Function;		//动画回调函数
 		// function(int)
-		
-		
+		private static var mOffPos:Point = new Point;
 		protected var mBoundBox:Rectangle=new Rectangle;
-		
-		public static var ENTER_FRAME:int = 0x1;
-		public static var END_REACHED:int = 0x2;
-		
-		protected var mSrcRc:Rectangle = new Rectangle;
-		protected var mDrc:Point= new Point;
+		//protected var mSrcRc:Rectangle = new Rectangle;
+		//protected var mDrc:Point= new Point;
 		
 		/**
-		 * 绘制特效相关
+		 * 动画贴图和切割信息集合
 		 */
-		private var mEffectColor:ColorTransform;
-		
-		/**
-		 * 换色区绘制优化
-		 */
-		private var mMatrix:Matrix = new Matrix;
-		private var mClipRc:Rectangle = new Rectangle;
+		protected var mAniAtlasDict:AniAtlasLoaderDict;
 		
 		/**
 		 * 冲撞动作的残影数量 
 		 */
-		private static var mCollideNum:int = 2;
-		private static var mOffPos:Point = new Point;
+		//private static var mCollideNum:int = 2;
+		
 			
-		public function AnmPlayer(/*itexDict:TbeImageDict*/)
+		public function AnmPlayer(atlasTexDict:AniAtlasLoaderDict)
 		{
 			mCurDir = 0;
 			mCurFrame = 0;		//当前
@@ -81,55 +73,58 @@
 			mAnDelayFrame = 0;		//当前延迟
 			
 			mIsReload = false;
-			mLayerTex = [];
+			mLayerAtlas = [];
+			mLayerSprite = [];
 			
-			//mTexDict = itexDict;
+			mAniAtlasDict = atlasTexDict;
 			
 			mIsPlaying = false;		//停止
 			mAnimCB = null;
 		}
 		
-		public function setRenderEffect(colorTrans:ColorTransform):void
+		// 设置颜色
+		public function setColorTransform(colorTrans:ColorTransform):void
 		{
-			mEffectColor = colorTrans;
+			
 		}
 		
-		public function SetCallBack(cbFunc:Function):void
+		public function setCallBack(cbFunc:Function):void
 		{
 			mAnimCB = cbFunc;
 		}
 		
-		public function Stop():void
+		public function stop():void
 		{
 			mIsPlaying = false;
 		}
-		public function SetAnimation(iAnim:Animation):void
+		
+		public function setAnimation(iAnim:Animation):void
 		{
 			mAnim = iAnim;
 			mIsPlaying = true;
 		}
 		
-		public function SetModel(iModel:Model):void
+		public function setModel(iModel:Model):void
 		{
 			mModel=iModel;
 		}
 		
-		public function SetDir(nDir:int):void
+		public function setDir(nDir:int):void
 		{
 			mCurDir = nDir;
 		}
 		
-		public function GetDir():int
+		public function getDir():int
 		{
 			return mCurDir;
 		}
 		
-		public function GetBoundBox():Rectangle
+		public function getBoundBox():Rectangle
 		{
 			return mBoundBox;
 		}
 		
-		public function SetCurFrame(iFrame:int,iLimit:int):int
+		public function setCurFrame(iFrame:int,iLimit:int):int
 		{
 			if(iFrame > iLimit)
 				iFrame = iLimit-1;
@@ -138,40 +133,49 @@
 				iFrame = 0;
 				
 			mCurFrame = iFrame;
-			
 
 			return mCurFrame;
 		}
 		
-		public function ResetTime():void
+		public function setResourceFrame(resFrame:Array, start:uint = 0):void
+		{
+			// 设置每一层的动画当前帧
+			for(var i:uint=0 ; i<mLayerAtlas.length; i++) {
+				if (mLayerSprite[i] == null) continue;
+				var sprite:Sprite2D = mLayerSprite[i] as Sprite2D; 
+				sprite.spriteSheet.frame = start + resFrame[i];
+			}
+		}
+		
+		public function resetTime():void
 		{
 			mAnDelayFrame =0;
 			mCurFrame = -1;
 			
 		}
 		
-		public function GetMaxFrameTime():int
+		public function getMaxFrameTime():uint
 		{
-			return mAnim.MaxFrameTime;
+			return mAnim.mMaxFrameTime;
 		}
 		
-		public function AddDeltaTime(deltaTime:Number):void
+		public function addDeltaTime(elapsed:Number):void
 		{
 			if(mAnim==null)
 				return;
 				
-			if(mAnim.IsLoad==false)
+			if(mAnim.mIsLoad==false)
 				return;
 				
 			if(mIsPlaying==false)
 				return;
 				
-			var fDeltaTime:Number = deltaTime * AnmPlayer.FLANIMFPS;
+			var fDeltaTime:Number = elapsed * AnmPlayer.FLANIMFPS;
+			var pSeqFrame:AniSeqFrame;
 			
-			if(mAnDelayFrame<=0)
-			{
-				var m_AnCurFrame:int = mCurFrame;
-				var nMaxFrame:int = mAnim.vSeqFrame[mCurDir].length;
+			if(mAnDelayFrame<=0) {
+				var aniCurFrame:int = mCurFrame;
+				var nMaxFrame:int = mAnim.mSeqFrame[mCurDir].length;
 				
 //				while (mCurFrame < nMaxFrame) {
 //					if (!IsEmptyFrame(mCurDir, mCurFrame+1)) {
@@ -182,71 +186,77 @@
 //					// 如果下一帧是空帧，就直接跳过
 //				}
 					
-				if(m_AnCurFrame>=nMaxFrame-1)
-				{
-					if(mAnimCB!=null)
-					{
+				if(aniCurFrame>=nMaxFrame-1) {
+					if(mAnimCB!=null) {
 						mAnimCB(END_REACHED);
 					}
 
-					m_AnCurFrame = -1;
+					aniCurFrame = -1;
 				}
 				
 				
-				SetCurFrame(m_AnCurFrame+1 , nMaxFrame);
+				setCurFrame(aniCurFrame+1 , nMaxFrame);
 				
-				if(mAnim.vSeqFrame==null)
+				//trace("当前帧：" + getCurFrame());
+				
+				if(mAnim.mSeqFrame==null)
 					return;
 					
-				var pSeqFrame:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
-				
-				if(pSeqFrame)
-				{
-					mAnDelayFrame = pSeqFrame.iDelayFrame + 1;
-				}
-				else
-				{
+				pSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
+				if(pSeqFrame) {
+					mAnDelayFrame = pSeqFrame.mDelayFrame + 1;
+				} else {
 					mAnDelayFrame =0;
 				}
-			}
-			else
-			{
+			} else {
 				mAnDelayFrame -=fDeltaTime;
+			}
+			
+			// 实时更新动画的当前帧
+			pSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
+			if(pSeqFrame) {
+				var frameStart:uint;
+				if (mModel.mAtlasTexType == CoreConst.ACTION_ONE_TEX) {
+					// 通过动作名称索引出贴图下标
+					frameStart = mModel.mActionParam.getActionIndex(mAnim.mName);
+				} else if (mModel.mAtlasTexType == CoreConst.ACTION_MORE_TEX) {
+					frameStart = 0;
+				}
+				setResourceFrame(pSeqFrame.mResource, frameStart);
 			}
 		}
 		
-		public function GetFrameCount():int
+		public function getFrameCount():int
 		{
 			if(mAnim==null)
 				return 0;
 				
-			if(mAnim.IsLoad==false)
+			if(mAnim.mIsLoad==false)
 				return 0;
 				
 			if(mCurDir<0)
 				return 0;
 				
-			return mAnim.vSeqFrame[mCurDir].length;
+			return mAnim.mSeqFrame[mCurDir].length;
 		}
 		
-		public function GetCurFrame():int
+		public function getCurFrame():int
 		{
 			return mCurFrame;
 		}
 		
-		public function Update(deltaTime:Number):void
+		public function update(elapsed:Number):void
 		{
-			AddDeltaTime(deltaTime);
+			addDeltaTime(elapsed);
 			
-			if(mIsReload == false)
-			{
+			if(!mIsReload) {
 				
 				var bLoadAnim:Boolean = false;
 				var bLoadModel:Boolean = false;
 			
 				if(mAnim)
 				{
-					if(mAnim.IsLoad==true)
+					if(mAnim.mIsLoad==true)
 					{
 						bLoadAnim =true;
 					}
@@ -254,7 +264,7 @@
 			
 				if(mModel)
 				{
-					if(mModel.IsLoad==true)
+					if(mModel.mIsLoad==true)
 					{
 						bLoadModel = true;
 					}	
@@ -262,12 +272,62 @@
 
 				if(bLoadAnim && bLoadModel)
 				{
-					ReloadTexture();
+					reloadTexture();
+				}
+			}
+			
+			// 创建处理动画
+			updateLayerSprite();
+			
+			// 更新图层顺序
+			updateLayerOrder();
+		}
+		
+		
+		// 创建处理动画
+		public function updateLayerSprite():void
+		{
+			for(var i:uint=0; i<mLayerAtlas.length; i++) {
+				if (mLayerSprite[i] != null) continue;
+				var aniAtlasLoader:AniAtlasLoader = mLayerAtlas[i];
+				if (aniAtlasLoader == null) continue;
+				if (aniAtlasLoader.spriteSheet == null) continue;
+				
+				var spriteSheet:ASpriteSheetBase = aniAtlasLoader.spriteSheet.clone();
+				var sprite:Sprite2D = new Sprite2D(aniAtlasLoader.texture); 
+				sprite.setSpriteSheet( spriteSheet );
+				mLayerSprite[i] = sprite;
+				sprite.pivot.x = -32;
+				sprite.pivot.y = 16;
+				addChild(mLayerSprite[i]);
+			}
+		}
+		
+		// 根据配置更新层的顺序和坐标偏移
+		public function updateLayerOrder():void
+		{
+			if (mAnim == null || mAnim.mSeqFrame == null) return;
+			
+			removeAllChildren();
+			
+			var pSeqFrame:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
+			var index:uint;
+			var posX:int;
+			var posY:int;
+			for(var i:uint=0; i<pSeqFrame.mLayer.length; i++) {
+				index = pSeqFrame.mLayer[i];
+				posX = pSeqFrame.mPosX[i];
+				posY = pSeqFrame.mPosY[i];
+				if (mLayerSprite[index] != null) {
+					mLayerSprite[index].x = posX;
+					mLayerSprite[index].y = posY;
+					addChild( mLayerSprite[index] );
 				}
 			}
 		}
 		
-		public function GenerateTexName(iLayerID:int,iItemID:int,iImgID:int,pExt:String=null):String
+		
+		public function generateTexName(iLayerID:int,iItemID:int,iImgID:int=-1,pExt:String=null):String
 		{
 			var ret:String = "";
 			ret+=int(iLayerID/10);
@@ -277,76 +337,85 @@
 			ret+=int(iItemID/100) % 10;
 			ret+=int(iItemID/10) % 10;
 			ret+=iItemID % 10;
-			//ret+="_";
-			ret+=int(iImgID/100) % 10;
-			ret+=int(iImgID/10) % 10;
-			ret+=iImgID % 10;
+			
+			if (iImgID >= 0) {
+				//ret+="_";
+				ret+=int(iImgID/100) % 10;
+				ret+=int(iImgID/10) % 10;
+				ret+=iImgID % 10;
+			}
+			
 			if(pExt!=null)
 				ret+=pExt;
 			return ret;
 		}
 	
-		public function PreloadAllTexture():void
+		public function preloadAllTexture():void
 		{
 			//var pImageName:String = GenerateTexName(mModel.vLayers[i].iLayer, mItemNo[i] ,mAnim.vTexId[i]);
 			//mTexDict.LoadImage( mModel.Name+"/texcom/"+pImageName );
 		}
 		
-		public function ReloadTexture():void
+		public function reloadTexture():void
 		{
-			mLayerTex =null;
+			mLayerAtlas =null;
 			if(mModel==null)
 				return;
 				
-			if(mModel.IsLoad==false)
+			if(mModel.mIsLoad==false)
 				return;
 			
 			if(mAnim==null)
 				return;
 				
-			mLayerTex = [];
-			var forlen:int = mModel.vLayers.length;
+			mLayerAtlas = [];
+			var forlen:int = mModel.mLayers.length;
 			for(var i:int = 0 ; i < forlen; i++)
 			{
-				if(mAnim.vTexId==null)
+				if(mAnim.mTexId==null)
 					return;
 				
-				if (mModel.vLayers[i].iLayer != 0 && mItemNo[i] == 0)
+				if (mModel.mLayers[i].mLayer != 0 && mItemNo[i] == 0)
 					continue;
 
-				var pImageName:String = GenerateTexName(mModel.vLayers[i].iLayer, mItemNo[i] ,mAnim.vTexId[i]);
-				mLayerTex[i] = mTexDict.LoadImage( mModel.Name+"/texcom/"+pImageName );
+				var pImageName:String;
+				if (mModel.mAtlasTexType == CoreConst.ACTION_ONE_TEX) {
+					pImageName = generateTexName(mModel.mLayers[i].mLayer, mItemNo[i], 0);
+				} else if (mModel.mAtlasTexType == CoreConst.ACTION_MORE_TEX) {
+					pImageName = generateTexName(mModel.mLayers[i].mLayer, mItemNo[i], mAnim.mTexId[i]);
+				}
+				mLayerAtlas[i] = mAniAtlasDict.loadAniAtlas( mModel.mName+"/texcom/"+pImageName );
 			}
 			
 			mIsReload = true;
 		}
 		
-		public function GetLayerImage(nLayer:int):TbeImageLoader
-		{
-			return nLayer < mLayerTex.length?mLayerTex[nLayer]:null;
-		}
+//		public function getLayerImage(nLayer:int):TbeImageLoader
+//		{
+//			return nLayer < mLayerTex.length?mLayerTex[nLayer]:null;
+//		}
 		
-		private function InitAnim():Boolean{
+		private function initAnim():Boolean{
 			if(mAnim==null)
 				return false;
 			
-			if(mAnim.IsLoad==false)
+			if(mAnim.mIsLoad==false)
 				return false;
 			
 			if (this.mCurDir == -1){
 				this.mCurDir = 4;
 			}
 			
-			if (this.mCurDir > this.mAnim.vSeqFrame.length){
+			if (this.mCurDir > this.mAnim.mSeqFrame.length){
 				this.mCurDir = 0;
 			}
 			
-			if (this.mAnim.vSeqFrame[this.mCurDir].length == 0){
+			if (this.mAnim.mSeqFrame[this.mCurDir].length == 0){
 				return false;
 			}
 			
-			if (this.mCurFrame >= this.mAnim.vSeqFrame[this.mCurDir].length){
-				this.mCurFrame = (this.mAnim.vSeqFrame[this.mCurDir].length - 1);
+			if (this.mCurFrame >= this.mAnim.mSeqFrame[this.mCurDir].length){
+				this.mCurFrame = (this.mAnim.mSeqFrame[this.mCurDir].length - 1);
 			}
 			
 			if (this.mCurFrame < 0){
@@ -361,15 +430,16 @@
 			return true;
 		}
 		
-		public function RenderCollide(target:BitmapData,cx:int,cy:int):void{
-			if(!InitAnim())
+		/*
+		public function renderCollide(target:BitmapData,cx:int,cy:int):void{
+			if(!initAnim())
 				return;
 			
-			mCurFrame = mAnim.vSeqFrame[mCurDir].length - 2;
-			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
+			mCurFrame = mAnim.mSeqFrame[mCurDir].length - 2;
+			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
 			if(vFramePartList==null)
 			{
-				Render(target, cx, cy);
+				render(target, cx, cy);
 				return;
 			}
 			
@@ -386,15 +456,15 @@
 				cx += mOffPos.x + i*3;
 				cy += mOffPos.y + i*2;
 			}
-			
 		}
+		*/
 		
 		/**
 		 * 由于图片问题，不同方向上需要偏移一定距离，
 		 * 以免各个方向上的影子间距不一样
 		 * 
 		 */		
-		private function GetCollideOffsetPos():void{
+		private function getCollideOffsetPos():void{
 			switch(mCurDir)
 			{
 				case 0:
@@ -448,7 +518,8 @@
 			}
 		}
 		
-		private function RenderChar(target:BitmapData,cx:int,cy:int, vFramePartList:AniSeqFrame, genBoundBox:Boolean, alpha:Number):void{
+		/*
+		private function renderChar(target:BitmapData,cx:int,cy:int, vFramePartList:AniSeqFrame, genBoundBox:Boolean, alpha:Number):void{
 			//将透明度换算成16进制的字符
 			var alphaValue:int =alpha*255;
 //			var alphaStr:String = alphaValue.toString(16);
@@ -521,30 +592,32 @@
 				}
 			}
 		}
+		*/
 		
 		// 判断贴图是否已加载完成
-		public function IsTextureLoaded():Boolean
+		public function isTextureLoaded():Boolean
 		{
-			var pSurface:TbeImageLoader = GetLayerImage(0);
-			if (pSurface == null)
-				return false;
-			if (pSurface.Img == null)
-				return false;
-			if (pSurface.Img.GetBitmapData() == null)
-				return false;
+//			var pSurface:TbeImageLoader = getLayerImage(0);
+//			if (pSurface == null)
+//				return false;
+//			if (pSurface.Img == null)
+//				return false;
+//			if (pSurface.Img.GetBitmapData() == null)
+//				return false;
 			
 			return true;
 		}
 		
 		
 		// 是否是空的帧
-		public function IsEmptyFrame(dir:uint, frame:uint):Boolean
+		public function isEmptyFrame(dir:uint, frame:uint):Boolean
 		{
-			if(!InitAnim())
+			if(!initAnim())
 				return true;
 			
 			var isEmpty:Boolean = true;			
-			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[dir][frame];
+			/*
+			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[dir][frame];
 			if (vFramePartList == null) return true;
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -566,19 +639,20 @@
 				if (info.width > 1 && info.height > 1)
 					isEmpty = false;
 			}
+			*/
 			
 			return isEmpty;
 		}
 		
 		
+		/*
 		static private var colorTransTemp:ColorTransform = new ColorTransform;
-		
-		public function Render(target:BitmapData,cx:int,cy:int):void
+		public function render(target:BitmapData,cx:int,cy:int):void
 		{
 			if(!InitAnim())
 				return;
 		
-			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
 
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -660,8 +734,10 @@
 				mBoundBox.bottom	= Math.max(mBoundBox.bottom,mDrc.y+mSrcRc.height);
 			}
 		}
+		*/
 		
-		public function GetClipRect(outrc:Rectangle,pSurface:TexInstance,nClipW:int,nClipH:int,inno:int):void
+		/*
+		public function getClipRect(outrc:Rectangle,pSurface:TexInstance,nClipW:int,nClipH:int,inno:int):void
 		{
 			var nx:int = pSurface.GetBitmapData().width  / nClipW;
 			var ny:int = pSurface.GetBitmapData().height / nClipH;
@@ -675,12 +751,14 @@
 			outrc.right=outrc.left + nClipW;
 			outrc.bottom = outrc.top + nClipH;
 		}
+		*/
 
-		public function MouseIntersect2(rx:int,ry:int,cx:int,cy:int):Boolean
+		/*
+		public function mouseIntersect2(rx:int,ry:int,cx:int,cy:int):Boolean
 		{
-			if (mAnim.vSeqFrame == null) return false;
+			if (mAnim.mSeqFrame == null) return false;
 			
-			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
 			if(vFramePartList==null)
 				return false;
 			
@@ -725,7 +803,7 @@
 			return false;
 		}
 		
-		public function MouseIntersect(rx:int,ry:int):Boolean
+		public function mouseIntersect(rx:int,ry:int):Boolean
 		{
 			if(mAnim==null)
 				return false;
@@ -736,10 +814,10 @@
 			if(mCurDir==-1)
 				mCurDir=4;
 			
-			if(mCurFrame >= mAnim.vSeqFrame[mCurDir].length || mCurFrame < 0)
+			if(mCurFrame >= mAnim.mSeqFrame[mCurDir].length || mCurFrame < 0)
 				return false;
 
-			var vFramePartList:AniSeqFrame = mAnim.vSeqFrame[mCurDir][mCurFrame];
+			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
 
 			var forlen:int = vFramePartList.nLen;
 			for(var i:int=0; i < forlen ; i+=1 )
@@ -791,6 +869,8 @@
 			
 			return false;
 		}
+		*/
+		
 	}
 	
 	

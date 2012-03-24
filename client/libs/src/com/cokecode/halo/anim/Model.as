@@ -12,10 +12,12 @@
 	public class Model
 	{
 		public var mName:String;
+		public var mAtlasTexType:uint;
 		public var mLayers:Vector.<AniLayer> = new Vector.<AniLayer>();
+		public var mActionParam:ActionParam = new ActionParam;
 		public var mIsLoad:Boolean = false;
 		
-		function Model(name:String, url:String)
+		function Model(url:String, name:String)
 		{
 			mName = name;
 			ResMgr.loadByURLLoader(url, onComplete);
@@ -26,9 +28,18 @@
 			mLayers.length = 0;
 	
 			var xmldata:XMLList = new XMLList(event.target.data);
-			var lay:XMLList = xmldata.Layer;
+			
+			mAtlasTexType = xmldata.textype.@type;
+			
+			var lay:XMLList = xmldata.charactor.layer;
 			for each( var lid:XML in lay) 	{
-				mLayers.push(new AniLayer(lid.@ID,lid.@Name,lid.@TexW,lid.@TexH));
+				mLayers.push(new AniLayer(lid.@id,lid.@name,lid.@texwidth,lid.@texheight));
+			}
+			
+			mActionParam.clear();
+			var action:XMLList = xmldata.action.param;
+			for each( var param:XML in action) 	{
+				mActionParam.addAction(param.@name, param.@id, param.@frames, param.@dirs);
 			}
 			
 			mIsLoad = true;

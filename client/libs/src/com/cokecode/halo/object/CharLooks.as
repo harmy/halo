@@ -2,10 +2,10 @@ package com.cokecode.halo.object
 {
 	public class CharLooks
 	{
-		static public const HUMAN:uint	=	0;
-		static public const NPC:uint 		=	1;
-		static public const MONSTER:uint	=	2;
-		static public const PET:uint		=	3;
+		static public const HUMAN:uint	=	0;	// 玩家
+		static public const NPC:uint 		=	1;	// npc
+		static public const MONSTER:uint	=	2;	// 怪物
+		static public const PET:uint		=	3;	// 宠物
 		
 		public var mType:uint;			//类型		人类，NPC，怪物, 宠物
 		public var mBody:uint;			// 0 服装		如果是怪物的话为怪物ID

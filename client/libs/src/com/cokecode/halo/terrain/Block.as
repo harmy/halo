@@ -99,8 +99,6 @@ package com.cokecode.halo.terrain
 		
 		public function isInViewport(camera:Camera2D):Boolean
 		{
-			return true;
-			
 			if (mSprite == null) return  false;
 			
 			var nx:Number = x;

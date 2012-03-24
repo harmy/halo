@@ -2,6 +2,9 @@ package com.cokecode.halo.utils
 {
 	import flash.net.SharedObject;
 
+	/**
+	 * flash本地存储功能(不同于浏览器的cookie)
+	 */
 	public class Cookie
 	{
 		private var mName:String;
@@ -10,8 +13,6 @@ package com.cokecode.halo.utils
 		public function Cookie(name:String = "System")
 		{
 			this.name = name;
-			//m_name = name;
-			//m_sharedObj = SharedObject.getLocal(m_name,"/zscs");
 		}
 		
 		public function get name():String
@@ -22,7 +23,7 @@ package com.cokecode.halo.utils
 		public function set name(value:String):void
 		{
 			mName = value;
-			mSharedObj = SharedObject.getLocal("zscs/" + m_name);
+			mSharedObj = SharedObject.getLocal("zscs/" + mName);
 		}
 		
 		public function write(key:String, value:*, flush:Boolean = true):void

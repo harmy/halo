@@ -1,7 +1,14 @@
 package game
 {
+	import com.cokecode.halo.anim.ActionParam;
+	import com.cokecode.halo.anim.AnimMgr;
+	import com.cokecode.halo.anim.Animation;
+	import com.cokecode.halo.anim.AnmPlayer;
+	import com.cokecode.halo.anim.Model;
 	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.magic.MagicMgr;
+	import com.cokecode.halo.object.CharLooks;
+	import com.cokecode.halo.object.CharMgr;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.terrain.layers.Layer;
@@ -24,8 +31,8 @@ package game
 		protected var mHero:Charactor;
 		protected var mTargetNode:Node2D;
 		protected var mMap:Map;
-		
 		protected var mParLayer:ParallaxLayer;
+		protected var mAniMgr:AnimMgr;
 		
 		public function GameScene()
 		{
@@ -35,6 +42,8 @@ package game
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
 			GameAssets.initGameRes();
+			
+			AnimMgr.sInstance.init("Z:/res/charactor/");
 			
 			// 创建测试地图
 			mMap = new Map();
@@ -46,15 +55,27 @@ package game
 			MagicMgr.instance().magicLayer = mMap.getLayer(MagicConst.STR_LAYER_AFTER);
 		
 			
-			// 创建测试角色			
-			for (var i:uint=0; i<200 * 1; ++i) {
+			// 创建测试角色
+			var uid:uint = 0;
+			for (var i:uint=0; i<100 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
-				char.charView = GameAssets.createChar();
+				//char.charView = GameAssets.createChar();
 				char.x = int(Math.random() * 40);
 				char.y = int(Math.random() * 44);
 				
 				char.x = char.x * 64;
 				char.y = char.y * 32;
+				
+				char.dir = 1;
+				
+				
+				var anmPlayer:AnmPlayer = char.getAnmPlayer();
+				var model:Model = AnimMgr.sInstance.getModel("human");
+				var anim:Animation = AnimMgr.sInstance.getAnim("human", "attack", null);
+				anmPlayer.setModel(model);
+				anmPlayer.setAnimation(anim);
+				char.setNameText("我是玩家");
+				char.id = ++uid;
 				
 				//char.x = char.y = 0;
 				
@@ -83,15 +104,25 @@ package game
 //					char2.y = char.y + 20;
 //					layer.addChild( char2 );
 					
-					char.charView.tint = 0x00FF00;
+					//char.charView.tint = 0x00FF00;
 					//char.alpha = 0.3;
 					mTargetNode = mHero = char;
+					CharMgr.sInstance.hero = char;
 				}
 				
-				layer.addChild( char );
+				if ( CharMgr.sInstance.addChar(char, CharLooks.HUMAN) ) {
+					layer.addChild( char );	
+				} else {
+					// 释放角色数据
+				}
+				
+				
 			}
 			
-			MagicTest.instance().init();			
+			MagicTest.instance().init();		
+			
+			var actSetting:ActionParam = new ActionParam;
+		
 		}
 		
 		public function get map():Map
@@ -114,19 +145,43 @@ package game
 			var STEPX:Number = 64;
 			var STEPY:Number = 32;
 			if (evt.keyCode == Keyboard.LEFT) {
-				if (mHero) mHero.x -= STEPX;
+				if (mHero) {
+					mHero.dir = 6;
+					mHero.x -= STEPX;
+				}
 			} else if (evt.keyCode == Keyboard.RIGHT) {
-				if (mHero) mHero.x += STEPX;
+				if (mHero) {
+					mHero.dir = 2;
+					mHero.x += STEPX;
+				}
 			} else if (evt.keyCode == Keyboard.UP) {
-				if (mHero) mHero.y -= STEPY;
+				if (mHero) {
+					mHero.dir = 0;
+					mHero.y -= STEPY;
+				}
 			} else if (evt.keyCode == Keyboard.DOWN) {
-				if (mHero) mHero.y += STEPY;
+				if (mHero) {
+					mHero.dir = 4;
+					mHero.y += STEPY;
+				}
 			} else if (evt.keyCode == Keyboard.SPACE) {
+				// 模拟震屏效果
 				//camera.shake(Camera.SHAKE_Y, 6, 700, 100);
 				if (mTargetNode == null) mTargetNode = mHero;
 				else mTargetNode = null;
 			} else if(evt.keyCode == Keyboard.NUMBER_1) {
+				// 释放魔法
 				MagicMgr.instance().addMagic(1, 2, "src", mHero.x, mHero.y, "dest", mHero.x + 400, mHero.y + 300);	
+			} else if(evt.keyCode == Keyboard.NUMBER_2) {
+				// 切换主角方向
+				if (mHero) {
+					mHero.dir++;
+					if (mHero.dir >= 8) mHero.dir = 0;
+				}
+			} else if(evt.keyCode == Keyboard.NUMBER_3) {
+				// 切换主角到跑步动作
+				var anim:Animation = AnimMgr.sInstance.getAnim("human", "run", null);
+				mHero.getAnmPlayer().setAnimation(anim);
 			}
 			
 //			var right:uint = mMap.mapWidth - mHero.width;
@@ -148,7 +203,7 @@ package game
 				mHero.charView.alpha = 0.5;
 			} else {
 				// 可走信息
-				mHero.charView.tint = 0x00FF00;
+				mHero.charView.tint = 0xFFFFFF;
 				mHero.charView.alpha = 1;
 			}
 		}
@@ -171,6 +226,8 @@ package game
 				if (camera.x > right) camera.x = right;
 				if (camera.y > bottom) camera.y = bottom;
 			}
+			
+			//mHero.charView.spriteSheet.frame = 0;
 			
 			// 因为优先更新子节点，后更新场景，所以会出现相机更新延迟(后期再优化)
 			mParLayer.update(elapsed);

@@ -1,8 +1,9 @@
 package 
 {
 
+	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.Layer;
-	import com.cokecode.halo.ui.Console;
+	import com.furusystems.dconsole2.DConsole;
 	import com.sociodox.theminer.TheMiner;
 	
 	import de.nulldesign.nd2d.display.World2D;
@@ -13,7 +14,6 @@ package
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
-
 	
 	import game.GameScene;
 	
@@ -27,7 +27,6 @@ package
 		private static var sInstance:GameWorld;
 		
 		protected var mStats:Stats = new Stats();
-		public var mConsole:Console = new Console;
 	
 		
 		public function GameWorld()
@@ -37,15 +36,16 @@ package
 			
 			// 添加性能分析图
 			addChild(mStats);
-			//mStats.visible =false;
 			
 			// 添加性能分析工具
 			var miner:TheMiner = new TheMiner;
 			//addChild(miner);
+			
+			//ResMgr.addInspector(stage);
+			
+			addChild(DConsole.view);
+			DConsole.console.createCommand("block", blockCommand, "halo", "显示/隐藏阻挡信息");
 
-			addChild(mConsole);
-			//mConsole.showConsole();
-			mConsole.addCommand("block", blockCommand);
 
 			
 			if(sInstance != null)
@@ -56,7 +56,7 @@ package
 			sInstance = this;
 		}
 		
-		public function blockCommand(objectName:String, paramName:String, paramValue:String):void
+		public function blockCommand():void
 		{
 			var gamescene:GameScene = scene as GameScene;
 			var layer:Layer = gamescene.map.getLayer("block");

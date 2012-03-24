@@ -7,9 +7,7 @@ package com.cokecode.halo.utils
 {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-//	import flash.utils.getTimer;
-//	import isohill.GridInt;
-//	import isohill.tmx.TMXLayer;
+
 	/**
 	 * Base64 utils
 	 */
@@ -47,26 +45,6 @@ package com.cokecode.halo.utils
 			output.position = 0;
 			return output;
 		}
-		
-		//		public static function base64ToTMXLayer(chunk:String, width:int, height:int, compressed:Boolean):TMXLayer
-		//		{
-		//			var result:TMXLayer = new TMXLayer(width, height);
-		//			var data:ByteArray = base64ToByteArray(chunk);
-		//			if(compressed)
-		//				data.uncompress();
-		//			data.endian = Endian.LITTLE_ENDIAN;
-		//			var y:int = 0;
-		//			while(data.position < data.length)
-		//			{
-		//				for (var x:int = 0; x < width; x++) {
-		//					var val:int = data.readInt();
-		//					result.setCell(x, y, val);
-		//					result.maxGid = Math.max(val, result.maxGid);
-		//				}
-		//				y++;
-		//			}
-		//			return result;
-		//		}
 	}
 
 }
