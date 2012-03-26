@@ -10,18 +10,24 @@
 	// 
 	public class AnimMgr 
 	{	
-		private var mRootPath:String = "";					// 动画资源的根目录
+		private static var msInstance:AnimMgr = new AnimMgr;
+		
+		private var mRootPath:String = "";				// 动画资源的根目录
 		private var mModelDict:Dictionary;				//专门管理模型(Model)
 		private var mAnimDict:Dictionary;				//专门管理动画(Animation)
 		private var mAniLoaderDict:AniAtlasLoaderDict;	//贴图和切分信息
 		
-		public static var sInstance:AnimMgr = new AnimMgr;
 		
 		public function AnimMgr()
 		{
 			
 		}
 		
+		public static function get instance():AnimMgr
+		{
+			return msInstance;
+		}
+
 		public function init(rootPath:String):void
 		{
 			mRootPath = rootPath;

@@ -42,7 +42,7 @@ package game
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
-			AnimMgr.sInstance.init("Z:/res/charactor/");
+			AnimMgr.instance.init("Z:/res/charactor/");
 			
 			// 相机要第一个加入节点
 			mCameraCtrl = new BaseCameraCtrl();
@@ -71,8 +71,8 @@ package game
 				
 				
 				var anmPlayer:AnmPlayer = char.getAnmPlayer();
-				var model:Model = AnimMgr.sInstance.getModel("human");
-				var anim:Animation = AnimMgr.sInstance.getAnim("human", "attack", null);
+				var model:Model = AnimMgr.instance.getModel("human");
+				var anim:Animation = AnimMgr.instance.getAnim("human", "attack", null);
 				anmPlayer.setModel(model);
 				anmPlayer.setAnimation(anim);
 				char.setNameText("我是玩家");
@@ -206,7 +206,7 @@ package game
 				}
 			} else if(evt.keyCode == Keyboard.W) {
 				// 切换主角到跑步动作
-				var anim:Animation = AnimMgr.sInstance.getAnim("human", "run", null);
+				var anim:Animation = AnimMgr.instance.getAnim("human", "run", null);
 				mHero.getAnmPlayer().setAnimation(anim);
 			}
 			

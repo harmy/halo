@@ -21,7 +21,7 @@ package com.cokecode.halo.object
 		{
 			mLooks = looks;
 			
-			mAnmPlayer = new AnmPlayer(AnimMgr.sInstance.getAtlasTexMgr());
+			mAnmPlayer = new AnmPlayer(AnimMgr.instance.getAtlasTexMgr());
 			addChild(mAnmPlayer);
 		}
 		
