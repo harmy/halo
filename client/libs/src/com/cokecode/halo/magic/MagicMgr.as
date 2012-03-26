@@ -4,6 +4,7 @@ package com.cokecode.halo.magic
 	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.layers.Layer;
+	import com.furusystems.dconsole2.plugins.dialog.DialogDesc;
 	
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.materials.texture.TextureAtlas;
@@ -25,6 +26,7 @@ package com.cokecode.halo.magic
 		private var mLayer_before:Layer;
 		private var mLayer_after:Layer;
 		internal var mSelf:Charactor;
+		private var mTextureDic:Dictionary		= new Dictionary;
 		
 		public function MagicMgr()
 		{
@@ -60,7 +62,7 @@ package com.cokecode.halo.magic
 		
 		public function loadConfig(path:String):void
 		{
-			MagicConfigMgr.instance().loadConfig(path);
+			MagicConfigMgr.instance.loadConfig(path);
 		}
 		
 		internal function erase(id:uint):void
@@ -70,14 +72,19 @@ package com.cokecode.halo.magic
 		
 		private function getAtlasTex(id:uint):Texture2D
 		{
+			if(mTextureDic[id] == null)
+			{
+				mTextureDic[id] = Texture2D.textureFromBitmapData((mAtlasTexDic[id] as Bitmap).bitmapData, true);	
+				delete mAtlasTexDic[id];
+			}
 			
-			return Texture2D.textureFromBitmapData((mAtlasTexDic[id] as Bitmap).bitmapData.clone(), true);
+			return mTextureDic[id];			
 		}
 		
 		private function getAtlas(id:uint):AnimationAtlas
 		{
-			return new AnimationAtlas((mAtlasTexDic[id] as Bitmap).bitmapData.width, 
-				(mAtlasTexDic[id] as Bitmap).bitmapData.height, mAtlasDic[id], TextureAtlas.XML_FORMAT_COCOS2D, 5, false);			
+			return new AnimationAtlas((mTextureDic[id] as Texture2D).bitmapWidth, 
+				(mTextureDic[id] as Texture2D).bitmapHeight, mAtlasDic[id], TextureAtlas.XML_FORMAT_COCOS2D, 5, false);			
 		}
 		
 		public function delMagic(id:uint):void
@@ -127,7 +134,7 @@ package com.cokecode.halo.magic
 				magicLayer = mLayer_after;
 			}
 			
-			var nextConfig:MagicConfig = magic.init(getAtlas(config.mTexID), getAtlasTex(config.mTexID), magicLayer);
+			var nextConfig:MagicConfig = magic.init(getAtlasTex(config.mTexID), getAtlas(config.mTexID), magicLayer);
 			
 			//如果弟兄节点存在，递归
 			if(nextConfig != null)
@@ -140,7 +147,7 @@ package com.cokecode.halo.magic
 		public function addMagic(id:uint, dir:uint, srcID:String, srcX:uint, srcY:uint, 
 								 targetID:String, targetX:uint, targetY:uint):void
 		{
-			var cfArr:Array = MagicConfigMgr.instance().getConfig(id);
+			var cfArr:Array = MagicConfigMgr.instance.getConfig(id);
 			
 			if(cfArr == null || cfArr.length == 0)
 			{
