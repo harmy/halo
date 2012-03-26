@@ -1,5 +1,6 @@
 package com.cokecode.halo.magic
 {
+	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.sociodox.theminer.Options;
 	
@@ -11,6 +12,8 @@ package com.cokecode.halo.magic
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
+	import net.manaca.loaderqueue.LoaderQueueEvent;
+	
 	import org.osmf.elements.DurationElement;
 	import org.osmf.layout.ScaleMode;
 
@@ -21,18 +24,8 @@ package com.cokecode.halo.magic
 	{
 		private var mConfigMgr:Dictionary = new Dictionary;
 		private static var sInstance:MagicConfigMgr;
-		
-		public function MagicConfigMgr()
-		{
-			if(sInstance != null)
-			{
-				throw new Error("this class should be instantiated only one time");
-			}
-			
-			sInstance = this;
-		}
-		
-		public static function instance():MagicConfigMgr
+	
+		public static function get instance():MagicConfigMgr
 		{
 			if(sInstance == null)
 			{
@@ -42,7 +35,7 @@ package com.cokecode.halo.magic
 			return sInstance;
 		}
 		
-		private function parseXml(evt:Event):void
+		private function parseXml(evt:LoaderQueueEvent):void
 		{
 			var xml:XML = new XML(evt.target.data);
 			var texDic:Dictionary = new Dictionary;
@@ -117,9 +110,7 @@ package com.cokecode.halo.magic
 		
 		internal function loadConfig(path:String):void
 		{
-			var url:URLRequest = new URLRequest(path);
-			var urlLoader:URLLoader = new URLLoader(url);
-			urlLoader.addEventListener(Event.COMPLETE, parseXml);
+			ResMgr.instance.loadByURLLoader(path, parseXml);
 		}		
 		
 		private function addConfig(id:uint, arr:Array):void

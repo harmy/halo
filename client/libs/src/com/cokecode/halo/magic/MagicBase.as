@@ -93,7 +93,7 @@ package com.cokecode.halo.magic
 		
 		public override function dispose():void
 		{
-			mSprite.dispose();
+//			mSprite.dispose();
 			removeChild(mSprite);
 			mSprite = null;
 			MagicMgr.instance().erase(id);			
@@ -103,7 +103,7 @@ package com.cokecode.halo.magic
 		{			
 		}
 		
-		public function init(atlas:AnimationAtlas, atlasTex:Texture2D, layer:Layer):MagicConfig
+		public function init(atlasTex:Texture2D, atlas:AnimationAtlas, layer:Layer):MagicConfig
 		{
 			atlasTex.textureOptions = TextureOption.QUALITY_LOW;
 			atlas.setFPS(1000/mConfig.mAniSpeed);
