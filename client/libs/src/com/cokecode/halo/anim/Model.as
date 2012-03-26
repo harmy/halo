@@ -20,7 +20,7 @@
 		function Model(url:String, name:String)
 		{
 			mName = name;
-			ResMgr.loadByURLLoader(url, onComplete);
+			ResMgr.instance.loadByURLLoader(url, onComplete);
 		}
 		
 		protected function onComplete(event:LoaderQueueEvent):void

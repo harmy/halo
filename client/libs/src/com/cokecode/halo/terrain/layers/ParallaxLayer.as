@@ -39,7 +39,7 @@ package com.cokecode.halo.terrain.layers
 			mSpeedX = prop["speedx"];
 			mSpeedY = prop["speedy"];
 			var url:String = mTMX.getParallaxImgSrc( mImageName );
-			ResMgr.loadByLoader( url, onCompleteCB );
+			ResMgr.instance.loadByLoader( url, onCompleteCB );
 		}
 		
 		protected function onCompleteCB(evt:LoaderQueueEvent):void
@@ -57,7 +57,7 @@ package com.cokecode.halo.terrain.layers
 			addChild(mSprite);
 		}
 		
-		override public function update(elapsed:Number):void
+		override protected function step(elapsed:Number):void 
 		{
 			if (mSprite == null) return;
 			
@@ -80,10 +80,6 @@ package com.cokecode.halo.terrain.layers
 			mSprite.material.uvOffsetY = matY; //camera.y * yScal / 20000;
 			
 			//trace("matX: " + matX);
-		}
-		
-		override protected function step(elapsed:Number):void 
-		{
 		}
 	}
 }

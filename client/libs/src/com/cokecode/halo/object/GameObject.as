@@ -84,11 +84,6 @@ package com.cokecode.halo.object
 			return mController;
 		}
 		
-		public function updateController():void
-		{
-			if (mController) mController.update()
-		}
-		
 		public function set dir(value:uint):void
 		{
 			mDir = value;

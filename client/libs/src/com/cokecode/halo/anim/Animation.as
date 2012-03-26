@@ -23,7 +23,7 @@
 			mName = actName;
 			mMaxFrameTime = 0;
 			
-			ResMgr.loadByURLLoader(url, onLoadXmlFinish);
+			ResMgr.instance.loadByURLLoader(url, onLoadXmlFinish);
 		}
 		
 		protected function onLoadXmlFinish(event:LoaderQueueEvent):void

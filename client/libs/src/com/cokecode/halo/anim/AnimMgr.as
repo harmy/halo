@@ -15,7 +15,7 @@
 		private var mAnimDict:Dictionary;				//专门管理动画(Animation)
 		private var mAniLoaderDict:AniAtlasLoaderDict;	//贴图和切分信息
 		
-		static public var sInstance:AnimMgr = new AnimMgr;
+		public static var sInstance:AnimMgr = new AnimMgr;
 		
 		public function AnimMgr()
 		{

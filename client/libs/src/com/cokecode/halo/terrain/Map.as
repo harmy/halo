@@ -1,6 +1,7 @@
 package com.cokecode.halo.terrain
 {
 	import com.cokecode.halo.data.CoreConst;
+	import com.cokecode.halo.events.MapEvent;
 	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.*;
@@ -19,12 +20,12 @@ package com.cokecode.halo.terrain
 		/**
 		 * 地图单个格子的宽(像素)
 		 */
-		static public var sTileWidth:uint = 64;
+		public static var sTileWidth:uint = 64;
 		
 		/**
 		 * 地图单个格子的高(像素)
 		 */
-		static public var sTileHeight:uint = 32;
+		public static var sTileHeight:uint = 32;
 		
 		/**
 		 * 存放解析出来的地图数据
@@ -122,7 +123,7 @@ package com.cokecode.halo.terrain
 			var sid:String = url.substr(s1, s2 - s1); 
 			mMapId = uint(sid);
 			
-			ResMgr.loadByURLLoader(mMapPath + url, onComplete, CoreConst.PRIORITY_MAP);
+			ResMgr.instance.loadByURLLoader(mMapPath + url, onComplete, CoreConst.PRIORITY_MAP);
 			
 			// 测试代码
 			mWidth = 7680;
@@ -155,6 +156,8 @@ package com.cokecode.halo.terrain
 					trace("不存在的层: " + tmxLayer.name);
 				}
 			}
+			
+			dispatchEvent( new MapEvent(MapEvent.LOAD_COMPLETE, mMapId, mWidth, mHeight) );
 		}
 		
 		public function addLayer(layer:Layer):void

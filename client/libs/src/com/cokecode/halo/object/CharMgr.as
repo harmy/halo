@@ -6,7 +6,7 @@ package com.cokecode.halo.object
 
 	public class CharMgr
 	{
-		static public var sInstance:CharMgr = new CharMgr;
+		private static var sInstance:CharMgr = new CharMgr;
 		
 		protected var mCharDic:Dictionary = new Dictionary;
 		protected var mHero:Charactor;
@@ -16,6 +16,11 @@ package com.cokecode.halo.object
 			
 		}
 		
+		public static function get instance():CharMgr
+		{
+			return sInstance;
+		}
+
 		public function clear():void
 		{
 			mCharDic = new Dictionary;

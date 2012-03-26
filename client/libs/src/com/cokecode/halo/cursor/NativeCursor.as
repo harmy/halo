@@ -20,13 +20,13 @@ package core.cursor
 	
 	public class NativeCursor
 	{
-		static public const LEFT_TOP:uint = 0;	// 左上角
-		static public const CENTER:uint = 1;		// 中心点
-		static public const TOP_CENTER:uint = 2;	// 上面的中心
+		public static const LEFT_TOP:uint = 0;	// 左上角
+		public static const CENTER:uint = 1;		// 中心点
+		public static const TOP_CENTER:uint = 2;	// 上面的中心
 		
-		//static private var m_safeLoader:SWFSafeLoader = new SWFSafeLoader(); 
-		static private var mDomain:ApplicationDomain;
-		static private var mIsLoaded:Boolean = false;
+		//private static var m_safeLoader:SWFSafeLoader = new SWFSafeLoader(); 
+		private static var mDomain:ApplicationDomain;
+		private static var mIsLoaded:Boolean = false;
 		
 		public function NativeCursor()
 		{
@@ -36,7 +36,7 @@ package core.cursor
 		/**
 		 * 加载并初始化鼠标文件
 		 */
-		static public function Init():void
+		public static function Init():void
 		{
 			// 加载新手引导的flash文件
 			//var url:String = Setting.Assets_Path + "mouse.swf";
@@ -45,7 +45,7 @@ package core.cursor
 			//m_safeLoader.safeLoad(url, OnLoadSwfFinish, errorHandler);
 		}
 		
-		static private function OnLoadSwfFinish(evt:Event):void
+		private static function OnLoadSwfFinish(evt:Event):void
 		{
 //			if (m_safeLoader.contentLoaderInfo != null) {
 //				m_domain = m_safeLoader.contentLoaderInfo.applicationDomain;
@@ -55,7 +55,7 @@ package core.cursor
 //			}
 		}
 		
-		static private function InitMouseCursor():void
+		private static function InitMouseCursor():void
 		{
 			createMouseData("nomove", "nomove");
 			createMouseData("sell", "sell");
@@ -74,7 +74,7 @@ package core.cursor
 		/**
 		 * 通过名字指定当前鼠标
 		 */
-		static public function SetCursor(name:String):void
+		public static function SetCursor(name:String):void
 		{
 			if (!mIsLoaded) return;
 			
@@ -84,7 +84,7 @@ package core.cursor
 		/**
 		 * 无法捡取
 		 */
-		static public function UseNoPickMouse():void
+		public static function UseNoPickMouse():void
 		{
 			SetCursor("nopick");
 		}
@@ -92,7 +92,7 @@ package core.cursor
 		/**
 		 * 无法移动
 		 */
-		static public function UseNoMoveMouse():void
+		public static function UseNoMoveMouse():void
 		{
 			SetCursor("nomove");
 		}
@@ -100,7 +100,7 @@ package core.cursor
 		/**
 		 * 可以出售
 		 */
-		static public function UseSellMouse():void
+		public static function UseSellMouse():void
 		{
 			SetCursor("sell");
 		}
@@ -108,7 +108,7 @@ package core.cursor
 		/**
 		 * NPC对话
 		 */
-		static public function UseTalkMouse():void
+		public static function UseTalkMouse():void
 		{
 			SetCursor("talk");
 		}
@@ -116,7 +116,7 @@ package core.cursor
 		/**
 		 * 可以攻击
 		 */
-		static public function UseAttackMouse():void
+		public static function UseAttackMouse():void
 		{
 			SetCursor("attack");
 		}
@@ -124,7 +124,7 @@ package core.cursor
 		/**
 		 * 可以捡取
 		 */
-		static public function UsePickMouse():void
+		public static function UsePickMouse():void
 		{
 			SetCursor("pick");
 		}
@@ -132,7 +132,7 @@ package core.cursor
 		/**
 		 * 可以修理
 		 */
-		static public function UseRepairMouse():void
+		public static function UseRepairMouse():void
 		{
 			SetCursor("repair");
 		}
@@ -140,7 +140,7 @@ package core.cursor
 		/**
 		 * 无法修理
 		 */
-		static public function UseNoRepairMouse():void
+		public static function UseNoRepairMouse():void
 		{
 			SetCursor("norepair");
 		}
@@ -148,7 +148,7 @@ package core.cursor
 		/**
 		 * 正常鼠标
 		 */
-		static public function UseNormalMouse():void
+		public static function UseNormalMouse():void
 		{
 			//SetCursor(MouseCursor.AUTO);
 			SetCursor("normal");
@@ -157,7 +157,7 @@ package core.cursor
 		/**
 		 * 拆分物品
 		 */
-		static public function UseSpliteMouse():void
+		public static function UseSpliteMouse():void
 		{
 			SetCursor("splite");
 		}
@@ -165,7 +165,7 @@ package core.cursor
 		/**
 		 * 无法拆分物品
 		 */
-		static public function UseNoSpliteMouse():void
+		public static function UseNoSpliteMouse():void
 		{
 			SetCursor("nosplite");
 		}
@@ -173,7 +173,7 @@ package core.cursor
 		/**
 		 * 创建鼠标动画组
 		 */
-		static private function createMouseData(name:String, className:String, hotSpot:uint = LEFT_TOP):void
+		private static function createMouseData(name:String, className:String, hotSpot:uint = LEFT_TOP):void
 		{
 			var cursorData:MouseCursorData = new MouseCursorData();
 			var vecBitmap:Vector.<BitmapData> = new Vector.<BitmapData>();
@@ -211,12 +211,12 @@ package core.cursor
 			Mouse.registerCursor(name, cursorData)
 		}
 		
-		static private function errorHandler(evt:IOErrorEvent):void
+		private static function errorHandler(evt:IOErrorEvent):void
 		{
 			
 		}
 		
-		static private function getClass(name:String):Class
+		private static function getClass(name:String):Class
 		{
 			if(mDomain == null)
 				return null;

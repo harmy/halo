@@ -148,11 +148,6 @@ package com.cokecode.halo.terrain.layers
 			clip();
 		}
 		
-		public function update(elapsed:Number):void
-		{
-			
-		}
-		
 		/**
 		 * 层内对象的默认排序规则
 		 * 根据Y轴行进排序
