@@ -421,7 +421,7 @@ package com.adobe.utils {
 			return agalcode;
 		}
 
-		static private function init():void {
+		private static function init():void {
 			initialized = true;
 
 			// Fill the dictionaries with opcodes and registers

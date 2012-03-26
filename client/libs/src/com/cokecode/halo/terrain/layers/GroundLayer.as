@@ -19,7 +19,7 @@ package com.cokecode.halo.terrain.layers
 	 */
 	public class GroundLayer extends Layer
 	{
-		static public const LOAD_RANGE_CONST:uint = 1;	// 加载范围的系数
+		public static const LOAD_RANGE_CONST:uint = 1;	// 加载范围的系数
 		
 		private var mLastCameraPt:Point = new Point(-1000, -1000);	// -1000 初始值为的是loadTexture必定执行一次
 		private var mWorldRect:Rectangle = new Rectangle;

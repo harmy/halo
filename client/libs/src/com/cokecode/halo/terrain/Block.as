@@ -22,9 +22,9 @@ package com.cokecode.halo.terrain
 	 */
 	public class Block extends Node2D implements IClip
 	{
-		static public const FREE_TIME:uint = 60 * 1000;	// 释放的时间(毫秒)
+		public static const FREE_TIME:uint = 60 * 1000;	// 释放的时间(毫秒)
 		
-		static private var sTexDic:Dictionary = new Dictionary;	// Texture2D 简易贴图管理(后期需要优化)
+		private static var sTexDic:Dictionary = new Dictionary;	// Texture2D 简易贴图管理(后期需要优化)
 		
 		public var mSpriteWidth:Number;
 		public var mSpriteHeight:Number;
@@ -44,7 +44,7 @@ package com.cokecode.halo.terrain
 			}
 			
 			// 如果贴图未加载过，就去加载吧
-			ResMgr.loadByLoader(url, onComplete);
+			ResMgr.instance.loadByLoader(url, onComplete);
 		}
 		
 		public function canDispose():Boolean

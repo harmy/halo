@@ -10,12 +10,12 @@ package com.cokecode.halo.data
 		/**
 		 * 地图文件的加载优先级别
 		 */
-		static public const PRIORITY_MAP:uint = 1; 
+		public static const PRIORITY_MAP:uint = 1; 
 		
 		/**
 		 * 黑色描边
 		 */
-		static public const GLOW_FILTER1:GlowFilter = new GlowFilter(0x111111, 1, 3, 3, 16);
+		public static const GLOW_FILTER1:GlowFilter = new GlowFilter(0x111111, 1, 3, 3, 16);
 		
 		/**
 		 * 动画动作贴图类型

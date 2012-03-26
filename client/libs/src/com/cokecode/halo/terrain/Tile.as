@@ -20,7 +20,7 @@ package com.cokecode.halo.terrain
 	 */
 	public class Tile extends Node2D implements IClip
 	{
-		static public const FREE_TIME:uint = 60 * 1000;	// 释放的时间(毫秒)
+		public static const FREE_TIME:uint = 60 * 1000;	// 释放的时间(毫秒)
 		
 		protected var mSprite:Sprite2D;
 		// 最后一次被引用的时间
@@ -28,7 +28,7 @@ package com.cokecode.halo.terrain
 		
 		public function Tile(url:String)
 		{
-			ResMgr.loadByLoader(url, onComplete);
+			ResMgr.instance.loadByLoader(url, onComplete);
 		}
 		
 		public function canDispose():Boolean

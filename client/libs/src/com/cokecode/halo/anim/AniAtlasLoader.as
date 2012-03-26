@@ -27,7 +27,7 @@ package com.cokecode.halo.anim
 			mSheetUrl = url + ".plist";
 			
 			// 先读取贴图
-			ResMgr.loadByLoader(mTexUrl, onTextureComplete, 5);
+			ResMgr.instance.loadByLoader(mTexUrl, onTextureComplete, 5);
 			
 			mTimeTick = getTimer();
 		}
@@ -51,7 +51,7 @@ package com.cokecode.halo.anim
 			mTexture.textureOptions = TextureOption.QUALITY_LOW;
 			
 			// 再读取配置
-			ResMgr.loadByURLLoader(mSheetUrl, onSpriteSheetComplete, 10);
+			ResMgr.instance.loadByURLLoader(mSheetUrl, onSpriteSheetComplete, 10);
 			
 			mTimeTick = getTimer();
 		}

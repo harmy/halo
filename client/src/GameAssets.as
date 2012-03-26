@@ -16,6 +16,7 @@ package
 	
 	public class GameAssets
 	{
+		/*
 		[Embed(source='Z:/res/charactor/human/texcom/c_0_0.plist', mimeType='application/octet-stream')]
 		private static const sprXML1:Class;
 		[Embed(source='Z:/res/charactor/human/texcom/c_0_0.png')]
@@ -45,7 +46,7 @@ package
 		private static const sprXML6:Class;
 		[Embed(source='Z:/res/charactor/human/texcom/c_101_1.png')]
 		private static const sprTexture6:Class;
-		
+		*/
 		
 		// 粒子系统测试
 		[Embed(source="Z:/res/particle/Particle.pex", mimeType="application/octet-stream")]
@@ -55,15 +56,17 @@ package
 		private static const _particlePng:Class;
 		
 		
-		private static var sprTexs:Array = [];
-		private static var sprXmls:Array = [];
+//		private static var sprTexs:Array = [];
+//		private static var sprXmls:Array = [];
+//		
+//		private static var vecTex2d:Vector.<Texture2D> = new Vector.<Texture2D>();
+//		private static var vecTexAtlas:Vector.<AnimationAtlas> = new Vector.<AnimationAtlas>();
+//		private static var vecSpr2d:Vector.<Sprite2D> = new Vector.<Sprite2D>();
 		
-		private static var vecTex2d:Vector.<Texture2D> = new Vector.<Texture2D>();
-		private static var vecTexAtlas:Vector.<AnimationAtlas> = new Vector.<AnimationAtlas>();
-		private static var vecSpr2d:Vector.<Sprite2D> = new Vector.<Sprite2D>();
-		
-		static public function initGameRes():void
+		/*
+		public static function initGameRes():void
 		{
+
 			// 创建图片和配置文件
 			sprXmls.push( new XML(new sprXML1()) );
 			sprTexs.push( new sprTexture1() );
@@ -107,7 +110,7 @@ package
 			
 		}
 		
-		static public function createChar(texIndex:uint = 0xFFFFFFFF):Sprite2D
+		public static function createChar(texIndex:uint = 0xFFFFFFFF):Sprite2D
 		{
 			var index:uint = Math.random() * 6;
 			if (texIndex != 0xFFFFFFFF)
@@ -127,7 +130,7 @@ package
 		}
 		
 		/*
-		static public function createParticle():ParticleSystem
+		public static function createParticle():ParticleSystem
 		{
 			// 创建粒子
 			var psconfig:XML = new XML(new _particleConfig());

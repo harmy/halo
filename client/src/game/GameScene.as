@@ -5,6 +5,8 @@ package game
 	import com.cokecode.halo.anim.Animation;
 	import com.cokecode.halo.anim.AnmPlayer;
 	import com.cokecode.halo.anim.Model;
+	import com.cokecode.halo.controller.BaseCameraCtrl;
+	import com.cokecode.halo.events.MapEvent;
 	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.magic.MagicMgr;
 	import com.cokecode.halo.object.CharLooks;
@@ -29,21 +31,26 @@ package game
 	public class GameScene extends Scene2D
 	{
 		protected var mHero:Charactor;
-		protected var mTargetNode:Node2D;
+		//protected var mTargetNode:Node2D;
 		protected var mMap:Map;
 		protected var mParLayer:ParallaxLayer;
 		protected var mAniMgr:AnimMgr;
+		protected var mCameraCtrl:BaseCameraCtrl;
 		
 		public function GameScene()
 		{
 			super();
-			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);			
-			GameAssets.initGameRes();
+			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
 			AnimMgr.sInstance.init("Z:/res/charactor/");
 			
+			// 相机要第一个加入节点
+			mCameraCtrl = new BaseCameraCtrl();
+			addChild( mCameraCtrl ); 
+			
 			// 创建测试地图
 			mMap = new Map();
+			mMap.addEventListener(MapEvent.LOAD_COMPLETE, onMapLoad);
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
 			addChild(mMap);			
@@ -100,11 +107,12 @@ package game
 					
 					//char.charView.tint = 0x00FF00;
 					//char.alpha = 0.3;
-					mTargetNode = mHero = char;
-					CharMgr.sInstance.hero = char;
+					mHero = char;
+					mCameraCtrl.target = mHero;
+					CharMgr.instance.hero = char;
 				}
 				
-				if ( CharMgr.sInstance.addChar(char, CharLooks.HUMAN) ) {
+				if ( CharMgr.instance.addChar(char, CharLooks.HUMAN) ) {
 					layer.addChild( char );	
 				} else {
 					// 释放角色数据
@@ -118,6 +126,12 @@ package game
 			//注册到魔法管理器
 			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
 				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
+		}
+		
+		public function onMapLoad(evt:MapEvent):void
+		{
+			mCameraCtrl.mapSize.x = evt.width;
+			mCameraCtrl.mapSize.y = evt.height;
 		}
 		
 		public function get map():Map
@@ -162,8 +176,8 @@ package game
 			} else if (evt.keyCode == Keyboard.SPACE) {
 				// 模拟震屏效果
 				//camera.shake(Camera.SHAKE_Y, 6, 700, 100);
-				if (mTargetNode == null) mTargetNode = mHero;
-				else mTargetNode = null;
+				if (mCameraCtrl.target == null) mCameraCtrl.target = mHero;
+				else mCameraCtrl.target = null;
 			} else if(evt.keyCode == Keyboard.NUMBER_1) {
 				MagicMgr.instance().addMagic(1, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
 			} else if(evt.keyCode == Keyboard.NUMBER_2) {
@@ -196,8 +210,7 @@ package game
 				mHero.getAnmPlayer().setAnimation(anim);
 			}
 			
-//			var right:uint = mMap.mapWidth - mHero.width;
-//			var bottom:uint = mMap.mapHeight - mHero.height;
+
 			if (mHero.x < 0) mHero.x = 0;
 			if (mHero.y < 0) mHero.y = 0;
 			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
@@ -222,28 +235,6 @@ package game
 		
 		override protected function step(elapsed:Number):void
 		{
-			if(mTargetNode) {
-				var tempX:uint = camera.sceneWidth * 0.5;
-				var tempY:uint = camera.sceneHeight * 0.5;
-				//camera.x += ((mTargetNode.x - tempX) - camera.x) * 0.5;
-				//camera.y += ((mTargetNode.y - tempY) - camera.y) * 0.5;
-				camera.x = mTargetNode.x - tempX;
-				camera.y = mTargetNode.y - tempY;
-				
-				// 限制在地图之内
-				var right:uint = mMap.mapWidth - camera.sceneWidth;
-				var bottom:uint = mMap.mapHeight - camera.sceneHeight;
-				if (camera.x < 0) camera.x = 0;
-				if (camera.y < 0) camera.y = 0;
-				if (camera.x > right) camera.x = right;
-				if (camera.y > bottom) camera.y = bottom;
-			}
-			
-			//mHero.charView.spriteSheet.frame = 0;
-			
-			// 因为优先更新子节点，后更新场景，所以会出现相机更新延迟(后期再优化)
-			mParLayer.update(elapsed);
-			
 //			trace("------------- begin -----------");
 //			trace("角色位置：" + mHero.x + "," + mHero.y);
 //			trace("相机位置：" + camera.x + "," + camera.y);

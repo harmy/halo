@@ -646,7 +646,7 @@
 		
 		
 		/*
-		static private var colorTransTemp:ColorTransform = new ColorTransform;
+		private static var colorTransTemp:ColorTransform = new ColorTransform;
 		public function render(target:BitmapData,cx:int,cy:int):void
 		{
 			if(!InitAnim())

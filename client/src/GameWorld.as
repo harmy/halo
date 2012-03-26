@@ -32,6 +32,10 @@ package
 		public function GameWorld()
 		{			
 			super(Context3DRenderMode.AUTO, 60);
+			
+			// 设置资源加载器的参数
+			ResMgr.instance.init(5, 10);
+			
 			setActiveScene( new GameScene() );
 			
 			// 添加性能分析图

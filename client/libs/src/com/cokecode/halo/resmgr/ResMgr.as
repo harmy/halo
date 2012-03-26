@@ -2,6 +2,7 @@ package com.cokecode.halo.resmgr
 {
 	import flash.display.Stage;
 	import flash.net.URLRequest;
+	import flash.system.ImageDecodingPolicy;
 	import flash.system.LoaderContext;
 	
 	import net.manaca.loaderqueue.LoaderQueue;
@@ -15,14 +16,20 @@ package com.cokecode.halo.resmgr
 	 */
 	public class ResMgr
 	{
-		static private var mLoaderQueue:LoaderQueue;
-		static private var loaderInspector:LoaderInspector;
+		private static var sInstance:ResMgr = new ResMgr;
+		private var mLoaderQueue:LoaderQueue;
+		private var loaderInspector:LoaderInspector;
 		
 		public function ResMgr()
 		{
 		}
 		
-		static public function addInspector(stage:Stage):void
+		public static function get instance():ResMgr
+		{
+			return sInstance;
+		}
+
+		public function addInspector(stage:Stage):void
 		{
 			//实例化LoaderInspector，并添加到舞台
 			loaderInspector = new LoaderInspector();
@@ -30,7 +37,7 @@ package com.cokecode.halo.resmgr
 			stage.addChild(loaderInspector);
 		}
 		
-		static public function init(threadLimit:uint = 2, delay:int = 100, jumpQueueIfCached:Boolean = true):void
+		public function init(threadLimit:uint = 2, delay:int = 100, jumpQueueIfCached:Boolean = true):void
 		{
 			mLoaderQueue = new LoaderQueue(threadLimit, delay, jumpQueueIfCached);
 		}
@@ -40,7 +47,7 @@ package com.cokecode.halo.resmgr
 		 * 完成回调函数的格式:
 		 * completeCB(event:LoaderQueueEvent):void
 		 */
-		static public function loadByURLLoader(url:String, completeCB:Function = null, priority:uint = 10, loaderContext:LoaderContext=null):void
+		public function loadByURLLoader(url:String, completeCB:Function = null, priority:uint = 10, loaderContext:LoaderContext=null):void
 		{
 			if (mLoaderQueue == null) {
 				init();
@@ -57,14 +64,20 @@ package com.cokecode.halo.resmgr
 		 * 完成回调函数的格式:
 		 * completeCB(event:LoaderQueueEvent):void
 		 */
-		static public function loadByLoader(url:String, completeCB:Function = null, priority:uint = 10, loaderContext:LoaderContext=null):void
+		public function loadByLoader(url:String, completeCB:Function = null, priority:uint = 10, loaderContext:LoaderContext=null):void
 		{
 			if (mLoaderQueue == null) {
 				init();
 			}
 			
+			if (loaderContext == null) {
+				// 异步解码
+				loaderContext = new LoaderContext();
+				loaderContext.imageDecodingPolicy=ImageDecodingPolicy.ON_LOAD;
+			}
+			
 			//使用Loader
-			var loaderItem:LoaderAdapter = new LoaderAdapter(priority, new URLRequest(url));
+			var loaderItem:LoaderAdapter = new LoaderAdapter(priority, new URLRequest(url), loaderContext);
 			loaderItem.addEventListener(LoaderQueueEvent.TASK_COMPLETED, completeCB);
 			mLoaderQueue.addItem(loaderItem);
 		}
