@@ -28,8 +28,8 @@ package com.cokecode.halo.object
 		
 		/**
 		 * 添加一个角色到角色到管理器
-		 * @char - 角色对象
-		 * @type - 角色类型  exp. CharLooks.HUMAN, CharLooks.MONSTER
+		 * @param char	角色对象
+		 * @param type	角色类型  exp. CharLooks.HUMAN, CharLooks.MONSTER
 		 */
 		public function addChar(char:Charactor, type:uint):Boolean
 		{

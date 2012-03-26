@@ -175,7 +175,9 @@ package game
 				}
 			} else if (evt.keyCode == Keyboard.SPACE) {
 				// 模拟震屏效果
-				//camera.shake(Camera.SHAKE_Y, 6, 700, 100);
+				mCameraCtrl.shake(BaseCameraCtrl.SHAKE_Y, 6, 700, 100);
+			} else if(evt.keyCode == Keyboard.C) {
+				// 切换相机跟踪目标
 				if (mCameraCtrl.target == null) mCameraCtrl.target = mHero;
 				else mCameraCtrl.target = null;
 			} else if(evt.keyCode == Keyboard.NUMBER_1) {

@@ -62,10 +62,10 @@ package com.cokecode.halo.anim
 		
 		/**
 		 * 添加动作
-		 * @name - 动作名称
-		 * @id - 动作id
-		 * @frames - 动作的帧数
-		 * @dirs - 这个动作的方向数目
+		 * @param name	动作名称
+		 * @param id	动作id
+		 * @param frames	 动作的帧数
+		 * @param dirs	这个动作的方向数目
 		 */
 		public function addAction(name:String, id:uint, frames:uint, dirs:uint = 8):void
 		{
