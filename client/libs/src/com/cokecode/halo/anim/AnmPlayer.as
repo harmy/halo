@@ -151,13 +151,13 @@
 		{
 			mAnDelayFrame =0;
 			mCurFrame = -1;
-			
 		}
 		
 		public function getMaxFrameTime():uint
 		{
 			return mAnim.mMaxFrameTime;
 		}
+		
 		
 		public function addDeltaTime(elapsed:Number):void
 		{
@@ -177,15 +177,6 @@
 				var aniCurFrame:int = mCurFrame;
 				var nMaxFrame:int = mAnim.mSeqFrame[mCurDir].length;
 				
-//				while (mCurFrame < nMaxFrame) {
-//					if (!IsEmptyFrame(mCurDir, mCurFrame+1)) {
-//						break;
-//					} 
-//					
-//					mCurFrame++;
-//					// 如果下一帧是空帧，就直接跳过
-//				}
-					
 				if(aniCurFrame>=nMaxFrame-1) {
 					if(mAnimCB!=null) {
 						mAnimCB(END_REACHED);

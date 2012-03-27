@@ -130,7 +130,7 @@ package game.magic
 		
 		public function init():void
 		{
-			MagicMgr.instance().loadConfig("Z:/res/magic/test/magic.xml");			
+			MagicMgr.instance().loadConfig("Z:/res/magic/test/magic.xml");
 			MagicMgr.instance().mAtlasDic[1] = new XML(new xhq_shifang_plist());
 			MagicMgr.instance().mAtlasTexDic[1] = new xhq_shifang_png();
 			MagicMgr.instance().mAtlasDic[2] = new XML(new xhq_feixing_plist());

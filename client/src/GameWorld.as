@@ -1,6 +1,8 @@
 package 
 {
 
+	import com.cokecode.halo.anim.AnmPlayer;
+	import com.cokecode.halo.object.CharMgr;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.furusystems.dconsole2.DConsole;
@@ -49,6 +51,7 @@ package
 			
 			addChild(DConsole.view);
 			DConsole.console.createCommand("block", blockCommand, "halo", "显示/隐藏阻挡信息");
+			DConsole.console.createCommand("speed", speedCommand, "speed", "调整主角速度");
 
 
 			
@@ -65,6 +68,12 @@ package
 			var gamescene:GameScene = scene as GameScene;
 			var layer:Layer = gamescene.map.getLayer("block");
 			if (layer) layer.visible = !layer.visible;
+		}
+		
+		public function speedCommand(speed:uint):void
+		{
+			AnmPlayer.FLANIMFPS = speed;
+			trace("设置主角速度: " + speed);
 		}
 		
 		public static function instance():World2D
