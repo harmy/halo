@@ -6,16 +6,19 @@ package game
 	import com.cokecode.halo.anim.AnmPlayer;
 	import com.cokecode.halo.anim.Model;
 	import com.cokecode.halo.controller.BaseCameraCtrl;
+	import com.cokecode.halo.controller.BasePlayerCtrl;
 	import com.cokecode.halo.events.MapEvent;
 	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.magic.MagicMgr;
 	import com.cokecode.halo.object.CharLooks;
 	import com.cokecode.halo.object.CharMgr;
 	import com.cokecode.halo.object.Charactor;
+	import com.cokecode.halo.terrain.layers.GroundLayer;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
+	import com.furusystems.dconsole2.DConsole;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Scene2D;
@@ -31,16 +34,17 @@ package game
 	public class GameScene extends Scene2D
 	{
 		protected var mHero:Charactor;
-		//protected var mTargetNode:Node2D;
 		protected var mMap:Map;
-		protected var mParLayer:ParallaxLayer;
-		protected var mAniMgr:AnimMgr;
 		protected var mCameraCtrl:BaseCameraCtrl;
 		
 		public function GameScene()
 		{
 			super();
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
+			
+			// 初始化一些控制命令
+			DConsole.console.createCommand("move", moveCommand, "halo", "主角移动到某个坐标");
+			DConsole.console.createCommand("magic", magicCommand, "halo", "魔法测试");
 			
 			AnimMgr.instance.init("Z:/res/charactor/");
 			
@@ -54,15 +58,14 @@ package game
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
 			addChild(mMap);			
-			mParLayer = mMap.getLayer("parallax") as ParallaxLayer;
 			
 			// 创建测试角色
 			var uid:uint = 0;
-			for (var i:uint=0; i<100 * 1; ++i) {
+			for (var i:uint=0; i<2000 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				//char.charView = GameAssets.createChar();
-				char.x = int(Math.random() * 40);
-				char.y = int(Math.random() * 44);
+				char.x = int(Math.random() * 120);
+				char.y = int(Math.random() * 120);
 				
 				char.x = char.x * 64;
 				char.y = char.y * 32;
@@ -70,11 +73,10 @@ package game
 				char.dir = 1;
 				
 				
-				var anmPlayer:AnmPlayer = char.getAnmPlayer();
+				var anmPlayer:AnmPlayer = char.anmPlayer;
 				var model:Model = AnimMgr.instance.getModel("human");
-				var anim:Animation = AnimMgr.instance.getAnim("human", "attack", null);
-				anmPlayer.setModel(model);
-				anmPlayer.setAnimation(anim);
+				anmPlayer.model = model;
+				anmPlayer.playAnim("attack");
 				char.setNameText("我是玩家");
 				char.id = ++uid;
 				
@@ -84,6 +86,10 @@ package game
 				
 				
 				if (i == 0) {
+					
+					char.x = 100 * 64;
+					char.y = 100 * 32;
+					
 //					// shadow
 //					var charShadow:Charactor = new Charactor(null);
 //					charShadow.charView = GameAssets.createChar(0);
@@ -110,6 +116,8 @@ package game
 					mHero = char;
 					mCameraCtrl.target = mHero;
 					CharMgr.instance.hero = char;
+					mHero.playAnim("stand");
+					mHero.controller = new BasePlayerCtrl(mHero);
 				}
 				
 				if ( CharMgr.instance.addChar(char, CharLooks.HUMAN) ) {
@@ -126,6 +134,20 @@ package game
 			//注册到魔法管理器
 			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
 				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
+		}
+		
+		
+		public function magicCommand(magicId:uint, num:uint = 1):void
+		{
+			for (var i:uint = 0; i<num; ++i) {
+				MagicMgr.instance().addMagic(magicId, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);
+			}
+		}
+		
+		public function moveCommand(targetX:Number, targetY:Number):void
+		{
+			var ctrl:BasePlayerCtrl = mHero.controller as BasePlayerCtrl;
+			ctrl.gotoPosByAutoPath(targetX, targetY);
 		}
 		
 		public function onMapLoad(evt:MapEvent):void
@@ -153,53 +175,13 @@ package game
 		{
 			var STEPX:Number = 64;
 			var STEPY:Number = 32;
-			if (evt.keyCode == Keyboard.LEFT) {
-				if (mHero) {
-					mHero.dir = 6;
-					mHero.x -= STEPX;
-				}
-			} else if (evt.keyCode == Keyboard.RIGHT) {
-				if (mHero) {
-					mHero.dir = 2;
-					mHero.x += STEPX;
-				}
-			} else if (evt.keyCode == Keyboard.UP) {
-				if (mHero) {
-					mHero.dir = 0;
-					mHero.y -= STEPY;
-				}
-			} else if (evt.keyCode == Keyboard.DOWN) {
-				if (mHero) {
-					mHero.dir = 4;
-					mHero.y += STEPY;
-				}
-			} else if (evt.keyCode == Keyboard.SPACE) {
+			if (evt.keyCode == Keyboard.SPACE) {
 				// 模拟震屏效果
 				mCameraCtrl.shake(BaseCameraCtrl.SHAKE_Y, 6, 700, 100);
 			} else if(evt.keyCode == Keyboard.C) {
 				// 切换相机跟踪目标
 				if (mCameraCtrl.target == null) mCameraCtrl.target = mHero;
 				else mCameraCtrl.target = null;
-			} else if(evt.keyCode == Keyboard.NUMBER_1) {
-				MagicMgr.instance().addMagic(1, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_2) {
-				MagicMgr.instance().addMagic(2, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_3) {
-				MagicMgr.instance().addMagic(3, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_4) {
-				MagicMgr.instance().addMagic(4, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_5) {
-				MagicMgr.instance().addMagic(5, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_6) {
-				MagicMgr.instance().addMagic(6, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_7) {
-				MagicMgr.instance().addMagic(7, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_8) {
-				MagicMgr.instance().addMagic(8, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_9) {
-				MagicMgr.instance().addMagic(9, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
-			} else if(evt.keyCode == Keyboard.NUMBER_0) {
-				MagicMgr.instance().addMagic(0, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);	
 			} else if(evt.keyCode == Keyboard.Q) {
 				// 切换主角方向
 				if (mHero) {
@@ -208,10 +190,8 @@ package game
 				}
 			} else if(evt.keyCode == Keyboard.W) {
 				// 切换主角到跑步动作
-				var anim:Animation = AnimMgr.instance.getAnim("human", "run", null);
-				mHero.getAnmPlayer().setAnimation(anim);
+				mHero.playAnim("run");
 			}
-			
 
 			if (mHero.x < 0) mHero.x = 0;
 			if (mHero.y < 0) mHero.y = 0;
@@ -222,24 +202,30 @@ package game
 			var cellY:uint = mHero.y / Map.sTileHeight;
 			if ( mMap.getBlock(cellX, cellY) == 1 ) {
 				// 阻挡信息
-				mHero.charView.tint = 0xFF0000;
-				mHero.charView.alpha = 1;
+				mHero.anmPlayer.tint = 0xFF0000;
+				mHero.anmPlayer.alpha = 1;
 			} else if ( mMap.getBlock(cellX, cellY) == 2 ) {
 				// 透明信息
-				mHero.charView.tint = 0xFFFFFF;
-				mHero.charView.alpha = 0.5;
+				mHero.anmPlayer.tint = 0xFFFFFF;
+				mHero.anmPlayer.alpha = 0.5;
 			} else {
 				// 可走信息
-				mHero.charView.tint = 0xFFFFFF;
-				mHero.charView.alpha = 1;
+				mHero.anmPlayer.tint = 0xFFFFFF;
+				mHero.anmPlayer.alpha = 1;
 			}
 		}
 		
 		override protected function step(elapsed:Number):void
 		{
+			var ground:GroundLayer = mMap.getLayer("ground") as GroundLayer;
+			
+			if (ground == null) return;
+			
 //			trace("------------- begin -----------");
-//			trace("角色位置：" + mHero.x + "," + mHero.y);
-//			trace("相机位置：" + camera.x + "," + camera.y);
+			//trace("角色位置: " + mHero.x/64 + "," + mHero.y/32);
+			//trace("相机位置: " + camera.x + "," + camera.y);
+			//trace("地图位置: " + mMap.x + "," + mMap.y);
+			//trace("地表位置: " + ground.x + "," + ground.y);
 //			trace("------------- end -----------");
 		}
 	}

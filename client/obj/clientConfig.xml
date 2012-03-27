@@ -26,6 +26,11 @@
     </source-path>
     <library-path append="true">
       <path-element>E:\GameProject\halo\client\libs</path-element>
+      <path-element>E:\GameProject\halo\client\libs\TheMiner_zh-cn_v1_3_10.swc</path-element>
+      <path-element>E:\GameProject\halo\client\libs\DConsole2.2.swc</path-element>
+      <path-element>E:\GameProject\halo\client\libs\loaderqueue-v1.0.swc</path-element>
+      <path-element>E:\GameProject\halo\client\libs\minimal_comps_0_9_9.swc</path-element>
+      <path-element>E:\GameProject\halo\client\libs\as3logger.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>

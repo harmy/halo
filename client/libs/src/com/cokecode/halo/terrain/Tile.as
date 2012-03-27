@@ -66,7 +66,7 @@ package com.cokecode.halo.terrain
 			// 创建精灵
 			mSprite = new Sprite2D(tex);
 			mSprite.pivot.x = -mSprite.width * 0.5;
-			mSprite.pivot.y = mSprite.height * 0.5;
+			mSprite.pivot.y = mSprite.height * 0.5 - 32;
 			
 			addChild(mSprite);
 		}

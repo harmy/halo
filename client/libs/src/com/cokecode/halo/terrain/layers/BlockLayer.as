@@ -29,6 +29,39 @@ package com.cokecode.halo.terrain.layers
 			super.clear();
 			mBlockDic = new Dictionary;
 		}
+		
+		/**
+		 * 输出阻挡信息数组(给寻路用,0表示可走，1表示不可走)
+		 * @return	返回处理过的阻挡信息
+		 */
+		public function get blockArray():Array
+		{
+			// 设置寻路数据
+			var nx:uint = mTMX.width;
+			var ny:uint = mTMX.height;
+			var nBlock:uint;
+			var blockArr:Array = new Array;
+			blockArr.length = ny;
+			for (y=0; y<ny; ++y) {
+				blockArr[y] = new Array;
+				(blockArr[y] as Array).length = nx;
+			}
+			for (x=0; x<nx; ++x) {
+				for (y = 0; y < ny; ++y) {
+					nBlock = getBlock(x, y);
+					// 1 - 不可走, other - 可走
+					if (nBlock == 1) {
+						// 不可走
+						blockArr[y][x] = true;
+					} else {
+						// 可走
+						blockArr[y][x] = false;
+					}
+				}
+			}
+			
+			return blockArr;
+		}
 
 		// 预加载屏幕内的地表贴图
 		protected function loadTexture():void

@@ -3,6 +3,8 @@ package com.cokecode.halo.object
 	import com.cokecode.halo.controller.Controller;
 	import com.cokecode.halo.data.CoreConst;
 	import com.cokecode.halo.display.TextField;
+	import com.cokecode.halo.terrain.Map;
+	import com.cokecode.halo.utils.GameMath;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
@@ -50,7 +52,7 @@ package com.cokecode.halo.object
 		{
 			mTFName.pivot.x = -32;
 			mTFName.pivot.y = 16;
-			mTFName.y = -95;
+			mTFName.y = -63;
 			mTFName.textColor = 0xFFFFFF;
 			mTFName.filter = [CoreConst.GLOW_FILTER1];
 		}
@@ -77,6 +79,9 @@ package com.cokecode.halo.object
 		public function set controller(ctrl:Controller):void
 		{
 			mController = ctrl;
+			
+			removeChild(mController);
+			addChild(mController);
 		}
 		
 		public function get controller():Controller
@@ -98,7 +103,6 @@ package com.cokecode.halo.object
 		 * 更新内部逻辑
 		 */
 		override protected function step(elapsed:Number):void {
-			
 		}
 		
 		/**

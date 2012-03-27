@@ -12,6 +12,7 @@
 	
 	import com.cokecode.halo.data.CoreConst;
 	import com.cokecode.halo.materials.texture.AnimationAtlas;
+	import com.cokecode.halo.terrain.Map;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
@@ -98,23 +99,46 @@
 			mIsPlaying = false;
 		}
 		
-		public function setAnimation(iAnim:Animation):void
+		/**
+		 * 播放动画
+		 * @param	aniName	如果是null表示播放当前的动画, 否则表示播放指定名字的动画
+		 */
+		public function playAnim(aniName:String = null):void
 		{
-			mAnim = iAnim;
+			if (aniName != null) {
+				var anim:Animation = AnimMgr.instance.getAnim(mModel.mName, aniName);
+				animation = anim;
+			}
+			
 			mIsPlaying = true;
 		}
 		
-		public function setModel(iModel:Model):void
+		public function set animation(value:Animation):void
 		{
-			mModel=iModel;
+			mAnim = value;
 		}
 		
-		public function setDir(nDir:int):void
+		public function get animation():Animation
 		{
-			mCurDir = nDir;
+			return mAnim;
 		}
 		
-		public function getDir():int
+		public function set model(value:Model):void
+		{
+			mModel = value;
+		}
+		
+		public function get model():Model
+		{
+			return mModel;
+		}
+		
+		public function set dir(value:int):void
+		{
+			mCurDir = value;
+		}
+		
+		public function get dir():int
 		{
 			return mCurDir;
 		}
@@ -288,8 +312,8 @@
 				var sprite:Sprite2D = new Sprite2D(aniAtlasLoader.texture); 
 				sprite.setSpriteSheet( spriteSheet );
 				mLayerSprite[i] = sprite;
-				sprite.pivot.x = -32;
-				sprite.pivot.y = 16;
+				sprite.pivot.x = -(Map.sTileWidth >> 1);
+				sprite.pivot.y = -(Map.sTileHeight >> 1);
 				addChild(mLayerSprite[i]);
 			}
 		}
@@ -299,9 +323,11 @@
 		{
 			if (mAnim == null || mAnim.mSeqFrame == null) return;
 			
+			var pSeqFrame:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
+			if (pSeqFrame == null) return;
+			
 			removeAllChildren();
 			
-			var pSeqFrame:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
 			var index:uint;
 			var posX:int;
 			var posY:int;

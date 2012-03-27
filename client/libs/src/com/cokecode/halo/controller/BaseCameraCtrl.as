@@ -110,7 +110,7 @@ package com.cokecode.halo.controller
 						// 震动
 						mShakeOffset.x = 0;
 						mShakeOffset.y = -mShakeOffset.y;
-						trace("shakeOffsetY: " + mShakeOffset.y);
+						//trace("shakeOffsetY: " + mShakeOffset.y);
 					} if (mShakeDir == SHAKE_XY) {
 						// 更新X轴振幅
 						if (mShakeOffset.x >= 0) {

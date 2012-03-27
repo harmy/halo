@@ -199,7 +199,7 @@ package com.cokecode.halo.pathfinder
 		 * @return 
 		 * 
 		 */
-		protected function isBlock(v:Point,cur:Point):Boolean
+		public function isBlock(v:Point,cur:Point):Boolean
 		{
 			var mapHeight : int = _map.length;
 			var mapWidth : int = _map[0].length;

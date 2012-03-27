@@ -3,6 +3,7 @@ package com.cokecode.halo.terrain
 	import com.cokecode.halo.data.CoreConst;
 	import com.cokecode.halo.events.MapEvent;
 	import com.cokecode.halo.magic.MagicConst;
+	import com.cokecode.halo.pathfinder.PathFinder;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.cokecode.halo.terrain.layers.*;
 	import com.cokecode.halo.terrain.tmx.TMX;
@@ -156,6 +157,10 @@ package com.cokecode.halo.terrain
 					trace("不存在的层: " + tmxLayer.name);
 				}
 			}
+			
+			// 设置自动寻路的阻挡信息
+			var blockLayer:BlockLayer = getLayer("block") as BlockLayer;
+			PathFinder.instance.setBlockData(blockLayer.blockArray);
 			
 			dispatchEvent( new MapEvent(MapEvent.LOAD_COMPLETE, mMapId, mWidth, mHeight) );
 		}

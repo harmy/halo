@@ -4,6 +4,9 @@ package com.cokecode.halo.object
 	import com.cokecode.halo.anim.Animation;
 	import com.cokecode.halo.anim.AnmPlayer;
 	import com.cokecode.halo.anim.Model;
+	import com.cokecode.halo.terrain.Map;
+	import com.cokecode.halo.utils.GameMath;
+	import flash.geom.Point;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
@@ -25,14 +28,12 @@ package com.cokecode.halo.object
 			addChild(mAnmPlayer);
 		}
 		
-//		public function set charView(value:Sprite2D):void
-//		{
-//			mView = value;
-//			removeChild(value);
-//			addChild(value);
-//		}
+		public function playAnim(aniName:String = null):void
+		{
+			if (mAnmPlayer) mAnmPlayer.playAnim(aniName);
+		}
 		
-		public function getAnmPlayer():AnmPlayer
+		public function get anmPlayer():AnmPlayer
 		{
 			return mAnmPlayer;
 		}
@@ -41,12 +42,7 @@ package com.cokecode.halo.object
 		{
 			return mLooks.mType.toString() + mId.toString();
 		}
-		
-		public function get charView():Node2D
-		{
-			return mAnmPlayer;
-		}
-		
+
 		override public function get width():Number
 		{
 			if (mAnmPlayer == null) return 0;
@@ -82,6 +78,20 @@ package com.cokecode.halo.object
 			return true;
 		}
 		
+		/**
+		 * 设置当前方向
+		 * @param	tx	目标X(世界逻辑格坐标)
+		 * @param	ty	目标Y(世界逻辑格坐标)
+		 */
+		public function setDir(tx:Number, ty:Number):void
+		{
+			var gridX:Number = x / Map.sTileWidth;
+			var gridY:Number = y / Map.sTileHeight;
+			var nDir:uint = GameMath.calDir(new Point(gridX, gridY), new Point(tx, ty));
+			if (nDir != 8) {
+				this.dir = nDir;	
+			}
+		}
 		
 		/**
 		 * 更新内部逻辑
@@ -90,7 +100,7 @@ package com.cokecode.halo.object
 			super.step(elapsed);
 		
 			if (mAnmPlayer) {
-				mAnmPlayer.setDir(mDir);
+				mAnmPlayer.dir = mDir;
 				mAnmPlayer.update(elapsed);
 			}
 		}

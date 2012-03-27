@@ -51,6 +51,11 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="libs" />
+    <element path="libs\TheMiner_zh-cn_v1_3_10.swc" />
+    <element path="libs\DConsole2.2.swc" />
+    <element path="libs\loaderqueue-v1.0.swc" />
+    <element path="libs\minimal_comps_0_9_9.swc" />
+    <element path="libs\as3logger.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -83,7 +88,8 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
+    <option testMovie="OpenDocument" />
+    <option testMovieCommand="bin-debug\GameWorld.html" />
   </options>
   <!-- Plugin storage -->
   <storage />
