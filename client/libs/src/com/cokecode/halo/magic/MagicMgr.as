@@ -18,33 +18,15 @@ package com.cokecode.halo.magic
 	 * */
 	public final class MagicMgr
 	{
-		private static var sInstance:MagicMgr;
-		private var mMagicDict:Dictionary		= new Dictionary;
-		private var mCurAllocID:uint 			= 0;
-		public var mAtlasDic:Dictionary 		= new Dictionary;
-		public var mAtlasTexDic:Dictionary 	= new Dictionary;
+		private static var sInstance:MagicMgr				= new MagicMgr;
+		private var mMagicDict:Dictionary					= new Dictionary;
+		private var mCurAllocID:uint 						= 0;
 		private var mLayer_before:Layer;
 		private var mLayer_after:Layer;
 		internal var mSelf:Charactor;
-		private var mTextureDic:Dictionary		= new Dictionary;
 		
-		public function MagicMgr()
-		{
-			if(sInstance != null)
-			{
-				throw new Error("this class should be instantiated only one time");
-			}
-			
-			sInstance = this;
-		}
-		
-		public static function instance():MagicMgr
-		{
-			if(sInstance == null)
-			{
-				sInstance = new MagicMgr;
-			}
-			
+		public static function get instance():MagicMgr
+		{			
 			return sInstance;
 		}
 		
@@ -68,23 +50,6 @@ package com.cokecode.halo.magic
 		internal function erase(id:uint):void
 		{
 			mMagicDict[id] = null;
-		}
-		
-		private function getAtlasTex(id:uint):Texture2D
-		{
-			if(mTextureDic[id] == null)
-			{
-				mTextureDic[id] = Texture2D.textureFromBitmapData((mAtlasTexDic[id] as Bitmap).bitmapData, true);	
-				delete mAtlasTexDic[id];
-			}
-			
-			return mTextureDic[id];			
-		}
-		
-		private function getAtlas(id:uint):AnimationAtlas
-		{
-			return new AnimationAtlas((mTextureDic[id] as Texture2D).bitmapWidth, 
-				(mTextureDic[id] as Texture2D).bitmapHeight, mAtlasDic[id], TextureAtlas.XML_FORMAT_COCOS2D, 5, false);			
 		}
 		
 		public function delMagic(id:uint):void
@@ -134,7 +99,15 @@ package com.cokecode.halo.magic
 				magicLayer = mLayer_after;
 			}
 			
-			var nextConfig:MagicConfig = magic.init(getAtlasTex(config.mTexID), getAtlas(config.mTexID), magicLayer);
+			var tex:Texture2D = MagicTexMgr.instance.getTexture(config.mTexID);
+			var atlas:AnimationAtlas = MagicTexMgr.instance.getAtlas(config.mTexID);
+			
+			if(tex == null || atlas == null)
+			{
+				return;				
+			}
+			
+			var nextConfig:MagicConfig = magic.init(tex, atlas, magicLayer);
 			
 			//如果弟兄节点存在，递归
 			if(nextConfig != null)
@@ -145,7 +118,7 @@ package com.cokecode.halo.magic
 		
 		//触发一个新魔法
 		public function addMagic(id:uint, dir:uint, srcID:String, srcX:uint, srcY:uint, 
-								 targetID:String, targetX:uint, targetY:uint):void
+								 targetID:String, targetX:uint, targetY:uint):void 
 		{
 			var cfArr:Array = MagicConfigMgr.instance.getConfig(id);
 			

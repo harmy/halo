@@ -25,8 +25,8 @@ package com.cokecode.halo.magic
 				return;
 			}		
 			
-			x = MagicMgr.instance().mSelf.x + mConfig.mOffx;
-			y = MagicMgr.instance().mSelf.y + mConfig.mOffy;
+			x = MagicMgr.instance.mSelf.x + mConfig.mOffx;
+			y = MagicMgr.instance.mSelf.y + mConfig.mOffy;
 		}
 	}
 }

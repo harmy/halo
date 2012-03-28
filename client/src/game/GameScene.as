@@ -132,7 +132,7 @@ package game
 			MagicTest.instance().init();	
 			
 			//注册到魔法管理器
-			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
+			MagicMgr.instance.register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
 				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
 		}
 		
@@ -140,7 +140,7 @@ package game
 		public function magicCommand(magicId:uint, num:uint = 1):void
 		{
 			for (var i:uint = 0; i<num; ++i) {
-				MagicMgr.instance().addMagic(magicId, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);
+				MagicMgr.instance.addMagic(magicId, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);
 			}
 		}
 		

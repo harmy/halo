@@ -96,7 +96,7 @@ package com.cokecode.halo.magic
 //			mSprite.dispose();
 			removeChild(mSprite);
 			mSprite = null;
-			MagicMgr.instance().erase(id);			
+			MagicMgr.instance.erase(id);			
 		}
 		
 		protected function doInit():void
@@ -105,7 +105,6 @@ package com.cokecode.halo.magic
 		
 		public function init(atlasTex:Texture2D, atlas:AnimationAtlas, layer:Layer):MagicConfig
 		{
-			atlasTex.textureOptions = TextureOption.QUALITY_LOW;
 			atlas.setFPS(1000/mConfig.mAniSpeed);
 			mSprite = new Sprite2D(atlasTex);
 			mSprite.setSpriteSheet(atlas);
@@ -176,7 +175,7 @@ package com.cokecode.halo.magic
 				//魔法已结束, 检查子节点				
 				if(mConfig.mChild != null)
 				{
-					MagicMgr.instance().doMagic(mConfig.mChild, mCurDir, mSrcID, mSrcX, mSrcY, mTargetID, mTargetX, mTargetY);
+					MagicMgr.instance.doMagic(mConfig.mChild, mCurDir, mSrcID, mSrcX, mSrcY, mTargetID, mTargetX, mTargetY);
 				}
 				
 				clean();
