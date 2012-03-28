@@ -111,6 +111,7 @@
 			}
 			
 			mIsPlaying = true;
+			mAnDelayFrame = 0;
 		}
 		
 		public function set animation(value:Animation):void

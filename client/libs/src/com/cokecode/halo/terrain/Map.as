@@ -28,6 +28,8 @@ package com.cokecode.halo.terrain
 		 */
 		public static var sTileHeight:uint = 32;
 		
+		private static var sInstance:Map = new Map;
+		
 		/**
 		 * 存放解析出来的地图数据
 		 */
@@ -48,6 +50,11 @@ package com.cokecode.halo.terrain
 		public function Map()
 		{
 			initLayers();			
+		}
+		
+		public static function get instance():Map
+		{
+			return sInstance;
 		}
 		
 		public function get mapWidth():uint
