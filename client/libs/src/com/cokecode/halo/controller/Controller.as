@@ -16,9 +16,17 @@ package com.cokecode.halo.controller
 			// overwrite in extended classes
 		}
 		
+		/**
+		 * 获得控制器对应的对象
+		 */
 		public function get gameObject():GameObject
 		{
 			return null;
+		}
+		
+		public function set gameObject(value:GameObject):void
+		{
+			return;
 		}
 	}
 }

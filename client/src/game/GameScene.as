@@ -7,6 +7,7 @@ package game
 	import com.cokecode.halo.anim.Model;
 	import com.cokecode.halo.controller.BaseCameraCtrl;
 	import com.cokecode.halo.controller.BasePlayerCtrl;
+	import com.cokecode.halo.data.EACTION;
 	import com.cokecode.halo.events.MapEvent;
 	import com.cokecode.halo.magic.MagicConst;
 	import com.cokecode.halo.magic.MagicMgr;
@@ -34,6 +35,7 @@ package game
 	public class GameScene extends Scene2D
 	{
 		protected var mHero:Charactor;
+		protected var mHeroCtrl:BasePlayerCtrl;
 		protected var mMap:Map;
 		protected var mCameraCtrl:BaseCameraCtrl;
 		
@@ -43,12 +45,18 @@ package game
 			addEventListener(Event.ADDED_TO_STAGE, onAddToStage);
 			
 			// 初始化一些控制命令
-			DConsole.console.createCommand("move", moveCommand, "halo", "主角移动到某个坐标");
-			DConsole.console.createCommand("magic", magicCommand, "halo", "魔法测试");
+			DConsole.createCommand("move", moveCommand, "halo", "主角移动到某个坐标");
+			DConsole.createCommand("magic", magicCommand, "halo", "魔法测试");
+			DConsole.createCommand("speed", speedCommand, "halo", "调整主角移动速度");
+			DConsole.createCommand("action", actionCommand, "halo", "播放主角指定动作");
 			
 			AnimMgr.instance.init("Z:/res/charactor/");
 			
-			// 相机要第一个加入节点
+			// 主角第一个加入节点(必须先更新主角)
+			mHeroCtrl = new BasePlayerCtrl(null);
+			addChild( mHeroCtrl ); 
+			
+			// 相机要第二个加入节点
 			mCameraCtrl = new BaseCameraCtrl();
 			addChild( mCameraCtrl ); 
 			
@@ -61,9 +69,8 @@ package game
 			
 			// 创建测试角色
 			var uid:uint = 0;
-			for (var i:uint=0; i<2000 * 1; ++i) {
+			for (var i:uint=0; i<1 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
-				//char.charView = GameAssets.createChar();
 				char.x = int(Math.random() * 120);
 				char.y = int(Math.random() * 120);
 				
@@ -72,11 +79,10 @@ package game
 				
 				char.dir = 1;
 				
-				
 				var anmPlayer:AnmPlayer = char.anmPlayer;
 				var model:Model = AnimMgr.instance.getModel("human");
 				anmPlayer.model = model;
-				anmPlayer.playAnim("attack");
+				anmPlayer.playAnim(EACTION.ATTACK);
 				char.setNameText("我是玩家");
 				char.id = ++uid;
 				
@@ -116,8 +122,9 @@ package game
 					mHero = char;
 					mCameraCtrl.target = mHero;
 					CharMgr.instance.hero = char;
-					mHero.playAnim("stand");
-					mHero.controller = new BasePlayerCtrl(mHero);
+					mHero.playAnim(EACTION.STAND);
+					mHero.controller = mHeroCtrl;
+					mHeroCtrl.gameObject = mHero;
 				}
 				
 				if ( CharMgr.instance.addChar(char, CharLooks.HUMAN) ) {
@@ -136,6 +143,14 @@ package game
 				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
 		}
 		
+		// ------------------ 调试用的命令 ------------------
+		
+		public function speedCommand(speed:uint):void
+		{
+			mHero.moveSpeed = speed;
+			//AnmPlayer.FLANIMFPS = speed;
+			//trace("设置主角速度: " + speed);
+		}
 		
 		public function magicCommand(magicId:uint, num:uint = 1):void
 		{
@@ -149,6 +164,15 @@ package game
 			var ctrl:BasePlayerCtrl = mHero.controller as BasePlayerCtrl;
 			ctrl.gotoPosByAutoPath(targetX, targetY);
 		}
+		
+		public function actionCommand(actionName:String):void
+		{
+			mHero.playAnim(actionName);
+		}
+		
+		
+		
+		// -----------------------------------------------------
 		
 		public function onMapLoad(evt:MapEvent):void
 		{
@@ -188,10 +212,7 @@ package game
 					mHero.dir++;
 					if (mHero.dir >= 8) mHero.dir = 0;
 				}
-			} else if(evt.keyCode == Keyboard.W) {
-				// 切换主角到跑步动作
-				mHero.playAnim("run");
-			}
+			} 
 
 			if (mHero.x < 0) mHero.x = 0;
 			if (mHero.y < 0) mHero.y = 0;

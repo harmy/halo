@@ -1,5 +1,6 @@
 package com.cokecode.halo.controller
 {
+	import com.cokecode.halo.data.EACTION;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.object.GameObject;
 	import com.cokecode.halo.pathfinder.PathFinder;
@@ -8,7 +9,7 @@ package com.cokecode.halo.controller
 	
 	public class BasePlayerCtrl extends Controller
 	{
-		public static const DEFAULT_MOVE_SPEED:Number = 320; //默认的移动速度
+		public static const DEFAULT_MOVE_SPEED:Number = 350; //默认的移动速度
 		
 		private var mChar:Charactor;
 		private var mMoveTargetPos:Point = new Point;
@@ -17,7 +18,6 @@ package com.cokecode.halo.controller
 		// 自动寻路相关变量
 		protected var mIsPathing:Boolean = false;			// 是否正在寻路中
 		protected var mIsMoving:Boolean = false;
-		protected var mMoveSpeed:Number = 320;				// 走一格的时间
 		protected var mMoveTimePassed:Number = 0;			// 走动已用的时间
 		protected var mMoveTimeNeed:Number = 0;				// 走到目标总共需要的时间
 		protected var mStartPixel:Point = new Point;		// 开始移动时的像素坐标
@@ -28,6 +28,16 @@ package com.cokecode.halo.controller
 			super();
 			
 			mChar = char;
+		}
+		
+		override public function set gameObject(value:GameObject):void
+		{
+			mChar = value as Charactor;
+		}
+		
+		override public function get gameObject():GameObject
+		{
+			return mChar;
 		}
 		
 		/**
@@ -105,16 +115,21 @@ package com.cokecode.halo.controller
 			var gridNumX:int = Math.abs(tx - charX);
 			var gridNumY:int = Math.abs(ty - charY);
 			var gridNum:int = Math.max(gridNumX,gridNumY);
-			mMoveTimeNeed = mMoveSpeed * gridNum;
+			mMoveTimeNeed = mChar.moveSpeed * gridNum;
 			mMoveTimePassed = 0;
 			
 			mIsMoving = true;
 			
 			mChar.setDir(tx, ty);
 			
-			mChar.playAnim("run");
+			mChar.playAnim(EACTION.RUN);
 			
 			return true;
+		}
+		
+		protected function onGridChange():void
+		{
+			
 		}
 		
 		/**
@@ -132,8 +147,9 @@ package com.cokecode.halo.controller
 			mMoveTimePassed += elapsed;
 			
 			// 根据移动速度调整跑步动作的帧速
-			var rate:Number = mMoveSpeed / DEFAULT_MOVE_SPEED;
-			//aniBody.setDuration("Run", DEF_DURATION * rate);
+			var rate:Number = mChar.moveSpeed / DEFAULT_MOVE_SPEED;
+			mChar.anmPlayer.fpsRate = rate;
+			//aniBody.setDuration(EACTION.RUN, DEF_DURATION * rate);
 			
 			// 计算移动位置
 			var time:Number = mMoveTimePassed / mMoveTimeNeed;
@@ -142,12 +158,10 @@ package com.cokecode.halo.controller
 			var pixelY2:Number = time * mDestPixel.y + (1 - time) * mStartPixel.y;
 			mChar.x = Math.round(pixelX2);
 			mChar.y = Math.round(pixelY2);
-			trace("charPos: " + mChar.x + "," + mChar.y);
+			//trace("charPos: " + mChar.x + "," + mChar.y);
 			if (mChar.x == mDestPixel.x && mChar.y == mDestPixel.y) {
 				
-				//if (m_gridChangeCB != null) {
-					//m_gridChangeCB();
-				//}
+				onGridChange();
 				
 				// 到达目标
 				mPathNodes.shift();
@@ -156,7 +170,7 @@ package com.cokecode.halo.controller
 				if (mPathNodes.length == 0) {
 					// 整个寻路完成时再切换到待机动作
 					mIsPathing = false;
-					mChar.playAnim("stand");
+					mChar.playAnim(EACTION.STAND);
 					
 					//mIsMoving = false;
 					
@@ -180,7 +194,7 @@ package com.cokecode.halo.controller
 			}
 		}
 		
-		override protected function step(elapsed:Number):void
+		public function update(elapsed:Number):void
 		{
 			if(mPathNodes != null && mPathNodes.length > 0 && !mIsMoving) {
 				var tgPt:Point = new Point();
@@ -195,6 +209,11 @@ package com.cokecode.halo.controller
 			if (mPathNodes != null && mIsMoving) {
 				movingHandler(elapsed);
 			}
+		}
+		
+		override protected function step(elapsed:Number):void
+		{
+			update(elapsed);
 		}
 	
 	}
