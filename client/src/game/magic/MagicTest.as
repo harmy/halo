@@ -2,7 +2,6 @@ package game.magic
 {
 	import com.cokecode.halo.magic.MagicMgr;
 	import com.cokecode.halo.magic.MagicTexMgr;
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.resmgr.ResMgr;
 	
 	import de.nulldesign.nd2d.display.Node2D;

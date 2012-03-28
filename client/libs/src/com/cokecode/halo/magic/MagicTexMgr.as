@@ -1,8 +1,7 @@
 package com.cokecode.halo.magic
 {
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
-	
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import de.nulldesign.nd2d.materials.texture.TextureAtlas;
 	
 	import flash.utils.Dictionary;
 
@@ -61,7 +60,7 @@ package com.cokecode.halo.magic
 			return (mTexUnitDic[id] as MagicTexUnit).texture();
 		}
 		
-		public function getAtlas(id:uint):AnimationAtlas
+		public function getAtlas(id:uint):TextureAtlas
 		{
 			if(mTexUnitDic[id] == null)
 			{

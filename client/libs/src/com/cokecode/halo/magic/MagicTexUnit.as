@@ -1,6 +1,5 @@
 package com.cokecode.halo.magic
 {
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.resmgr.ResMgr;
 	import com.furusystems.logging.slf4as.global.fatal;
 	
@@ -21,7 +20,7 @@ package com.cokecode.halo.magic
 		private var mID:uint					= 0;
 		private var mTex:Texture2D;
 		private var mTexConf:XML;
-		private var mAtlas:AnimationAtlas;
+		private var mAtlas:TextureAtlas;
 		
 		public function MagicTexUnit(id:uint)
 		{
@@ -34,14 +33,14 @@ package com.cokecode.halo.magic
 			return mTex;
 		}
 		
-		public function atlas():AnimationAtlas
+		public function atlas():TextureAtlas
 		{
 			if(mAtlas == null)
 			{
 				return null;
 			}
 			
-			return (mAtlas.clone() as AnimationAtlas);
+			return mAtlas.clone() as TextureAtlas;
 		}
 		
 		private function texPath():String
@@ -66,7 +65,7 @@ package com.cokecode.halo.magic
 			
 			if(mTexConf != null)
 			{
-				mAtlas = new AnimationAtlas(mTex.bitmapWidth, mTex.bitmapHeight, mTexConf, 
+				mAtlas = new TextureAtlas(mTex.bitmapWidth, mTex.bitmapHeight, mTexConf, 
 					TextureAtlas.XML_FORMAT_COCOS2D, 5, false);				
 			}
 		}
@@ -77,7 +76,7 @@ package com.cokecode.halo.magic
 			
 			if(mTex != null)
 			{
-				mAtlas = new AnimationAtlas(mTex.bitmapWidth, mTex.bitmapHeight, mTexConf, 
+				mAtlas = new TextureAtlas(mTex.bitmapWidth, mTex.bitmapHeight, mTexConf, 
 					TextureAtlas.XML_FORMAT_COCOS2D, 5, false);
 			}
 		}

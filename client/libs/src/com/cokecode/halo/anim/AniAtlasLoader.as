@@ -1,6 +1,5 @@
 package com.cokecode.halo.anim
 {
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.resmgr.ResMgr;
 	
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -16,7 +15,7 @@ package com.cokecode.halo.anim
 	{
 		protected var mTexUrl:String;
 		protected var mSheetUrl:String;
-		protected var mSpriteSheet:AnimationAtlas;
+		protected var mSpriteSheet:TextureAtlas;
 		protected var mTexture:Texture2D;
 		protected var mTimeTick:uint;
 		
@@ -37,7 +36,7 @@ package com.cokecode.halo.anim
 			return mTexture;
 		}
 		
-		public function get spriteSheet():AnimationAtlas
+		public function get spriteSheet():TextureAtlas
 		{
 			return mSpriteSheet;
 		}
@@ -61,7 +60,7 @@ package com.cokecode.halo.anim
 			trace( "Data Time: " + (getTimer() - mTimeTick) );
 			
 			var xmlData:XML = new XML(evt.target.data);
-			mSpriteSheet = new AnimationAtlas(mTexture.bitmapWidth, mTexture.bitmapHeight, xmlData, TextureAtlas.XML_FORMAT_COCOS2D, 1);
+			mSpriteSheet = new TextureAtlas(mTexture.bitmapWidth, mTexture.bitmapHeight, xmlData, TextureAtlas.XML_FORMAT_COCOS2D, 1);
 		}
 		
 	}

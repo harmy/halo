@@ -1,7 +1,6 @@
 package com.cokecode.halo.magic
 {
 	import com.bit101.components.Label;
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.furusystems.dconsole2.plugins.dialog.DialogDesc;
@@ -100,7 +99,7 @@ package com.cokecode.halo.magic
 			}
 			
 			var tex:Texture2D = MagicTexMgr.instance.getTexture(config.mTexID);
-			var atlas:AnimationAtlas = MagicTexMgr.instance.getAtlas(config.mTexID);
+			var atlas:TextureAtlas = MagicTexMgr.instance.getAtlas(config.mTexID);
 			
 			if(tex == null || atlas == null)
 			{

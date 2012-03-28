@@ -1,6 +1,5 @@
 package com.cokecode.halo.magic
 {
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.object.GameObject;
 	import com.cokecode.halo.object.IClip;
 	import com.cokecode.halo.terrain.layers.Layer;
@@ -10,6 +9,7 @@ package com.cokecode.halo.magic
 	import de.nulldesign.nd2d.display.Sprite2D;
 	import de.nulldesign.nd2d.materials.BlendModePresets;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import de.nulldesign.nd2d.materials.texture.TextureAtlas;
 	import de.nulldesign.nd2d.materials.texture.TextureOption;
 	
 	import flash.utils.getTimer;
@@ -33,6 +33,9 @@ package com.cokecode.halo.magic
 		protected var mSprite:Sprite2D;
 		protected var mLayer:Layer;
 		public var mConfig:MagicConfig;
+		private var mFrameArr:Array			= new Array;
+		private var mCurFrameIndex:uint		= 0;
+		private var mInterval:Number			= 0;
 		
 		public function MagicBase()
 		{
@@ -103,9 +106,8 @@ package com.cokecode.halo.magic
 		{			
 		}
 		
-		public function init(atlasTex:Texture2D, atlas:AnimationAtlas, layer:Layer):MagicConfig
+		public function init(atlasTex:Texture2D, atlas:TextureAtlas, layer:Layer):MagicConfig
 		{
-			atlas.setFPS(1000/mConfig.mAniSpeed);
 			mSprite = new Sprite2D(atlasTex);
 			mSprite.setSpriteSheet(atlas);
 			addChild(mSprite);
@@ -133,30 +135,12 @@ package com.cokecode.halo.magic
 			
 			var startFrame:uint = mCurTexDir * mFramesPerDir;
 			var endFrame:uint = startFrame + mFramesPerDir;
-			var frameArr:Array = new Array;
 			var frame:uint = 0;
 			
-			
-			if(mConfig.mEndType == MagicConst.END_TYPE_ANIMATION_OVER) //动画播放完类型，不循环
+			for(frame = startFrame; frame != endFrame; ++frame)
 			{
-				for(frame = startFrame; frame != endFrame; ++frame)
-				{
-					frameArr.push(frame);
-				}
-				
-				mSprite.spriteSheet.addAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, frameArr, false);				
-			}
-			else //其他情况，循环播放
-			{
-				for(frame = startFrame; frame != endFrame; ++frame)
-				{
-					frameArr.push(frame);
-				}
-				
-				mSprite.spriteSheet.addAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir, frameArr, true);				
-			}
-			
-			mSprite.spriteSheet.playAnimation(MagicConst.STR_ANIMATION_NAME + mCurTexDir);
+				mFrameArr.push(frame);
+			}	
 			
 			doInit();
 			
@@ -165,11 +149,32 @@ package com.cokecode.halo.magic
 		
 		protected function update(elapsed:Number):void
 		{
+		}
+		
+		private function updateFrame(elapsed:Number):void
+		{
+			mInterval += elapsed;
+			var numFrame:uint = 1000 * mInterval / mConfig.mAniSpeed;
+			var remain:Number = 1000 * mInterval % mConfig.mAniSpeed;
+			mCurFrameIndex += numFrame;
+			mInterval = remain * 0.001;			
 			
+			if(mConfig.mEndType == MagicConst.END_TYPE_ANIMATION_OVER)
+			{
+				mCurFrameIndex = Math.min(mCurFrameIndex, mFrameArr.length - 1);
+			}
+			else
+			{
+				mCurFrameIndex = mCurFrameIndex % mFrameArr.length;
+			}
+			
+			mSprite.spriteSheet.frame = mFrameArr[mCurFrameIndex];
 		}
 		
 		protected override function step(elapsed:Number):void
 		{
+			updateFrame(elapsed);
+			
 			if(isEnd())
 			{
 				//魔法已结束, 检查子节点				
