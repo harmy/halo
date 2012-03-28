@@ -20,6 +20,7 @@ package game
 	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
 	import com.furusystems.dconsole2.DConsole;
+	import flash.events.MouseEvent;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Scene2D;
@@ -61,15 +62,29 @@ package game
 			addChild( mCameraCtrl ); 
 			
 			// 创建测试地图
-			mMap = new Map();
+			mMap = Map.instance;
 			mMap.addEventListener(MapEvent.LOAD_COMPLETE, onMapLoad);
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
 			addChild(mMap);			
 			
+				
+			MagicTest.instance().init();	
+			
+			//注册到魔法管理器
+			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
+				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
+		}
+		
+		
+		public function onMapLoad(evt:MapEvent):void
+		{
+			mCameraCtrl.mapSize.x = evt.width;
+			mCameraCtrl.mapSize.y = evt.height;
+			
 			// 创建测试角色
 			var uid:uint = 0;
-			for (var i:uint=0; i<1 * 1; ++i) {
+			for (var i:uint=0; i<200 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				char.x = int(Math.random() * 120);
 				char.y = int(Math.random() * 120);
@@ -92,7 +107,7 @@ package game
 				
 				
 				if (i == 0) {
-					
+					// 主角
 					char.x = 100 * 64;
 					char.y = 100 * 32;
 					
@@ -125,6 +140,10 @@ package game
 					mHero.playAnim(EACTION.STAND);
 					mHero.controller = mHeroCtrl;
 					mHeroCtrl.gameObject = mHero;
+				} else {
+					// 其他玩家
+					char.controller = new BasePlayerCtrl(char);
+					char.controller.initAction();
 				}
 				
 				if ( CharMgr.instance.addChar(char, CharLooks.HUMAN) ) {
@@ -132,16 +151,11 @@ package game
 				} else {
 					// 释放角色数据
 				}
-				
-				
 			}
-			
-			MagicTest.instance().init();	
-			
-			//注册到魔法管理器
-			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
-				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
+				
 		}
+		
+		
 		
 		// ------------------ 调试用的命令 ------------------
 		
@@ -174,12 +188,6 @@ package game
 		
 		// -----------------------------------------------------
 		
-		public function onMapLoad(evt:MapEvent):void
-		{
-			mCameraCtrl.mapSize.x = evt.width;
-			mCameraCtrl.mapSize.y = evt.height;
-		}
-		
 		public function get map():Map
 		{
 			return mMap;
@@ -193,6 +201,15 @@ package game
 		public function onAddToStage(evt:Event):void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		}
+		
+		public function onMouseUp(evt:MouseEvent):void
+		{
+			var worldX:Number = (evt.stageX + camera.x) / Map.sTileWidth;
+			var worldY:Number = (evt.stageY + camera.y) / Map.sTileHeight;
+			mHeroCtrl.gotoPosByAutoPath(worldX, worldY);
+			//trace("鼠标: " + worldX + "," + worldY);
 		}
 		
 		public function onKeyDown(evt:KeyboardEvent):void
@@ -219,7 +236,7 @@ package game
 			if (mHero.x > mMap.mapWidth) mHero.x = mMap.mapWidth;
 			if (mHero.y > mMap.mapHeight) mHero.y = mMap.mapHeight;
 			
-			var cellX:uint = mHero.x / Map.sTileWidth;
+			/*var cellX:uint = mHero.x / Map.sTileWidth;
 			var cellY:uint = mHero.y / Map.sTileHeight;
 			if ( mMap.getBlock(cellX, cellY) == 1 ) {
 				// 阻挡信息
@@ -233,7 +250,7 @@ package game
 				// 可走信息
 				mHero.anmPlayer.tint = 0xFFFFFF;
 				mHero.anmPlayer.alpha = 1;
-			}
+			}*/
 		}
 		
 		override protected function step(elapsed:Number):void

@@ -14,6 +14,7 @@ package com.cokecode.halo.controller
 		private var mChar:Charactor;
 		private var mMoveTargetPos:Point = new Point;
 		private var mPathNodes:Array; // Point Array
+		private var mNextMovePos:Point;
 		
 		// 自动寻路相关变量
 		protected var mIsPathing:Boolean = false;			// 是否正在寻路中
@@ -28,6 +29,11 @@ package com.cokecode.halo.controller
 			super();
 			
 			mChar = char;
+		}
+		
+		override public function initAction():void
+		{
+			onGridChange();
 		}
 		
 		override public function set gameObject(value:GameObject):void
@@ -83,11 +89,23 @@ package com.cokecode.halo.controller
 			
 			if (charX == tx && charY == ty)
 				return false;
+				
+			if ( Map.instance.getBlock(tx, ty) == 1 ) {
+				// 阻挡信息,不可走
+				return false;
+			}
+				
+			// 记录最后一次目标点
+			mNextMovePos = new Point(tx, ty);
 			
-			mPathNodes = PathFinder.instance.find(charX, charY, tx, ty);
+			if (mIsMoving) {
+				return false;
+			}
+			
+			/*mPathNodes = PathFinder.instance.find(charX, charY, tx, ty);
 			if (mPathNodes != null && mPathNodes.length > 1) {
 				mPathNodes.shift();
-			}
+			}*/
 			
 			return true;
 		}
@@ -129,7 +147,22 @@ package com.cokecode.halo.controller
 		
 		protected function onGridChange():void
 		{
+			var charX:Number = mChar.x / Map.sTileWidth;
+			var charY:Number = mChar.y / Map.sTileHeight;
 			
+			if ( Map.instance.getBlock(charX, charY) == 1 ) {
+				// 阻挡信息
+				mChar.anmPlayer.tint = 0xFF0000;
+				mChar.anmPlayer.alpha = 1;
+			} else if ( Map.instance.getBlock(charX, charY) == 2 ) {
+				// 透明信息
+				mChar.anmPlayer.tint = 0xFFFFFF;
+				mChar.anmPlayer.alpha = 0.5;
+			} else {
+				// 可走信息
+				mChar.anmPlayer.tint = 0xFFFFFF;
+				mChar.anmPlayer.alpha = 1;
+			}
 		}
 		
 		/**
@@ -196,17 +229,38 @@ package com.cokecode.halo.controller
 		
 		public function update(elapsed:Number):void
 		{
-			if(mPathNodes != null && mPathNodes.length > 0 && !mIsMoving) {
+			if (mChar == null) return;
+			
+			var charX:Number = mChar.x / Map.sTileWidth;
+			var charY:Number = mChar.y / Map.sTileHeight;
+			
+			if (!mIsMoving && mNextMovePos != null) {
+				// 只有玩家不在移动的时候，才进行寻路
+				mPathNodes = PathFinder.instance.find(charX, charY, mNextMovePos.x, mNextMovePos.y);
+				if (mPathNodes == null) {
+					trace("寻路出现异常");
+				}
+				if (mPathNodes != null && mPathNodes.length > 1) {
+					mPathNodes.shift();
+				}
+				mNextMovePos = null;
+			}
+			
+			if (mPathNodes == null) return;
+			
+			if (mPathNodes.length > 0 && !mIsMoving) {
+				// 从寻路路径点中取出节点，进行寻路(走一个格子)
 				var tgPt:Point = new Point();
 				tgPt.x = mPathNodes[0].x;
 				tgPt.y = mPathNodes[0].y;
-				//Output.Trace("开始移动");
+				//trace("开始移动");
 				if (!moveOneGrid(tgPt.x, tgPt.y)) {
 					mPathNodes.shift();
 				}
 			}
 			
-			if (mPathNodes != null && mIsMoving) {
+			if (mIsMoving) {
+				// 处理每个格子移动的逻辑
 				movingHandler(elapsed);
 			}
 		}
