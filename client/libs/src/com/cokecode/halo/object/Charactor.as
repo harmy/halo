@@ -16,8 +16,9 @@ package com.cokecode.halo.object
 
 	public class Charactor extends GameObject
 	{
-		protected var mAnmPlayer:AnmPlayer;	// 角色动画播放
-		protected var mLooks:CharLooks;		// 外观数据
+		protected var mAnmPlayer:AnmPlayer;					// 角色动画播放
+		protected var mLooks:CharLooks;						// 外观数据
+		protected var mMoveSpeed:Number = 320;				// 走一格的时间
 		
 		
 		public function Charactor(looks:CharLooks)
@@ -26,6 +27,19 @@ package com.cokecode.halo.object
 			
 			mAnmPlayer = new AnmPlayer(AnimMgr.instance.getAtlasTexMgr());
 			addChild(mAnmPlayer);
+		}
+		
+		public function set moveSpeed(value:Number):void
+		{
+			mMoveSpeed = value;
+		}
+		
+		/**
+		 * 移动一步需要的时间(毫秒)
+		 */
+		public function get moveSpeed():Number
+		{
+			return mMoveSpeed;
 		}
 		
 		public function playAnim(aniName:String = null):void

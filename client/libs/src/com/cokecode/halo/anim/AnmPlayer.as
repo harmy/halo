@@ -28,48 +28,39 @@
 	
 	public class AnmPlayer extends Node2D
 	{
-		public static var FLANIMFPS:Number = 50;
+		public static var FLANIMFPS:Number = 1;
 		public static var ENTER_FRAME:int = 0x1;
 		public static var END_REACHED:int = 0x2;
+		
+		protected var mFpsRate:Number = 1;	// 动画帧数的倍率
 
 		protected var mLayerAtlas:Array;		// 每一层的贴图 (AniAtlasLoader)
-		protected var mLayerSprite:Array;		// Sprite2D
+		protected var mLayerSprite:Array;		// 每一层的Sprite2D
 		
-		protected var mModel:Model;			//模型
+		protected var mModel:Model;				//模型
 		protected var mAnim:Animation;			//动画
 		protected var mCurFrame:int;			//当前帧
-		//protected var mCurFrameDelay:int;		//当前延迟
 		protected var mCurDir:int;				//当前方向
-		protected var mAnDelayFrame:Number;	//当前延迟
+		protected var mAnDelayFrame:Number;		//当前延迟
 		
-		protected var mIsReload:Boolean;
-		//protected var mTexDict:TbeImageDict;
-		protected var mIsPlaying:Boolean;			//播放
+		protected var mIsReload:Boolean;		//是否已加载
+		protected var mIsPlaying:Boolean;		//播放状态
 		public var mItemNo:Array = [303,0,0,104,0,0,0,0,0];
 		//public var mItemNo:Array = [-1,-1,-1,-1,-1,0,0,0,0];
 		protected var mAnimCB:Function;		//动画回调函数
 		// function(int)
 		private static var mOffPos:Point = new Point;
 		protected var mBoundBox:Rectangle=new Rectangle;
-		//protected var mSrcRc:Rectangle = new Rectangle;
-		//protected var mDrc:Point= new Point;
 		
 		/**
 		 * 动画贴图和切割信息集合
 		 */
 		protected var mAniAtlasDict:AniAtlasLoaderDict;
 		
-		/**
-		 * 冲撞动作的残影数量 
-		 */
-		//private static var mCollideNum:int = 2;
-		
-			
 		public function AnmPlayer(atlasTexDict:AniAtlasLoaderDict)
 		{
 			mCurDir = 0;
 			mCurFrame = 0;		//当前
-			//mCurFrameDelay = 0;	//当前延迟
 			mCurDir = 0;			//当前方向
 			mAnDelayFrame = 0;		//当前延迟
 			
@@ -81,6 +72,16 @@
 			
 			mIsPlaying = false;		//停止
 			mAnimCB = null;
+		}
+		
+		public function set fpsRate(value:Number):void
+		{
+			mFpsRate = value;
+		}
+		
+		public function get fpsRate():Number
+		{
+			return mFpsRate;
 		}
 		
 		// 设置颜色
@@ -194,7 +195,12 @@
 			if(mIsPlaying==false)
 				return;
 				
-			var fDeltaTime:Number = elapsed * AnmPlayer.FLANIMFPS;
+			//转到毫秒
+			elapsed = elapsed * 1000;
+			
+			var tempFPS:Number = AnmPlayer.FLANIMFPS / mFpsRate;
+			//trace(tempFPS);
+			var fDeltaTime:Number = elapsed * tempFPS;
 			var pSeqFrame:AniSeqFrame;
 			
 			if(mAnDelayFrame<=0) {
@@ -447,35 +453,6 @@
 			return true;
 		}
 		
-		/*
-		public function renderCollide(target:BitmapData,cx:int,cy:int):void{
-			if(!initAnim())
-				return;
-			
-			mCurFrame = mAnim.mSeqFrame[mCurDir].length - 2;
-			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
-			if(vFramePartList==null)
-			{
-				render(target, cx, cy);
-				return;
-			}
-			
-			var genBoundBox:Boolean = true;
-			var alpha:Array = [1, 0.8, 0.5];
-			for(var i:int=0; i<=mCollideNum; i++)
-			{
-				RenderChar(target, cx, cy, vFramePartList, genBoundBox, alpha[i]);
-				if(genBoundBox)
-				{
-					genBoundBox = false;
-					GetCollideOffsetPos();
-				}
-				cx += mOffPos.x + i*3;
-				cy += mOffPos.y + i*2;
-			}
-		}
-		*/
-		
 		/**
 		 * 由于图片问题，不同方向上需要偏移一定距离，
 		 * 以免各个方向上的影子间距不一样
@@ -535,82 +512,6 @@
 			}
 		}
 		
-		/*
-		private function renderChar(target:BitmapData,cx:int,cy:int, vFramePartList:AniSeqFrame, genBoundBox:Boolean, alpha:Number):void{
-			//将透明度换算成16进制的字符
-			var alphaValue:int =alpha*255;
-//			var alphaStr:String = alphaValue.toString(16);
-//			alphaStr = "0x"+alphaStr+"000000";
-			
-			var forlen:int = vFramePartList.nLen;
-			for(var i:int=0; i < forlen ; i+=1 )
-			{
-				var pSurface:TbeImageLoader = GetLayerImage(vFramePartList.iLayer[i]);
-				if(pSurface == null)
-					continue;
-				if(pSurface.IsLoad==false)
-					continue;
-				
-				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
-				if(info==null)
-					continue;
-				
-				mSrcRc.x = info.x;
-				mSrcRc.y = info.y;
-				mSrcRc.width = info.width;
-				mSrcRc.height = info.height;
-				
-				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
-				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
-				
-				var layNo:int = Lay.iLayer;
-				if(pSurface.Img.GetBitmapData()) {
-					var colorTrans:ColorTransform;
-					var colorTransTemp:ColorTransform = new ColorTransform;
-					if(layNo == 3) continue;
-					mMatrix.identity();
-					mMatrix.tx = (-(mSrcRc.x) + mDrc.x);
-					mMatrix.ty = (-(mSrcRc.y) + mDrc.y);
-					mClipRc.x = mDrc.x;
-					mClipRc.y = mDrc.y;
-					mClipRc.width = mSrcRc.width;
-					mClipRc.height = mSrcRc.height;
-					if (layNo == 1 || layNo == 2) {
-						// 头发和衣服设置颜色调制
-						if (layNo == 1) {
-							colorTrans = GameDefine.COLOR_TABLE.GetHairColor(5);
-						} else if (layNo == 2) {
-							colorTrans = GameDefine.COLOR_TABLE.GetBodyColor(0, 5);
-						}
-						colorTransTemp.alphaMultiplier = colorTrans.alphaMultiplier;// * alpha;
-						colorTransTemp.redMultiplier = colorTrans.redMultiplier;
-						colorTransTemp.greenMultiplier = colorTrans.greenMultiplier;
-						colorTransTemp.blueMultiplier = colorTrans.blueMultiplier; 
-					} 
-					var alphaOffset:Number = 255 - alphaValue;	// 设置透明度偏移值
-					colorTransTemp.alphaOffset = -alphaOffset;
-					if (mEffectColor != null) {
-						// 使用特效绘制
-						colorTransTemp.redOffset = mEffectColor.redOffset;
-						colorTransTemp.greenOffset = mEffectColor.greenOffset;
-						colorTransTemp.blueOffset = mEffectColor.blueOffset;
-						colorTransTemp.alphaOffset = mEffectColor.alphaOffset - alphaOffset;
-					}
-					target.draw(pSurface.Img.GetBitmapData(), mMatrix, colorTransTemp, BlendMode.NORMAL, mClipRc, false);
-				}
-				
-				if(genBoundBox)
-				{
-					mBoundBox.x 		= Math.min(mBoundBox.x,mDrc.x);
-					mBoundBox.y 		= Math.min(mBoundBox.y,mDrc.y);	
-					mBoundBox.right	= Math.max(mBoundBox.right,mDrc.x+mSrcRc.width);
-					mBoundBox.bottom	= Math.max(mBoundBox.bottom,mDrc.y+mSrcRc.height);
-				}
-			}
-		}
-		*/
-		
 		// 判断贴图是否已加载完成
 		public function isTextureLoaded():Boolean
 		{
@@ -660,98 +561,6 @@
 			
 			return isEmpty;
 		}
-		
-		
-		/*
-		private static var colorTransTemp:ColorTransform = new ColorTransform;
-		public function render(target:BitmapData,cx:int,cy:int):void
-		{
-			if(!InitAnim())
-				return;
-		
-			var vFramePartList:AniSeqFrame = mAnim.mSeqFrame[mCurDir][mCurFrame];
-
-			var forlen:int = vFramePartList.nLen;
-			for(var i:int=0; i < forlen ; i+=1 )
-			{
-				var pSurface:TbeImageLoader = GetLayerImage(vFramePartList.iLayer[i]);
-				
-				if(pSurface == null)
-					continue;
-					
-				if(pSurface.IsLoad==false)
-					continue;
-		
-				var info:TbeFrameInfo = pSurface.GetInfo(vFramePartList.iResource[i]);
-				var Lay:AniLayer = mModel.vLayers[vFramePartList.iLayer[i]];
-				
-				if(info==null)
-					continue;
-				
-				mSrcRc.x = info.x;
-				mSrcRc.y = info.y;
-				mSrcRc.width = info.width;
-				mSrcRc.height = info.height;
-				
-				mDrc.x=vFramePartList.iPosX[i] - (Lay.iTexW >>1) + cx + info.iOffsetX;
-				mDrc.y=vFramePartList.iPosY[i] - (Lay.iTexH >>1) + cy + info.iOffsetY;
-
-				var layNo:int = Lay.iLayer;
-				
-				if(pSurface.Img && pSurface.Img.GetBitmapData()) {
-					mMatrix.identity();
-					mMatrix.tx = (-(mSrcRc.x) + mDrc.x);
-					mMatrix.ty = (-(mSrcRc.y) + mDrc.y);
-					mClipRc.x = mDrc.x;
-					mClipRc.y = mDrc.y;
-					mClipRc.width = mSrcRc.width;
-					mClipRc.height = mSrcRc.height;
-					var useDraw:Boolean = false;
-					var colorTrans:ColorTransform;
-					// 初始化数据
-					colorTransTemp.redMultiplier = 1;
-					colorTransTemp.greenMultiplier = 1;
-					colorTransTemp.blueMultiplier = 1;
-					colorTransTemp.alphaMultiplier = 1;
-					colorTransTemp.redOffset = 0;
-					colorTransTemp.greenOffset = 0;
-					colorTransTemp.blueOffset = 0;
-					colorTransTemp.alphaOffset = 0;
-					if (layNo == 1 || layNo == 2) {
-						// 头发和衣服设置颜色调制
-						if (layNo == 1) {
-							colorTrans = GameDefine.COLOR_TABLE.GetHairColor(5);
-						} else if (layNo == 2) {
-							colorTrans = GameDefine.COLOR_TABLE.GetBodyColor(0, 5);
-						}
-						colorTransTemp.redMultiplier = colorTrans.redMultiplier;
-						colorTransTemp.greenMultiplier = colorTrans.greenMultiplier;
-						colorTransTemp.blueMultiplier = colorTrans.blueMultiplier; 
-						useDraw = true;
-					}
-					if (mEffectColor != null) {
-						// 使用特效绘制
-						colorTransTemp.redOffset = mEffectColor.redOffset;
-						colorTransTemp.greenOffset = mEffectColor.greenOffset;
-						colorTransTemp.blueOffset = mEffectColor.blueOffset;
-						colorTransTemp.alphaOffset = mEffectColor.alphaOffset;
-						useDraw = true;
-					}
-					
-					if (useDraw) {
-						target.draw(pSurface.Img.GetBitmapData(), mMatrix, colorTransTemp, BlendMode.NORMAL, mClipRc, false);	
-					} else {
-						target.copyPixels(pSurface.Img.GetBitmapData(), mSrcRc, mDrc, null, null, true);
-					}
-				}
-				
-				mBoundBox.x 		= Math.min(mBoundBox.x,mDrc.x);
-				mBoundBox.y 		= Math.min(mBoundBox.y,mDrc.y);	
-				mBoundBox.right	= Math.max(mBoundBox.right,mDrc.x+mSrcRc.width);
-				mBoundBox.bottom	= Math.max(mBoundBox.bottom,mDrc.y+mSrcRc.height);
-			}
-		}
-		*/
 		
 		/*
 		public function getClipRect(outrc:Rectangle,pSurface:TexInstance,nClipW:int,nClipH:int,inno:int):void

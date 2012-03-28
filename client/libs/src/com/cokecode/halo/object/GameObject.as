@@ -79,9 +79,6 @@ package com.cokecode.halo.object
 		public function set controller(ctrl:Controller):void
 		{
 			mController = ctrl;
-			
-			removeChild(mController);
-			addChild(mController);
 		}
 		
 		public function get controller():Controller

@@ -40,12 +40,12 @@ package com.cokecode.halo.anim
 		protected function iniDefault():void
 		{
 			// 添加顺序必须要按照贴图集合中的顺序
-			addAction("stand", 	1,		2,		8);
+			/*addAction("stand", 	1,		2,		8);
 			addAction("death", 	2, 		2,		8);
 			addAction("attack",	3, 		6,		8);
 			addAction("walk", 		4, 		8,		8);
 			addAction("run", 		5, 		8,		8);
-			addAction("magic", 	6, 		4,		8);
+			addAction("magic", 	6, 		4,		8);*/
 		}
 		
 		/**

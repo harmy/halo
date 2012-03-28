@@ -50,9 +50,8 @@ package
 			//ResMgr.addInspector(stage);
 			
 			addChild(DConsole.view);
-			DConsole.console.createCommand("block", blockCommand, "halo", "显示/隐藏阻挡信息");
-			DConsole.console.createCommand("speed", speedCommand, "halo", "调整主角速度");
-			DConsole.console.createCommand("stats", statsCommand, "halo", "显示/隐藏FPS");
+			DConsole.createCommand("block", blockCommand, "halo", "显示/隐藏阻挡信息");
+			DConsole.createCommand("stats", statsCommand, "halo", "显示/隐藏FPS");
 
 
 			
@@ -69,12 +68,6 @@ package
 			var gamescene:GameScene = scene as GameScene;
 			var layer:Layer = gamescene.map.getLayer("block");
 			if (layer) layer.visible = !layer.visible;
-		}
-		
-		public function speedCommand(speed:uint):void
-		{
-			AnmPlayer.FLANIMFPS = speed;
-			trace("设置主角速度: " + speed);
 		}
 		
 		public function statsCommand():void
