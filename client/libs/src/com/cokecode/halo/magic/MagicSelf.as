@@ -1,5 +1,8 @@
 package com.cokecode.halo.magic
 {
+	import com.cokecode.halo.object.CharMgr;
+	import com.cokecode.halo.object.Charactor;
+	
 	import de.nulldesign.nd2d.display.Camera2D;
 
 	/**
@@ -25,8 +28,15 @@ package com.cokecode.halo.magic
 				return;
 			}		
 			
-			x = MagicMgr.instance().mSelf.x + mConfig.mOffx;
-			y = MagicMgr.instance().mSelf.y + mConfig.mOffy;
+			var hero:Charactor = CharMgr.instance.getCharByStr(mSrcID);		
+			
+			if(hero == null)
+			{
+				return;
+			}
+			
+			x = hero.x + mConfig.mOffx;
+			y = hero.y + mConfig.mOffy;
 		}
 	}
 }

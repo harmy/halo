@@ -11,7 +11,6 @@
 //	import Lib.Texture.TexInstance;
 	
 	import com.cokecode.halo.data.CoreConst;
-	import com.cokecode.halo.materials.texture.AnimationAtlas;
 	import com.cokecode.halo.terrain.Map;
 	
 	import de.nulldesign.nd2d.display.Node2D;

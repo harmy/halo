@@ -22,16 +22,11 @@ package com.cokecode.halo.magic
 	 * */
 	internal final class MagicConfigMgr
 	{
-		private var mConfigMgr:Dictionary = new Dictionary;
-		private static var sInstance:MagicConfigMgr;
+		private var mConfigMgr:Dictionary 						= new Dictionary;
+		private static var sInstance:MagicConfigMgr			= new MagicConfigMgr;
 	
 		public static function get instance():MagicConfigMgr
-		{
-			if(sInstance == null)
-			{
-				sInstance = new MagicConfigMgr;
-			}
-			
+		{			
 			return sInstance;
 		}
 		
