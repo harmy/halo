@@ -96,7 +96,6 @@ package com.cokecode.halo.magic
 		
 		public override function dispose():void
 		{
-//			mSprite.dispose();
 			removeChild(mSprite);
 			mSprite = null;
 			MagicMgr.instance.erase(id);			

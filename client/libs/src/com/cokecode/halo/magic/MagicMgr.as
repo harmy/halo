@@ -1,6 +1,7 @@
 package com.cokecode.halo.magic
 {
 	import com.bit101.components.Label;
+	import com.cokecode.halo.object.CharMgr;
 	import com.cokecode.halo.object.Charactor;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.furusystems.dconsole2.plugins.dialog.DialogDesc;
@@ -22,18 +23,16 @@ package com.cokecode.halo.magic
 		private var mCurAllocID:uint 						= 0;
 		private var mLayer_before:Layer;
 		private var mLayer_after:Layer;
-		internal var mSelf:Charactor;
 		
 		public static function get instance():MagicMgr
 		{			
 			return sInstance;
 		}
 		
-		public function register(layer1:Layer, layer2:Layer, obj:Charactor):void
+		public function registerLayer(layer1:Layer, layer2:Layer):void
 		{
 			mLayer_before = layer1;
 			mLayer_after = layer2;
-			mSelf = obj;
 		}
 		
 		public function allocID():uint
@@ -103,7 +102,24 @@ package com.cokecode.halo.magic
 			
 			if(tex == null || atlas == null)
 			{
+				var cfArr:Array = MagicConfigMgr.instance.getConfig(config.mRootID);
+				var texArr:Array = new Array;
+				
+				for each(var cf:MagicConfig in cfArr)
+				{
+					texArr.push(cf.mTexID);					
+				}
+				
+				MagicTexMgr.instance.loadMany(texArr);
+				
 				return;				
+			}
+			
+			var char:Charactor = CharMgr.instance.getCharByStr(srcID);
+			
+			if(char != null)
+			{
+				char.addMagic(config.mRootID, magic.id);
 			}
 			
 			var nextConfig:MagicConfig = magic.init(tex, atlas, magicLayer);

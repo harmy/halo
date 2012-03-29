@@ -29,11 +29,6 @@ package game.magic
 			MagicTexMgr.instance.path = "Z:/res/magic/test/";
 		}
 		
-		public function test_magic():void
-		{
-			
-		}		
-		
 		public function update(elapsed:Number):void
 		{			
 		}

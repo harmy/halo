@@ -50,23 +50,31 @@ package com.cokecode.halo.magic
 			return mRootPath;
 		}
 		
-		public function getTexture(id:uint):Texture2D
+		public function loadMany(arr:Array):void
+		{
+			for each(var id:uint in arr)
+			{
+				load(id);
+			}
+		}
+		
+		private function load(id:uint):void
 		{
 			if(mTexUnitDic[id] == null)
 			{
 				mTexUnitDic[id] = new MagicTexUnit(id);
-			}	
-			
+			}			
+		}
+		
+		public function getTexture(id:uint):Texture2D
+		{			
+			load(id);
 			return (mTexUnitDic[id] as MagicTexUnit).texture();
 		}
 		
 		public function getAtlas(id:uint):TextureAtlas
-		{
-			if(mTexUnitDic[id] == null)
-			{
-				mTexUnitDic[id] = new MagicTexUnit(id);
-			}	
-			
+		{			
+			load(id);
 			return (mTexUnitDic[id] as MagicTexUnit).atlas();	
 		}
 	}

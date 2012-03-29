@@ -4,22 +4,24 @@ package com.cokecode.halo.object
 	import com.cokecode.halo.anim.Animation;
 	import com.cokecode.halo.anim.AnmPlayer;
 	import com.cokecode.halo.anim.Model;
+	import com.cokecode.halo.magic.MagicMgr;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.utils.GameMath;
-	import flash.geom.Point;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Sprite2D;
 	
 	import flash.filters.GlowFilter;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
 
 	public class Charactor extends GameObject
 	{
 		protected var mAnmPlayer:AnmPlayer;					// 角色动画播放
 		protected var mLooks:CharLooks;						// 外观数据
 		protected var mMoveSpeed:Number = 320;				// 走一格的时间
-		
+		private var mMagicDic:Dictionary = new Dictionary; //释放的魔法管理器		
 		
 		public function Charactor(looks:CharLooks)
 		{
@@ -67,6 +69,34 @@ package com.cokecode.halo.object
 		{
 			if (mAnmPlayer == null) return 0;
 			return mAnmPlayer.height;
+		}
+		
+		public function delMagic(id:uint):void
+		{
+			var arr:Array = mMagicDic[id];
+			
+			if(arr == null)
+			{
+				return;
+			}
+			
+			for each(var id:uint in arr)
+			{
+				MagicMgr.instance.delMagic(id);
+			}
+		}
+		
+		public function addMagic(rootID:uint, id:uint):void
+		{
+			var arr:Array = mMagicDic[id];
+			
+			if(arr == null)
+			{
+				arr = new Array;				
+			}
+			
+			arr.push(id);
+			mMagicDic[rootID] = arr;			
 		}
 		
 		

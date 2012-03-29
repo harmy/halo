@@ -14,13 +14,12 @@ package game
 	import com.cokecode.halo.object.CharLooks;
 	import com.cokecode.halo.object.CharMgr;
 	import com.cokecode.halo.object.Charactor;
-	import com.cokecode.halo.terrain.layers.GroundLayer;
 	import com.cokecode.halo.terrain.Map;
+	import com.cokecode.halo.terrain.layers.GroundLayer;
 	import com.cokecode.halo.terrain.layers.Layer;
 	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
 	import com.furusystems.dconsole2.DConsole;
-	import flash.events.MouseEvent;
 	
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.display.Scene2D;
@@ -28,6 +27,7 @@ package game
 	
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	
 	import game.magic.MagicTest;
@@ -48,6 +48,7 @@ package game
 			// 初始化一些控制命令
 			DConsole.createCommand("move", moveCommand, "halo", "主角移动到某个坐标");
 			DConsole.createCommand("magic", magicCommand, "halo", "魔法测试");
+			DConsole.createCommand("delmagic", delMagic, "halo", "主角手动删除魔法测试");
 			DConsole.createCommand("speed", speedCommand, "halo", "调整主角移动速度");
 			DConsole.createCommand("action", actionCommand, "halo", "播放主角指定动作");
 			
@@ -66,14 +67,13 @@ package game
 			mMap.addEventListener(MapEvent.LOAD_COMPLETE, onMapLoad);
 			mMap.setMapPath("Z:/res/maps/");
 			mMap.load("1.tmx");
-			addChild(mMap);			
+			addChild(mMap);		
 			
-				
 			MagicTest.instance().init();	
 			
-			//注册到魔法管理器
-			MagicMgr.instance().register(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
-				mMap.getLayer(MagicConst.STR_LAYER_AFTER), mHero);		
+			//注册层到魔法管理器
+			MagicMgr.instance.registerLayer(mMap.getLayer(MagicConst.STR_LAYER_BEFOR), 
+				mMap.getLayer(MagicConst.STR_LAYER_AFTER));		
 		}
 		
 		
@@ -85,7 +85,7 @@ package game
 			// 创建测试角色
 			var uid:uint = 0;
 			for (var i:uint=0; i<200 * 1; ++i) {
-				var char:Charactor = new Charactor(null);
+				var char:Charactor = new Charactor(new CharLooks);
 				char.x = int(Math.random() * 120);
 				char.y = int(Math.random() * 120);
 				
@@ -168,8 +168,14 @@ package game
 		public function magicCommand(magicId:uint, num:uint = 1):void
 		{
 			for (var i:uint = 0; i<num; ++i) {
-				MagicMgr.instance.addMagic(magicId, 8 * Math.random(), "src", mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);
+				MagicMgr.instance.addMagic(magicId, 8 * Math.random(), mHero.getStr(), 
+					mHero.x, mHero.y, "dest", mHero.x + 500, mHero.y - 100);
 			}
+		}
+		
+		public function delMagic(magicId:uint, num:uint = 1):void
+		{
+			mHero.delMagic(magicId);
 		}
 		
 		public function moveCommand(targetX:Number, targetY:Number):void
