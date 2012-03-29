@@ -11,10 +11,10 @@ package com.cokecode.halo.controller
 	{
 		public static const DEFAULT_MOVE_SPEED:Number = 350; //默认的移动速度
 		
-		private var mChar:Charactor;
-		private var mMoveTargetPos:Point = new Point;
-		private var mPathNodes:Array; // Point Array
-		private var mNextMovePos:Point;
+		protected var mChar:Charactor;
+		protected var mMoveTargetPos:Point = new Point;
+		protected var mPathNodes:Array; // Point Array
+		protected var mNextMovePos:Point;
 		
 		// 自动寻路相关变量
 		protected var mIsPathing:Boolean = false;			// 是否正在寻路中
@@ -101,11 +101,7 @@ package com.cokecode.halo.controller
 			if (mIsMoving) {
 				return false;
 			}
-			
-			/*mPathNodes = PathFinder.instance.find(charX, charY, tx, ty);
-			if (mPathNodes != null && mPathNodes.length > 1) {
-				mPathNodes.shift();
-			}*/
+
 			
 			return true;
 		}
@@ -157,7 +153,7 @@ package com.cokecode.halo.controller
 			} else if ( Map.instance.getBlock(charX, charY) == 2 ) {
 				// 透明信息
 				mChar.anmPlayer.tint = 0xFFFFFF;
-				mChar.anmPlayer.alpha = 0.5;
+				mChar.anmPlayer.alpha = 0.4;
 			} else {
 				// 可走信息
 				mChar.anmPlayer.tint = 0xFFFFFF;
@@ -244,6 +240,7 @@ package com.cokecode.halo.controller
 					mPathNodes.shift();
 				}
 				mNextMovePos = null;
+				mIsPathing  = true;
 			}
 			
 			if (mPathNodes == null) return;

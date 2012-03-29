@@ -5,6 +5,9 @@ package com.cokecode.halo.object
 	import com.cokecode.halo.display.TextField;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.utils.GameMath;
+	import de.nulldesign.nd2d.display.Sprite2D;
+	import de.nulldesign.nd2d.display.TextureRenderer;
+	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
@@ -46,22 +49,23 @@ package com.cokecode.halo.object
 		 */
 		protected var mHeight:uint = 0;
 		
-
 		
 		public function GameObject()
 		{
+			// 名字
+			addChild(mTFName);
+			
+			// 初始化名字的参数
 			mTFName.pivot.x = -32;
 			mTFName.pivot.y = 16;
 			mTFName.y = -63;
 			mTFName.textColor = 0xFFFFFF;
 			mTFName.filter = [CoreConst.GLOW_FILTER1];
+			
 		}
 		
 		public function setNameText(name:String):void
 		{
-			removeChild(mTFName);
-			addChild(mTFName);
-			
 			mTFName.text = name;
 		}
 		

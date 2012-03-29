@@ -4,9 +4,16 @@ package com.cokecode.halo.object
 	import com.cokecode.halo.anim.Animation;
 	import com.cokecode.halo.anim.AnmPlayer;
 	import com.cokecode.halo.anim.Model;
+	import com.cokecode.halo.display.LifeBar;
 	import com.cokecode.halo.terrain.Map;
 	import com.cokecode.halo.utils.GameMath;
+	import de.nulldesign.nd2d.display.Quad2D;
+	import de.nulldesign.nd2d.display.TextureRenderer;
+	import de.nulldesign.nd2d.materials.texture.Texture2D;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
@@ -20,6 +27,9 @@ package com.cokecode.halo.object
 		protected var mLooks:CharLooks;						// 外观数据
 		protected var mMoveSpeed:Number = 320;				// 走一格的时间
 		
+		protected var mLifeBar:LifeBar;			// 生命条
+		protected var mCurHP:uint = 10000;
+		protected var mMaxHP:uint = 10000;
 		
 		public function Charactor(looks:CharLooks)
 		{
@@ -27,6 +37,36 @@ package com.cokecode.halo.object
 			
 			mAnmPlayer = new AnmPlayer(AnimMgr.instance.getAtlasTexMgr());
 			addChild(mAnmPlayer);
+			
+			mLifeBar = new LifeBar;
+			addChild(mLifeBar);
+			mLifeBar.x = 30;
+			mLifeBar.y = -95;
+			
+			refreshHP();
+		}
+		
+		protected function refreshHP():void
+		{
+			if (mLifeBar) mLifeBar.setValue(mCurHP, mMaxHP);
+		}
+		
+		public function get curHP():uint
+		{
+			return mCurHP;
+		}
+		
+		public function set curHP(value:uint):void
+		{
+			if (mCurHP != value) {
+				mCurHP = value;
+				refreshHP();
+			}
+		}
+		
+		public function get maxHP():uint
+		{
+			return mMaxHP;
 		}
 		
 		public function set moveSpeed(value:Number):void

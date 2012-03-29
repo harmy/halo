@@ -20,6 +20,8 @@ package game
 	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
 	import com.furusystems.dconsole2.DConsole;
+	import de.nulldesign.nd2d.display.TextureRenderer;
+	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import flash.events.MouseEvent;
 	
 	import de.nulldesign.nd2d.display.Node2D;
@@ -31,6 +33,7 @@ package game
 	import flash.ui.Keyboard;
 	
 	import game.magic.MagicTest;
+	import game.control.RemotePlayerCtrl;
 
 	
 	public class GameScene extends Scene2D
@@ -50,6 +53,7 @@ package game
 			DConsole.createCommand("magic", magicCommand, "halo", "魔法测试");
 			DConsole.createCommand("speed", speedCommand, "halo", "调整主角移动速度");
 			DConsole.createCommand("action", actionCommand, "halo", "播放主角指定动作");
+			DConsole.createCommand("color", colorCommand, "halo", "设定指定层的混合色");
 			
 			AnimMgr.instance.init("Z:/res/charactor/");
 			
@@ -84,11 +88,11 @@ package game
 			
 			// 创建测试角色
 			var uid:uint = 0;
-			for (var i:uint=0; i<200 * 1; ++i) {
+			for (var i:uint=0; i<1000 * 1; ++i) {
 				var char:Charactor = new Charactor(null);
 				char.x = int(Math.random() * 120);
 				char.y = int(Math.random() * 120);
-				
+
 				char.x = char.x * 64;
 				char.y = char.y * 32;
 				
@@ -108,21 +112,9 @@ package game
 				
 				if (i == 0) {
 					// 主角
-					char.x = 100 * 64;
-					char.y = 100 * 32;
+					char.x = 5 * 64;
+					char.y = 5 * 32;
 					
-//					// shadow
-//					var charShadow:Charactor = new Charactor(null);
-//					charShadow.charView = GameAssets.createChar(0);
-//					//charShadow.scaleX = 1.5;
-//					charShadow.alpha = 0.5;
-//					charShadow.x = char.x;
-//					charShadow.y = char.y;
-//					charShadow.tint = 0x000000;
-//					charShadow.rotationX = 60;
-//					//charShadow.rotationZ = -5;
-//					layer.addChild( charShadow );
-//					
 //					// mirror
 //					var char2:Charactor = new Charactor(null);
 //					char2.charView = GameAssets.createChar(0);
@@ -132,8 +124,6 @@ package game
 //					char2.y = char.y + 20;
 //					layer.addChild( char2 );
 					
-					//char.charView.tint = 0x00FF00;
-					//char.alpha = 0.3;
 					mHero = char;
 					mCameraCtrl.target = mHero;
 					CharMgr.instance.hero = char;
@@ -142,8 +132,9 @@ package game
 					mHeroCtrl.gameObject = mHero;
 				} else {
 					// 其他玩家
-					char.controller = new BasePlayerCtrl(char);
+					char.controller = new RemotePlayerCtrl(char);
 					char.controller.initAction();
+					char.addChild( char.controller );
 				}
 				
 				if ( CharMgr.instance.addChar(char, CharLooks.HUMAN) ) {
@@ -173,10 +164,13 @@ package game
 			}
 		}
 		
-		public function moveCommand(targetX:Number, targetY:Number):void
+		public function moveCommand(targetX:Number, targetY:Number, charid:uint = 1):void
 		{
-			var ctrl:BasePlayerCtrl = mHero.controller as BasePlayerCtrl;
-			ctrl.gotoPosByAutoPath(targetX, targetY);
+			var char:Charactor = CharMgr.instance.getChar(charid, CharLooks.HUMAN);
+			if (char) {
+				var ctrl:BasePlayerCtrl = char.controller as BasePlayerCtrl;
+				ctrl.gotoPosByAutoPath(targetX, targetY);
+			}
 		}
 		
 		public function actionCommand(actionName:String):void
@@ -184,6 +178,21 @@ package game
 			mHero.playAnim(actionName);
 		}
 		
+		/**
+		 * 模拟天色(模拟天黑和天亮的环境颜色)
+		 * @param	r	r分量
+		 * @param	g	g分量
+		 * @param	b	b分量
+		 * @param	layerName	图层名称
+		 */
+		public function colorCommand(r:uint = 100, g:uint = 100, b:uint = 50, layerName:String = "ground"):void
+		{
+			var color:uint = (r << 16) | (g << 8) | b;
+			var layer:Layer = mMap.getLayer(layerName);
+			if (layer) {
+				layer.tint = color;
+			}
+		}
 		
 		
 		// -----------------------------------------------------
@@ -220,9 +229,9 @@ package game
 				// 模拟震屏效果
 				mCameraCtrl.shake(BaseCameraCtrl.SHAKE_Y, 6, 700, 100);
 			} else if(evt.keyCode == Keyboard.C) {
-				// 切换相机跟踪目标
+				/*// 切换相机跟踪目标
 				if (mCameraCtrl.target == null) mCameraCtrl.target = mHero;
-				else mCameraCtrl.target = null;
+				else mCameraCtrl.target = null;*/
 			} else if(evt.keyCode == Keyboard.Q) {
 				// 切换主角方向
 				if (mHero) {
