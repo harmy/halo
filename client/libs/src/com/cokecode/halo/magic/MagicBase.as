@@ -152,11 +152,11 @@ package com.cokecode.halo.magic
 		
 		private function updateFrame(elapsed:Number):void
 		{
-			mInterval += elapsed;
-			var numFrame:uint = 1000 * mInterval / mConfig.mAniSpeed;
-			var remain:Number = 1000 * mInterval % mConfig.mAniSpeed;
+			mInterval += elapsed * 1000;
+			var numFrame:uint = mInterval / mConfig.mAniSpeed;
+			var remain:Number = mInterval % mConfig.mAniSpeed;
 			mCurFrameIndex += numFrame;
-			mInterval = remain * 0.001;			
+			mInterval = remain;	
 			
 			if(mConfig.mEndType == MagicConst.END_TYPE_ANIMATION_OVER)
 			{

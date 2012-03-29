@@ -84,11 +84,13 @@ package com.cokecode.halo.object
 			{
 				MagicMgr.instance.delMagic(id);
 			}
+			
+			delete mMagicDic[id];
 		}
 		
 		public function addMagic(rootID:uint, id:uint):void
 		{
-			var arr:Array = mMagicDic[id];
+			var arr:Array = mMagicDic[rootID];
 			
 			if(arr == null)
 			{
