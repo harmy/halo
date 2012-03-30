@@ -76,7 +76,7 @@ package com.cokecode.halo.terrain
 			if (mSprite == null) return  false;
 			
 			var nx:Number = x;
-			var ny:Number = y - mSprite.height;
+			var ny:Number = y - mSprite.height + 32;
 			
 			if (nx + width < camera.x)	// 图片移出相机左边
 				return false;
