@@ -1,15 +1,10 @@
 package com.cokecode.halo.magic
 {
+	/**
+	 * 鼠标阵法类效果
+	 * */
 	internal class MagicMouse extends MagicBase
-	{
-		/**
-		 * 鼠标阵法类效果
-		 * */
-		public function MagicMouse()
-		{
-			super();
-		}
-		
+	{		
 		protected override function doInit():void
 		{
 			x = mTargetX + mConfig.mOffx;

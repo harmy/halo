@@ -7,11 +7,6 @@ package com.cokecode.halo.magic
 	 * */
 	internal class MagicDest extends MagicBase
 	{		
-		public function MagicDest()
-		{	
-			super();
-		}
-		
 		protected override function doInit():void
 		{
 			x = mTargetX + mConfig.mOffx;

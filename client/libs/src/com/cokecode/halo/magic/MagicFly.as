@@ -16,11 +16,6 @@ package com.cokecode.halo.magic
 		private var lastTargetY:Number		= 0;
 		private var lastSign:Point			= new Point;
 		
-		public function MagicFly()
-		{		
-			super();
-		}
-		
 		protected override function doInit():void
 		{
 			x = mSrcX + mConfig.mOffx;
