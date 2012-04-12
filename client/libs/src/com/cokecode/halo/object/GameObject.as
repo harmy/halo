@@ -61,7 +61,6 @@ package com.cokecode.halo.object
 			mTFName.y = -63;
 			mTFName.textColor = 0xFFFFFF;
 			mTFName.filter = [CoreConst.GLOW_FILTER1];
-			
 		}
 		
 		public function setNameText(name:String):void
@@ -69,6 +68,10 @@ package com.cokecode.halo.object
 			mTFName.text = name;
 		}
 		
+		public function setNameColor(color:uint):void
+		{
+			mTFName.textColor = color;
+		}
 		
 		public function set id(value:uint):void
 		{

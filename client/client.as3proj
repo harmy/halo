@@ -9,7 +9,7 @@
     <movie width="800" />
     <movie height="600" />
     <movie version="11" />
-    <movie minorVersion="1" />
+    <movie minorVersion="2" />
     <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
   </output>
@@ -40,7 +40,7 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="-locale en_US" />
+    <option additional="-locale en_US&#xA;-swf-version=15" />
     <option compilerConstants="" />
     <option minorVersion="" />
   </build>
@@ -56,6 +56,7 @@
     <element path="libs\loaderqueue-v1.0.swc" />
     <element path="libs\minimal_comps_0_9_9.swc" />
     <element path="libs\as3logger.swc" />
+    <element path="libs\playerglobal.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

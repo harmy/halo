@@ -20,6 +20,7 @@ package game
 	import com.cokecode.halo.terrain.layers.ParallaxLayer;
 	import com.cokecode.halo.terrain.layers.SortLayer;
 	import com.furusystems.dconsole2.DConsole;
+	import flash.display.StageDisplayState;
 
 	import de.nulldesign.nd2d.display.TextureRenderer;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -91,7 +92,7 @@ package game
 			
 			// 创建测试角色
 			var uid:uint = 0;
-			for (var i:uint=0; i<200 * 1; ++i) {
+			for (var i:uint=0; i<1000 * 1; ++i) {
 				var char:Charactor = new Charactor(new CharLooks);
 				char.x = int(Math.random() * 120);
 				char.y = int(Math.random() * 120);
@@ -115,6 +116,8 @@ package game
 				
 				if (i == 0) {
 					// 主角
+					char.setNameText("打不死");
+					char.setNameColor(0x00FF00);
 					char.x = 5 * 64;
 					char.y = 5 * 32;
 					
@@ -217,15 +220,34 @@ package game
 
 		public function onAddToStage(evt:Event):void
 		{
+			stage.showDefaultContextMenu = false;
+			
+			stage.doubleClickEnabled = true;
+			stage.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
+			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.addEventListener("rightClick", onRightClick);
+			
+		}
+		
+		protected function onDoubleClick(event:MouseEvent):void
+		{
+		}
+		
+		public function onRightClick(evt:MouseEvent):void
+		{
+			var worldX:Number = (evt.stageX + camera.x) / Map.sTileWidth;
+			var worldY:Number = (evt.stageY + camera.y) / Map.sTileHeight;
+			mHeroCtrl.gotoPosByAutoPath(worldX, worldY);
+			//trace("鼠标: " + worldX + "," + worldY);
 		}
 		
 		public function onMouseUp(evt:MouseEvent):void
 		{
 			var worldX:Number = (evt.stageX + camera.x) / Map.sTileWidth;
 			var worldY:Number = (evt.stageY + camera.y) / Map.sTileHeight;
-			mHeroCtrl.gotoPosByAutoPath(worldX, worldY);
+			//mHeroCtrl.gotoPosByAutoPath(worldX, worldY);
 			//trace("鼠标: " + worldX + "," + worldY);
 		}
 		

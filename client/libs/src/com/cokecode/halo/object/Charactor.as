@@ -40,9 +40,10 @@ package com.cokecode.halo.object
 		public function Charactor(looks:CharLooks)
 		{
 			mLooks = looks;
-			
+	
+			// 角色动画放在最底层
 			mAnmPlayer = new AnmPlayer(AnimMgr.instance.getAtlasTexMgr());
-			addChild(mAnmPlayer);
+			addChildAt(mAnmPlayer, 0);
 			
 			mLifeBar = new LifeBar;
 			addChild(mLifeBar);

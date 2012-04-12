@@ -23,9 +23,9 @@ package game.control
 			super.step(elapsed);
 			
 			mTotalSec += elapsed;
-			if (mTotalSec >= 0.5) {
+			if (mTotalSec >= 1) {
 				mTotalSec = 0;
-				mChar.curHP = mChar.maxHP/2 + int(Math.random() * mChar.maxHP/2);
+				mChar.curHP = Math.random() * mChar.maxHP;
 			}
 			
 /*			if (!mIsPathing) {
