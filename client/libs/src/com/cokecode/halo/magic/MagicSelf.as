@@ -9,12 +9,7 @@ package com.cokecode.halo.magic
 	 * 自身类魔法
 	 * */
 	internal class MagicSelf extends MagicBase
-	{
-		public function MagicSelf()
-		{			
-			super();
-		}
-		
+	{		
 		protected override function doInit():void
 		{
 			x = mSrcX + mConfig.mOffx;
